@@ -62,5 +62,5 @@ jobs:
           
           rm -rf working-dir
           
-          git push origin doozer-elliott-merged -f
+          git push origin doozer-elliott-merged
 
