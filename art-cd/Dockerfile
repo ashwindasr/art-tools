@@ -1,4 +1,4 @@
-FROM default-route-openshift-image-registry.apps.artc2023.pc3z.p1.openshiftapps.com/openshift/ubi:latest
+FROM registry.redhat.io/ubi8/ubi:latest
 LABEL name="openshift-art/art-cd" \
   maintainer="OpenShift Team Automated Release Tooling <aos-team-art@redhat.com>"
 
