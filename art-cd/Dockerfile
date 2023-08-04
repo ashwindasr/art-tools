@@ -22,10 +22,6 @@ RUN curl -o /etc/pki/ca-trust/source/anchors/RH-IT-Root-CA.crt --fail -L \
          https://password.corp.redhat.com/RH-IT-Root-CA.crt \
  && update-ca-trust extract
 
-
-# Install runtime dependencies
-COPY images/artcd/files/ /
-
 ### Install elliott and doozer
 #RUN pip install https://github.com/openshift-eng/doozer/archive/master.zip
 #RUN pip install https://github.com/openshift-eng/elliott/archive/master.zip
