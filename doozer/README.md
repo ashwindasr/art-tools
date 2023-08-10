@@ -44,3 +44,4 @@ Checkout the [Usage doc](Usage.md)
 [dotconfig]: https://github.com/adammhaile/dotconfig
 [gitdata]: https://github.com/adammhaile/gitdata
 [LGPL v3]: https://www.gnu.org/licenses/lgpl-3.0.en.html
+
