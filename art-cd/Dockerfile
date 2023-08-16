@@ -15,8 +15,7 @@ RUN curl -o /etc/yum.repos.d/rcm-tools-fedora.repo https://download.devel.redhat
 
 RUN dnf -y install python38
 RUN update-alternatives --set python3 /usr/bin/python3.8
-RUN dnf -y install python3-wheel python3-devel gcc krb5-devel wget tar gzip git krb5-workstation rsync python3-rpm koji brewkoji bash-completion vim tmux wget curl iputils procps-ng psmisc net-tools iproute
-    && python3 -m pip install "pip >= 21"
+RUN dnf -y install python3-wheel python3-devel gcc krb5-devel wget tar gzip git krb5-workstation rsync python3-rpm koji brewkoji bash-completion vim wget curl iputils procps-ng psmisc net-tools iproute && python3 -m pip install "pip >= 21"
 
 # Install SAST Scanning tools
 RUN dnf -y copr enable copr.devel.redhat.com/kdudka/covscan && dnf install -y covscan-client
