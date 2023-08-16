@@ -27,7 +27,7 @@ RUN wget -O /tmp/openshift-client-linux-"$OC_VERSION".tar.gz https://mirror.open
   && tar -C /usr/local/bin -xzf  /tmp/openshift-client-linux-"$OC_VERSION".tar.gz oc kubectl \
   && rm /tmp/openshift-client-linux-"$OC_VERSION".tar.gz
 
-COPY krb5-redhat.conf /etc/krb5.conf
+COPY ./krb5-redhat.conf /etc/krb5.conf
 
 ### Install elliott and doozer
 #RUN pip install https://github.com/openshift-eng/doozer/archive/master.zip
