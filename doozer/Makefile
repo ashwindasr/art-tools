@@ -2,6 +2,7 @@
 
 install:
 	./venv/bin/pip install -r requirements-dev.txt -r requirements.txt
+	mv ./venv/lib/python3.8/site-packages/usr/bin/osh-cli ./venv/bin/osh-cli
 
 venv:
 	python3.8 -m venv venv

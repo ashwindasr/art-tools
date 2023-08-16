@@ -22,3 +22,5 @@ aiohttp
 jira==3.4.1
 ghapi
 pip_system_certs==4.0
+kobo
+https://gitlab.cee.redhat.com/covscan/covscan/-/archive/osh-0.9.3/covscan-osh-0.9.3.tar.gz
