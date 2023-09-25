@@ -2,7 +2,7 @@ import click
 import koji
 from doozerlib.cli import cli, click_coroutine, pass_runtime
 from doozerlib.runtime import Runtime
-from doozerlib.exectools import cmd_assert_async
+from doozerlib.exectools import fire_and_forget
 from doozerlib.constants import BREWHUB_URL
 from doozerlib.util import cprint
 
@@ -64,7 +64,7 @@ class ScanOshCli:
             self.runtime.logger.info(f"Running command: {cmd}")
 
             # Comment out the below line for testing.
-            await cmd_assert_async(cmd)
+            fire_and_forget(self.runtime.cwd, cmd)
 
     async def run(self):
         builds = []
