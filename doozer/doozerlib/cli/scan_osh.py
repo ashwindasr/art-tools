@@ -61,10 +61,10 @@ class ScanOshCli:
 
                 cmd = cmd_template.format(f"rhel-{rhel_version}-x86_64", nvr)
 
-            self.runtime.logger.info(f"Running command: {cmd}")
+            # self.runtime.logger.info(f"Running command: {cmd}")
 
             # Comment out the below line for testing.
-            # await cmd_assert_async(cmd)
+            await cmd_assert_async(cmd)
 
     async def run(self):
         builds = []
