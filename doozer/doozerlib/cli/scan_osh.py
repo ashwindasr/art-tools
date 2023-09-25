@@ -64,7 +64,7 @@ class ScanOshCli:
             self.runtime.logger.info(f"Running command: {cmd}")
 
             # Comment out the below line for testing.
-            fire_and_forget(self.runtime.cwd, cmd)
+            # fire_and_forget(self.runtime.cwd, cmd)
 
     async def run(self):
         builds = []
