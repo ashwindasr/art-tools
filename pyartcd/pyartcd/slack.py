@@ -73,11 +73,12 @@ class SlackClient:
 
         return response.data
 
-    async def upload_file(self, file=None, content=None, filename=None, initial_comment=None, thread_ts: Optional[str] = None):
+    async def upload_file(self, file=None, content=None, filename=None, initial_comment=None, filetype=None, thread_ts: Optional[str] = None):
         response = await self._client.files_upload(
             file=file,
-            filename=content,
-            filetype=filename,
+            filename=filename,
+            content=content,
+            filetype=filetype,
             initial_comment=initial_comment,
             channels=self.channel,
             thread_ts=thread_ts)
