@@ -28,6 +28,9 @@ RUN wget -O "openshift-client-linux-${OC_VERSION}.tar.gz" "https://mirror.opensh
 RUN wget -O "awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
   && unzip awscliv2.zip &&  ./aws/install
 
+# Install tektoncd cli from https://github.com/tektoncd/cli/releases for 'tkn' command line tool
+RUN rpm -Uvh tektoncd-cli-0.34.0_Linux-64bit.rpm
+
 # Set workspace
 WORKDIR /home/dev
 
