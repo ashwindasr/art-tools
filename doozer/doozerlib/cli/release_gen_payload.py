@@ -770,11 +770,22 @@ class GenPayloadCli:
             tasks.append(self.mirror_payload_content(arch, payload_entries))
         await asyncio.gather(*tasks)
 
+        # Filter out embargoed builds to mirror to public quay
+        filtered_payload_entries_for_arch = {}
+        for arch, payload_entries in self.payload_entries_for_arch.items():
+            filtered_payload_entries = {}
+            for payload_tag_name, payload_entry in payload_entries.items():
+                if payload_entry.build_inspector.is_under_embargo():
+                    # We do not want embargoed builds to get leaked to public quay
+                    continue
+                filtered_payload_entries[payload_tag_name] = payload_entry
+            filtered_payload_entries_for_arch[arch] = filtered_payload_entries
+
         # Ensure that all payload images have been mirrored before updating
         # the imagestream. Otherwise, the imagestream will fail to import the
         # image.
         tasks = []
-        for arch, payload_entries in self.payload_entries_for_arch.items():
+        for arch, payload_entries in filtered_payload_entries_for_arch.items():
             tasks.append(self.mirror_payload_content(arch, payload_entries))
         await asyncio.gather(*tasks)
 
