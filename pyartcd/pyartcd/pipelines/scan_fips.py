@@ -40,7 +40,7 @@ class ScanFips:
             # alert release artists
             if not self.runtime.dry_run:
                 message = ":warning: FIPS scan has failed for some builds"
-                slack_response = await self.slack_client.say(message)
+                slack_response = await self.slack_client.say(message=message, reaction="art-attention")
                 slack_thread = slack_response["message"]["ts"]
 
                 await self.slack_client.upload_file(
