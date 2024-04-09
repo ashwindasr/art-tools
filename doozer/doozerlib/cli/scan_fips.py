@@ -30,6 +30,7 @@ class ScanFipsCli:
         name = build[1].split("@")[0]
 
         self.runtime.logger.info(f"Cleaning image {name}")
+        # Without '1> /dev/null', this output will be relayed back to artcd, which is not desired
         clean_command = "sudo podman images --format '{{.ID}} {{.Repository}}' | " + f"grep {name} | " + \
                         "awk '{print $1}' | xargs -I {} sudo podman rmi {} 1> /dev/null"
         rc_clean = os.system(clean_command)
