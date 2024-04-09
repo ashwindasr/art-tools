@@ -886,7 +886,7 @@ class Ocp4Pipeline:
             f"openshift-{self.version.stream}",
             "images:scan-fips",
             "--nvrs",
-            f"{','.join(self.success_nvrs)}"
+            f"ose-azure-storage-azcopy-base-container-v4.16.0-202404091502.p0.gca061d7.assembly.test.el9"
         ]
 
         _, result, _ = await exectools.cmd_gather_async(cmd, stderr=True)
@@ -898,67 +898,13 @@ class Ocp4Pipeline:
         if result_json:
             # alert release artists
             if not self.runtime.dry_run:
-                message = ":warning: FIPS scan has failed for some builds"
-                slack_response = await self._slack_client.say(message=message)
-                slack_thread = slack_response["message"]["ts"]
-
-                await self._slack_client.say(
-                    message=result,
-                    thread_ts=slack_thread,
-                )
+                self.runtime.logger.info("[DRY RUN TEST] Would have messaged slack")
             else:
                 self.runtime.logger.info("[DRY RUN] Would have messaged slack")
         else:
             self.runtime.logger.info("No issues")
 
     async def run(self):
-        await self._initialize()
-
-        # Plan builds
-        if self.build_plan.pin_builds:
-            self._plan_pinned_builds()
-        else:
-            self.runtime.logger.info('Building only where source has changed.')
-            await self._plan_builds()
-
-        # Rebase and build RPMs
-        await self._rebase_and_build_rpms()
-        if not self.skip_plashets:
-            lock = Lock.PLASHET
-            lock_name = lock.value.format(assembly=self.assembly, version=self.version.stream)
-            await locks.run_with_lock(
-                coro=self._build_compose(),
-                lock=lock,
-                lock_name=lock_name,
-                lock_id=self.lock_identifier
-            )
-
-        else:
-            self.runtime.logger.warning('Skipping plashets creation as SKIP_PLASHETS was set to True')
-
-        # Rebase and build images
-        if self.build_plan.build_images:
-            if self.mass_rebuild:
-                await self._slack_client.say(
-                    f':loading-correct: Enqueuing mass rebuild for {self.version.stream} :loading-correct:')
-                await self._request_mass_rebuild()
-            else:
-                await self._rebase_and_build_images()
-        else:
-            self.runtime.logger.info('Not building images.')
-
-        # Sync images
-        await self._sync_images()
-
-        # Mirror RPMs
-        await self._mirror_rpms()
-
-        # Find MODIFIED bugs for the target-releases, and set them to ON_QA
-        await self._sweep()
-
-        # All good
-        self._report_success()
-
         # Run FIPS scan on successfully build images
         await self._check_fips()
 
