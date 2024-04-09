@@ -74,7 +74,14 @@ class ScanFips:
         if problem_images:
             # alert release artists
             if not self.runtime.dry_run:
-                self.runtime.logger.info("[DRY RUN TEST] Would have messaged slack")
+                message = ":warning: FIPS scan has failed for some builds"
+                slack_response = await self.slack_client.say(message=message, reaction="art-attention")
+                slack_thread = slack_response["message"]["ts"]
+
+                await self.slack_client.say(
+                    message=problem_images,
+                    thread_ts=slack_thread,
+                )
             else:
                 self.runtime.logger.info("[DRY RUN] Would have messaged slack")
         else:
