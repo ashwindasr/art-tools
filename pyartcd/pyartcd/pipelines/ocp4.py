@@ -886,7 +886,7 @@ class Ocp4Pipeline:
             f"openshift-{self.version.stream}",
             "images:scan-fips",
             "--nvrs",
-            f"ose-azure-storage-azcopy-base-container-v4.16.0-202404091502.p0.gca061d7.assembly.test.el9"
+            f"ose-aws-pod-identity-webhook-container-v4.6.0-202205020737.p0.g9f94b70.assembly.stream"
         ]
 
         _, result, _ = await exectools.cmd_gather_async(cmd, stderr=True)
