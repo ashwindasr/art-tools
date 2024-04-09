@@ -30,7 +30,7 @@ class ScanFipsCli:
         name = build[1].split("@")[0]
 
         self.runtime.logger.info(f"Cleaning image {name}")
-        clean_command = "sudo podman images --format '{{.ID}} {{.Repository}}' | " + f"grep {name} | " + \
+        clean_command = "sudo podman images --form.ID}} {{.Repository}}' | " + f"grep {name} | " + \
                         "awk '{print $1}' | xargs -I {} sudo podman rmi {} 1> /dev/null"
         rc_clean = os.system(clean_command)
 
