@@ -893,7 +893,7 @@ class Ocp4Pipeline:
 
         result_json = json.loads(result)
 
-        self.runtime.logger.info(f"Result: {result_json}")
+        self.runtime.logger.info(f"Result: {json.dumps(result_json, indent=4)}")
 
         if result_json:
             # alert release artists
