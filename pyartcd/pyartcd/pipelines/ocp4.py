@@ -959,7 +959,7 @@ class Ocp4Pipeline:
         # All good
         self._report_success()
 
-        # Run FIPS scan on successfully build images
+        # Run FIPS scan on successfully built images
         await self._check_fips()
 
 
