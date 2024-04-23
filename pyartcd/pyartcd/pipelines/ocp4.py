@@ -886,7 +886,7 @@ class Ocp4Pipeline:
             f"openshift-{self.version.stream}",
             "images:scan-fips",
             "--nvrs",
-            f"{','.join(self.success_nvrs)}"
+            "ose-machine-config-operator-container-v4.6.0-202109221828.p0.git.cb3a981.assembly.stream"
         ]
 
         _, result, _ = await exectools.cmd_gather_async(cmd, stderr=True)
@@ -912,52 +912,6 @@ class Ocp4Pipeline:
             self.runtime.logger.info("No issues")
 
     async def run(self):
-        await self._initialize()
-
-        # Plan builds
-        if self.build_plan.pin_builds:
-            self._plan_pinned_builds()
-        else:
-            self.runtime.logger.info('Building only where source has changed.')
-            await self._plan_builds()
-
-        # Rebase and build RPMs
-        await self._rebase_and_build_rpms()
-        if not self.skip_plashets:
-            lock = Lock.PLASHET
-            lock_name = lock.value.format(assembly=self.assembly, version=self.version.stream)
-            await locks.run_with_lock(
-                coro=self._build_compose(),
-                lock=lock,
-                lock_name=lock_name,
-                lock_id=self.lock_identifier
-            )
-
-        else:
-            self.runtime.logger.warning('Skipping plashets creation as SKIP_PLASHETS was set to True')
-
-        # Rebase and build images
-        if self.build_plan.build_images:
-            if self.mass_rebuild:
-                await self._slack_client.say(
-                    f':loading-correct: Enqueuing mass rebuild for {self.version.stream} :loading-correct:')
-                await self._request_mass_rebuild()
-            else:
-                await self._rebase_and_build_images()
-        else:
-            self.runtime.logger.info('Not building images.')
-
-        # Sync images
-        await self._sync_images()
-
-        # Mirror RPMs
-        await self._mirror_rpms()
-
-        # Find MODIFIED bugs for the target-releases, and set them to ON_QA
-        await self._sweep()
-
-        # All good
-        self._report_success()
 
         # Run FIPS scan on successfully built images
         await self._check_fips()
