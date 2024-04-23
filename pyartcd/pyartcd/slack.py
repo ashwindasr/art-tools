@@ -60,7 +60,7 @@ class SlackClient:
         if self.dry_run:
             _LOGGER.warning("[DRY RUN] Would have sent slack message to %s: %s %s", self.channel, message, attachments)
             return {"message": {"ts": "fake"}}
-        response = await self._client.chat_postMessage(channel=self.channel, text=message, thread_ts=thread_ts,
+        response = await self._client.chat_postMessage(channel="art-bot-monitoring", text=message, thread_ts=thread_ts,
                                                        username=self.as_user, link_names=True, attachments=attachments,
                                                        icon_emoji=self.icon_emoji, reply_broadcast=False)
         # https://api.slack.com/methods/reactions.add
