@@ -426,10 +426,6 @@ def k_images_rebase(runtime: Runtime, embargoed: bool, repo_type: str, force_yum
     lstate['total'] = len(metas)
 
     def dgr_rebase(image_meta, terminate_event):
-        if not skip_config_check and image_meta.config.konflux.enabled not in [True, "True", "true", "yes"]:
-            runtime.logger.info(f"Skipping konflux rebase for component {image_meta.config.name} since its not enabled "
-                                f"in config")
-            return
         try:
             k_dgr = image_meta.k_distgit_repo()
             if embargoed:
