@@ -4,6 +4,9 @@ metadata:
   name: fips-pipeline
 spec:
   params:
+    - description: 'OCP major version, eg: 4.15'
+      name: version
+      type: string
     - description: 'Doozer data path i.e. ocp build data url'
       name: data_path
       type: string

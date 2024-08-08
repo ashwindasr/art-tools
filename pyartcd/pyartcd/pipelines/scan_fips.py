@@ -10,13 +10,13 @@ from typing import Optional
 from pyartcd.runtime import Runtime
 from pyartcd.cli import cli, pass_runtime, click_coroutine
 from pyartcd import exectools
-from artcommonlib.constants import ACTIVE_OCP_VERSIONS
 
 
 class ScanFips:
-    def __init__(self, runtime: Runtime, data_path: str, all_images: bool, nvrs: Optional[list]):
+    def __init__(self, runtime: Runtime, data_path: str, version: str, all_images: bool, nvrs: Optional[list]):
         self.runtime = runtime
         self.data_path = data_path
+        self.version = version
         self.nvrs = nvrs
         self.all_images = all_images
 
@@ -27,29 +27,28 @@ class ScanFips:
     async def run(self):
         results = {}
 
-        for version in ACTIVE_OCP_VERSIONS:
-            cmd = [
-                "doozer",
-                "--group",
-                f"openshift-{version}",
-                "--data-path",
-                self.data_path,
-                "images:scan-fips",
-            ]
+        cmd = [
+            "doozer",
+            "--group",
+            f"openshift-{self.version}",
+            "--data-path",
+            self.data_path,
+            "images:scan-fips",
+        ]
 
-            if self.nvrs and self.all_images:
-                raise Exception("Cannot specify both --nvrs and --all-images")
+        if self.nvrs and self.all_images:
+            raise Exception("Cannot specify both --nvrs and --all-images")
 
-            if self.nvrs:
-                cmd.extend(["--nvrs", ",".join(self.nvrs)])
+        if self.nvrs:
+            cmd.extend(["--nvrs", ",".join(self.nvrs)])
 
-            if self.all_images:
-                cmd.append("--all-images")
+        if self.all_images:
+            cmd.append("--all-images")
 
-            _, result, _ = await exectools.cmd_gather_async(cmd, stderr=True)
-            result_json = json.loads(result)
+        _, result, _ = await exectools.cmd_gather_async(cmd, stderr=True)
+        result_json = json.loads(result)
 
-            results.update(result_json)
+        results.update(result_json)
 
         self.runtime.logger.info(f"Result: {results}")
 
@@ -77,14 +76,16 @@ class ScanFips:
 
 
 @cli.command("scan-fips", help="Trigger FIPS check for specified NVRs")
+@click.option("--version", required=True, help="openshift version eg: 4.15")
 @click.option("--data-path", required=True, help="OCP build data url")
 @click.option("--nvrs", required=False, help="Comma separated list to trigger scans for")
 @click.option("--all-images", is_flag=True, default=False, help="Scan all latest images in our tags")
 @pass_runtime
 @click_coroutine
-async def scan_osh(runtime: Runtime, data_path: str, all_images: bool, nvrs: str):
+async def scan_osh(runtime: Runtime, data_path: str, version: str, all_images: bool, nvrs: str):
     pipeline = ScanFips(runtime=runtime,
                         data_path=data_path,
+                        version=version,
                         all_images=all_images,
                         nvrs=nvrs.split(",") if nvrs else None
                         )
