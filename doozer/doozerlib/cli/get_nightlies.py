@@ -249,7 +249,9 @@ def rc_api_url(tag: str, arch: str, priv: bool) -> str:
     arch = go_arch_for_brew_arch(arch)
     arch_suffix = go_suffix_for_arch(arch)
     if priv:
-        return f"{constants.RC_BASE_PRIV_URL.format(arch=arch)}/api/v1/releasestream/{tag}{arch_suffix}"
+        if arch == "amd64":
+            return f"{constants.RC_BASE_PRIV_URL.format(arch='')}/api/v1/releasestream/{tag}-priv"
+        return f"{constants.RC_BASE_PRIV_URL.format(arch=arch)}/api/v1/releasestream/{tag}{arch_suffix}-priv"
     return f"{constants.RC_BASE_URL.format(arch=arch)}/api/v1/releasestream/{tag}{arch_suffix}"
 
 
