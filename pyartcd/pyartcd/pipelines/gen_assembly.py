@@ -76,6 +76,11 @@ class GenAssemblyPipeline:
         self._doozer_env_vars["DOOZER_DATA_PATH"] = data_path if data_path else \
             self.runtime.config.get("build_config", {}).get("ocp_build_data_url")
 
+        self.private_nightlies = any("priv" in nightly for nightly in self.nightlies)
+        if self.private_nightlies:
+            if not all("priv" in nightly for nightly in self.nightlies):
+                raise ValueError("All nightlies must be private or none")
+
     async def run(self):
         self._slack_client.bind_channel(self.group)
         slack_response = await self._slack_client.say(
@@ -119,7 +124,7 @@ class GenAssemblyPipeline:
 
         major, minor = isolate_major_minor_in_group(self.group)
         tag_base = f'{major}.{minor}.0-0.nightly'
-        rc_endpoint = f"{rc_api_url(tag_base, 'amd64')}/tags"
+        rc_endpoint = f"{rc_api_url(tag_base, 'amd64', self.private_nightlies)}/tags"
 
         async with aiohttp.ClientSession() as session:
             async with session.get(rc_endpoint) as response:
