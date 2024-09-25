@@ -101,6 +101,9 @@ class KonfluxImageBuilder:
         except KonfluxImageBuildError:
             metadata.build_status = False
             raise Exception(metadata.distgit_key)
+        except Exception as e:
+            self._logger.error(e)
+            raise
 
         metadata.build_event.set()
 
