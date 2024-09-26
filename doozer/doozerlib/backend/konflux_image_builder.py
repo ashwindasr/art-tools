@@ -85,6 +85,7 @@ class KonfluxImageBuilder:
                     dyn_client = DynamicClient(api_client)
 
                     pipelinerun = await self._start_build(metadata, build_repo, dyn_client)
+                    self._logger.info(f"PipelineRun: {pipelinerun}")
 
                     pipelinerun_name = pipelinerun['metadata']['name']
                     self._logger.info("Waiting for PipelineRun %s to complete...", pipelinerun_name)
