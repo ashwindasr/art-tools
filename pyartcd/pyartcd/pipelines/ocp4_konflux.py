@@ -62,6 +62,7 @@ class KonfluxOcp4Pipeline:
             cmd.extend(['--konflux-kubeconfig', self.kubeconfig])
         if self.runtime.dry_run:
             cmd.append('--dry-run')
+        print(f"test ash {cmd}")
         await exectools.cmd_assert_async(cmd)
 
     async def run(self):
