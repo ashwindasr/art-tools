@@ -98,9 +98,13 @@ class KonfluxImageBuilder:
                         break
             if not metadata.build_status and error:
                 raise error
-        except KonfluxImageBuildError:
+        except KonfluxImageBuildError as e:
             metadata.build_status = False
+            self._logger.error(f"KonfluxImageBuildError: {e}")
             raise Exception(metadata.distgit_key)
+        except Exception as e:
+            self._logger.error(f"ERROR building {metadata.distgit_key}: {e}")
+            raise Exception()
 
         metadata.build_event.set()
 
