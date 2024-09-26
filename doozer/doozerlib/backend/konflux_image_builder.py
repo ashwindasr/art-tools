@@ -58,54 +58,47 @@ class KonfluxImageBuilder:
 
     async def build(self, metadata: ImageMetadata):
         """ Build a container image with Konflux. """
-        try:
-            # Load the build source repository
-            dest_dir = self._config.base_dir.joinpath(metadata.qualified_key)
-            build_repo = await BuildRepo.from_local_dir(dest_dir, self._logger)
+        # Load the build source repository
+        dest_dir = self._config.base_dir.joinpath(metadata.qualified_key)
+        build_repo = await BuildRepo.from_local_dir(dest_dir, self._logger)
 
-            # Load the Kubernetes configuration
-            cfg = Configuration()
-            config.load_kube_config(config_file=self._config.kubeconfig, context=self._config.context,
-                                    persist_config=False, client_configuration=cfg)
+        # Load the Kubernetes configuration
+        cfg = Configuration()
+        config.load_kube_config(config_file=self._config.kubeconfig, context=self._config.context,
+                                persist_config=False, client_configuration=cfg)
 
-            # Wait for parent members to be built
-            LOGGER.info("Waiting for parent members to be built...")
-            parent_members = await self._wait_for_parent_members(metadata)
-            failed_parents = [parent_member.distgit_key for parent_member in parent_members if parent_member is not None and not parent_member.build_status]
-            if failed_parents:
-                raise IOError(f"Couldn't build {metadata.distgit_key} because the following parent images failed to build: {', '.join(failed_parents)}")
+        # Wait for parent members to be built
+        LOGGER.info("Waiting for parent members to be built...")
+        parent_members = await self._wait_for_parent_members(metadata)
+        failed_parents = [parent_member.distgit_key for parent_member in parent_members if parent_member is not None and not parent_member.build_status]
+        if failed_parents:
+            raise IOError(f"Couldn't build {metadata.distgit_key} because the following parent images failed to build: {', '.join(failed_parents)}")
 
-            # Start the build
-            LOGGER.info("Starting Konflux image build for %s...", metadata.distgit_key)
-            retries = 3
-            error = None
-            for attempt in range(retries):
-                self._logger.info("Build attempt %s/%s", attempt + 1, retries)
-                with client.ApiClient(configuration=cfg) as api_client:
-                    dyn_client = DynamicClient(api_client)
+        # Start the build
+        LOGGER.info("Starting Konflux image build for %s...", metadata.distgit_key)
+        retries = 3
+        error = None
+        for attempt in range(retries):
+            self._logger.info("Build attempt %s/%s", attempt + 1, retries)
+            with client.ApiClient(configuration=cfg) as api_client:
+                dyn_client = DynamicClient(api_client)
 
-                    pipelinerun = await self._start_build(metadata, build_repo, dyn_client)
-                    self._logger.info(f"PipelineRun: {pipelinerun}")
+                pipelinerun = await self._start_build(metadata, build_repo, dyn_client)
+                self._logger.info(f"PipelineRun: {pipelinerun}")
 
-                    pipelinerun_name = pipelinerun['metadata']['name']
-                    self._logger.info("Waiting for PipelineRun %s to complete...", pipelinerun_name)
-                    pipelinerun = await self._wait_for_pipelinerun(dyn_client, pipelinerun_name)
-                    self._logger.info("PipelineRun %s completed", pipelinerun_name)
-                    if pipelinerun.status.conditions[0].status != "True":
-                        error = KonfluxImageBuildError(f"Konflux image build for {metadata.distgit_key} failed",
-                                                       pipelinerun_name, pipelinerun)
-                    else:
-                        metadata.build_status = True
-                        break
-            if not metadata.build_status and error:
-                raise error
-        except KonfluxImageBuildError as e:
-            metadata.build_status = False
-            self._logger.error(f"KonfluxImageBuildError: {e}")
-            raise Exception(metadata.distgit_key)
-        except Exception as e:
-            self._logger.error(f"ERROR building {metadata.distgit_key}: {e}")
-            raise Exception()
+                pipelinerun_name = pipelinerun['metadata']['name']
+                self._logger.info("Waiting for PipelineRun %s to complete...", pipelinerun_name)
+                pipelinerun = await self._wait_for_pipelinerun(dyn_client, pipelinerun_name)
+                self._logger.info("PipelineRun %s completed", pipelinerun_name)
+                if pipelinerun.status.conditions[0].status != "True":
+                    error = KonfluxImageBuildError(f"Konflux image build for {metadata.distgit_key} failed",
+                                                   pipelinerun_name, pipelinerun)
+                else:
+                    metadata.build_status = True
+                    break
+        if not metadata.build_status and error:
+            raise error
+
 
         metadata.build_event.set()
 
