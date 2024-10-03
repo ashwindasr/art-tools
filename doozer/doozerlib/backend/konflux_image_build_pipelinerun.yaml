@@ -1,6 +1,8 @@
 apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
+  finalizers:
+    - openshift.io/art-db
   annotations:
     build.appstudio.openshift.io/repo: https://github.com/openshift-priv/images?rev={{revision}}
     build.appstudio.redhat.com/commit_sha: '{{revision}}'
