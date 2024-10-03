@@ -128,6 +128,8 @@ class KonfluxImageBuilder:
                         break
             if not metadata.build_status and error:
                 raise error
+        except Exception as e:
+            raise Exception("[%s] Konflux image build failed: %s", metadata.distgit_key, e)
         finally:
             metadata.build_event.set()
         return pipelinerun_name, pipelinerun
