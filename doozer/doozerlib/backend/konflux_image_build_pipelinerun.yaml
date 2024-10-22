@@ -456,6 +456,9 @@ spec:
     secret:
       secretName: '{{ git_auth_secret }}'
   - name: workspace
+    spec:
+      accessModes:
+        - ReadWriteOnce
     volumeClaimTemplate:
       spec:
         resources:
