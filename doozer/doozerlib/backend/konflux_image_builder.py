@@ -477,6 +477,9 @@ class KonfluxImageBuilder:
         # https://konflux.pages.redhat.com/docs/users/troubleshooting/index.html#no-space-left-on-device
         obj["spec"]["workspaces"].append({
             "name": "workspace",
+            "spec": {
+                "accessModes": ["ReadWriteOnce"]
+            },
             "volumeClaimTemplate": {
                 "spec": {
                     "resources": {
