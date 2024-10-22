@@ -455,4 +455,9 @@ spec:
   - name: git-auth
     secret:
       secretName: '{{ git_auth_secret }}'
+    volumeClaimTemplate:
+      spec:
+        resources:
+          requests:
+            storage: 5Gi
 status: {}
