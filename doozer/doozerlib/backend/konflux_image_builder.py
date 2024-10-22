@@ -473,6 +473,23 @@ class KonfluxImageBuilder:
                 task["params"].append({"name": "ADDITIONAL_TAGS", "value": list(additional_tags)})
 
         obj["spec"]["params"].append({"name": "build-platforms", "value": list(build_platforms)})
+
+        # https://konflux.pages.redhat.com/docs/users/troubleshooting/index.html#no-space-left-on-device
+        obj["spec"]["workspaces"].append({
+            "name": "workspace",
+            "spec": {
+                "accessModes": ["ReadWriteOnce"]
+            },
+            "volumeClaimTemplate": {
+                "spec": {
+                    "resources": {
+                        "requests": {
+                            "storage": "10Gi"
+                        }
+                    }
+                }
+            }
+        })
         return obj
 
     async def _create_or_patch(self, dyn_client: DynamicClient, manifest: dict):
