@@ -200,7 +200,7 @@ class KonfluxImageBuilder:
         unsupported_arches = set(arches) - set(KonfluxImageBuilder.SUPPORTED_ARCHES)
         if unsupported_arches:
             raise ValueError(f"[{metadata.distgit_key}] Unsupported arches: {', '.join(unsupported_arches)}")
-        build_platforms = [self.SUPPORTED_ARCHES[arch] for arch in arches]
+        build_platforms = ["linux/x86_64"]
         pipelineruns_api = await self._get_pipelinerun_api(dyn_client)
 
         pipelinerun_manifest = self._new_pipelinerun(
@@ -456,9 +456,9 @@ class KonfluxImageBuilder:
         for param in obj["spec"]["params"]:
             if param["name"] == "output-image":
                 param["value"] = output_image
-            if param["name"] == "skip-checks":
-                param["value"] = "true"
-                skip_checks_flag = True
+            # if param["name"] == "skip-checks":
+            #     param["value"] = "true"
+            #     skip_checks_flag = True
 
         if not skip_checks_flag:
             obj["spec"]["params"].append({"name": "skip-checks", "value": "true"})
