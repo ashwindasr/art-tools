@@ -460,8 +460,8 @@ class KonfluxImageBuilder:
             #     param["value"] = "true"
             #     skip_checks_flag = True
 
-        if not skip_checks_flag:
-            obj["spec"]["params"].append({"name": "skip-checks", "value": "true"})
+        # if not skip_checks_flag:
+        #     obj["spec"]["params"].append({"name": "skip-checks", "value": "true"})
 
         # See https://konflux-ci.dev/docs/how-tos/configuring/customizing-the-build/#configuring-timeouts
         obj["spec"]["timeouts"] = {"pipeline": "12h"}
