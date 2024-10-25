@@ -23,7 +23,6 @@ from doozerlib.backend.build_repo import BuildRepo
 from doozerlib.image import ImageMetadata
 from doozerlib.source_resolver import SourceResolution
 
-from artcommonlib.arch_util import go_arch_for_brew_arch
 from artcommonlib.release_util import isolate_assembly_in_release, isolate_el_version_in_release
 from artcommonlib.konflux.konflux_build_record import KonfluxBuildRecord, ArtifactType, Engine, KonfluxBuildOutcome
 
@@ -246,21 +245,20 @@ class KonfluxImageBuilder:
                 f"applications/{application}/"
                 f"pipelineruns/{pipelinerun_name}")
 
-    @staticmethod
-    async def get_installed_packages(image_pullspec, arches) -> list:
+    async def get_installed_packages(self, image_pullspec, arches) -> list:
         """
         Example sbom: https://gist.github.com/thegreyd/6718f4e4dae9253310c03b5d492fab68
         :return: Returns list of installed rpms for an image pullspec, assumes that the sbom exists in registry
         """
         async def _get_for_arch(arch):
-            go_arch = go_arch_for_brew_arch(arch)
+            go_arch = self.SUPPORTED_ARCHES[arch]
 
             cmd = [
                 "cosign",
                 "download",
                 "sbom",
                 image_pullspec,
-                "--platform", f"linux/{go_arch}"
+                "--platform", go_arch
             ]
             _, stdout, _ = await exectools.cmd_gather_async(cmd)
             sbom_contents = json.loads(stdout)
