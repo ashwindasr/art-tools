@@ -111,7 +111,7 @@ class KonfluxRebaser:
             dest_dir = self._base_dir.joinpath(metadata.qualified_key)
 
             # Clone the build repository
-            build_repo = BuildRepo(url=source.url, branch=dest_branch, local_dir=dest_dir, logger=self._logger)
+            build_repo = BuildRepo(url="git@github.com:openshift-priv/etcd.git", branch=dest_branch, local_dir=dest_dir, logger=self._logger)
             await build_repo.ensure_source(upcycle=self.upcycle)
 
             # Rebase the image in the build repository
