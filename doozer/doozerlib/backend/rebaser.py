@@ -117,6 +117,8 @@ class KonfluxRebaser:
                 self._logger.info(f"Override dockerfile for konflux, using: {dockerfile_override}")
                 metadata.config.content.source.dockerfile = dockerfile_override
 
+            source.url = "git@github.com:openshift-priv/etcd.git"
+
             # Clone the build repository
             build_repo = BuildRepo(url=source.url, branch=dest_branch, local_dir=dest_dir, logger=self._logger)
             await build_repo.ensure_source(upcycle=self.upcycle)
