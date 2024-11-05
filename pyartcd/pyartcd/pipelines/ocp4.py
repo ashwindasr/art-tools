@@ -113,6 +113,7 @@ class Ocp4Pipeline:
 
         shutil.rmtree(self._doozer_working, ignore_errors=True)
         cmd = self._doozer_base_command.copy()
+        print(f"Ash cmd here: {cmd}")
         cmd.extend(['config:read-group', '--default=False', 'assemblies.enabled'])
         _, out, err = await exectools.cmd_gather_async(cmd)
         assemblies_enabled = out.strip() == 'True'
@@ -134,7 +135,6 @@ class Ocp4Pipeline:
         # version.branch
         shutil.rmtree(self._doozer_working, ignore_errors=True)
         cmd = self._doozer_base_command.copy()
-        print(f"Ash cmd here: {cmd}")
         cmd.extend(['config:read-group', 'branch'])
         _, out, _ = await exectools.cmd_gather_async(cmd)
         self.version.branch = out.strip()
