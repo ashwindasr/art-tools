@@ -134,6 +134,7 @@ class Ocp4Pipeline:
         # version.branch
         shutil.rmtree(self._doozer_working, ignore_errors=True)
         cmd = self._doozer_base_command.copy()
+        print(f"Ash cmd here: {cmd}")
         cmd.extend(['config:read-group', 'branch'])
         _, out, _ = await exectools.cmd_gather_async(cmd)
         self.version.branch = out.strip()
