@@ -461,6 +461,7 @@ class KonfluxImageBuilder:
             obj["metadata"]["generateName"] = generate_name
         # Set the application and component names
         obj["metadata"]["annotations"]["build.appstudio.openshift.io/repo"] = f"{https_url}?rev={commit_sha}"
+        obj["metadata"]["annotations"]["pipelinesascode.tekton.dev/source-repo-url"] = f"{https_url}"
         obj["metadata"]["labels"]["appstudio.openshift.io/application"] = application_name
         obj["metadata"]["labels"]["appstudio.openshift.io/component"] = component_name
 
