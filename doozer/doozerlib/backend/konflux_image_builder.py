@@ -105,7 +105,7 @@ class KonfluxImageBuilder:
 
             # Start the build
             logger.info("Starting Konflux image build for %s...", metadata.distgit_key)
-            retries = 3
+            retries = 1
             building_arches = metadata.get_arches()
             error = None
             for attempt in range(retries):
