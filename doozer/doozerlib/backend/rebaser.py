@@ -784,8 +784,8 @@ class KonfluxRebaser:
                     remote_sources_path = parts[1].strip()
                 break
 
-        if remote_sources_path:
-            resolved_path = os.path.realpath(remote_sources_path)
+        if os.path.islink(remote_sources_path):
+            resolved_path = os.readlink(remote_sources_path)
             dfp.content = dfp.content.replace(remote_sources_path, resolved_path)
             self._logger.info(f"Replacing symlink {remote_sources_path} with {resolved_path}")
 
