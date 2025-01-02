@@ -751,7 +751,7 @@ class KonfluxRebaser:
         # Inject build repos for Konflux
         self._add_build_repos(dfp)
 
-        self._fix_symlinks(dfp)
+        self._fix_symlinks(df_path)
 
         self._reflow_labels(df_path)
 
@@ -774,20 +774,31 @@ class KonfluxRebaser:
             "# End Konflux-specific steps\n\n"
         )
 
-    def _fix_symlinks(self, dfp):
-        # Extract the value of REMOTE_SOURCES from ARG instructions
-        remote_sources_path = None
-        for instruction in dfp.structure:
-            if instruction['instruction'] == 'ARG' and 'REMOTE_SOURCES' in instruction['value']:
-                parts = instruction['value'].split('=', 1)
-                if len(parts) > 1:
-                    remote_sources_path = parts[1].strip()
-                break
+    def _fix_symlinks(self, df_path):
+        # Load the Dockerfile using DockerfileParser
+        dfp = DockerfileParser()
+        dfp.content = open(df_path, "r").read()
 
-        if os.path.islink(remote_sources_path):
-            resolved_path = os.readlink(remote_sources_path)
-            dfp.content = dfp.content.replace(remote_sources_path, resolved_path)
-            self._logger.info(f"Replacing symlink {remote_sources_path} with {resolved_path}")
+        # Split content into lines
+        lines = dfp.lines
+
+        # Comment lines containing 'REMOTE_SOURCES'
+        updated_lines = []
+        for line in lines:
+            if "REMOTE_SOURCES" in line or "REMOTE_SOURCE_DIR" in line:
+                updated_lines.append(f"#{line.strip()}\n")  # Comment the line
+            else:
+                updated_lines.append(line)  # Keep the line as is
+
+        if updated_lines:
+            # Update the content of the Dockerfile
+            dfp.content = "".join(updated_lines)
+
+            # Write the updated content back to the file
+            with open(df_path, "w") as file:
+                file.write(dfp.content)
+
+            self._logger.info("Lines containing 'REMOTE_SOURCES' and 'REMOTE_SROUCES_DIR' have been commented out, since cachito is not supported on konflux")
 
     def _generate_repo_conf(self, metadata: ImageMetadata, dest_dir: Path, repos: Repos):
         """
