@@ -751,6 +751,8 @@ class KonfluxRebaser:
         # Inject build repos for Konflux
         self._add_build_repos(dfp)
 
+        self._fix_symlinks(dfp)
+
         self._reflow_labels(df_path)
 
     def _add_build_repos(self, dfp: DockerfileParser):
@@ -771,6 +773,21 @@ class KonfluxRebaser:
             "RUN cp /tmp/yum_temp/* /etc/yum.repos.d/ || true",
             "# End Konflux-specific steps\n\n"
         )
+
+    def _fix_symlinks(self, dfp):
+        # Extract the value of REMOTE_SOURCES from ARG instructions
+        remote_sources_path = None
+        for instruction in dfp.structure:
+            if instruction['instruction'] == 'ARG' and 'REMOTE_SOURCES' in instruction['value']:
+                parts = instruction['value'].split('=', 1)
+                if len(parts) > 1:
+                    remote_sources_path = parts[1].strip()
+                break
+
+        if remote_sources_path:
+            resolved_path = os.path.realpath(remote_sources_path)
+            dfp.content = dfp.content.replace(remote_sources_path, resolved_path)
+            self._logger.info(f"Replacing symlink {remote_sources_path} with {resolved_path}")
 
     def _generate_repo_conf(self, metadata: ImageMetadata, dest_dir: Path, repos: Repos):
         """
