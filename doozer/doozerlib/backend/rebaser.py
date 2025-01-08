@@ -829,7 +829,7 @@ class KonfluxRebaser:
                 line_commented = False
 
         if updated_lines:
-            updated_lines = updated_lines.append("ENV REMOTE_SOURCE_DIR=''")
+            updated_lines.extend(["ENV REMOTE_SOURCE_DIR=''"])
             dfp.content = "".join(updated_lines)
             with open(df_path, "w") as file:
                 file.write(dfp.content)
