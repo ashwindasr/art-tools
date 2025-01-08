@@ -770,6 +770,7 @@ class KonfluxRebaser:
             "RUN mkdir -p /tmp/yum_temp; mv /etc/yum.repos.d/*.repo /tmp/yum_temp/ || true",
             f"COPY .oit/{self.repo_type}.repo /etc/yum.repos.d/",
             f"ADD {constants.KONFLUX_REPO_CA_BUNDLE_HOST}/{constants.KONFLUX_REPO_CA_BUNDLE_FILENAME} {constants.KONFLUX_REPO_CA_BUNDLE_TMP_PATH}",
+            "ENV REMOTE_SOURCE_DIR=''",
             "# End Konflux-specific steps\n\n",
             at_start=True,
             all_stages=True,
