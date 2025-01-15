@@ -759,7 +759,7 @@ class KonfluxRebaser:
         # Inject build repos for Konflux
         self._add_build_repos(dfp)
 
-        self._modify_cachito_commands(metadata, df_path)
+        # self._modify_cachito_commands(metadata, df_path)
 
         self._reflow_labels(df_path)
 
