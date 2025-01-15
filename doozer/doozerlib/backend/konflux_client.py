@@ -358,6 +358,7 @@ class KonfluxClient:
         _modify_param(params, "build-source-image", "true")  # Have to be true always to satisfy Enterprise Contract Policy
         _modify_param(params, "image-expires-after", "6w")
         _modify_param(params, "build-platforms", list(build_platforms))
+        _modify_param(params, "prefetch-input", '{"type": "pip", "path": ".", "requirements_files": ["requirements.cachito"]}')
 
         # See https://konflux-ci.dev/docs/how-tos/configuring/customizing-the-build/#configuring-timeouts
         obj["spec"]["timeouts"] = {"pipeline": "12h"}
