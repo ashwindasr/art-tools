@@ -134,7 +134,7 @@ class KonfluxImageBuilder:
             logger.info("Starting Konflux image build for %s...", metadata.distgit_key)
             retries = 3
             building_arches = metadata.get_arches()
-            print(f"[ash test] using arches {building_arches}")
+            logger.info(f"[ash test] using arches {building_arches}")
             error = None
             for attempt in range(retries):
                 logger.info("Build attempt %s/%s", attempt + 1, retries)
