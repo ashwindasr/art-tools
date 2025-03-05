@@ -149,7 +149,7 @@ class KonfluxBuildCli:
     @start_as_current_span_async(TRACER, "images:konflux:build")
     async def run(self):
         runtime = self.runtime
-        runtime.initialize(mode='images', clone_distgits=False)
+        runtime.initialize(mode='images', clone_distgits=False, build_system="konflux")
         runtime.konflux_db.bind(KonfluxBuildRecord)
         assert runtime.source_resolver is not None, "source_resolver is not initialized. Doozer bug?"
         metas = runtime.ordered_image_metas()
@@ -249,14 +249,14 @@ class KonfluxBundleCli:
                 dgk_records[record.name] = record
             # Load image metas for the given operators
             runtime.images = list(dgk_records.keys())
-            runtime.initialize(mode='images', clone_distgits=False)
+            runtime.initialize(mode='images', clone_distgits=False, build_system="konflux")
             for dkg in dgk_records.keys():
                 metadata = runtime.image_map[dkg]
                 if not metadata.is_olm_operator:
                     raise DoozerFatalError(f"Operator {dkg} does not have 'update-csv' config")
         else:
             # Get latest build records for all specified operators
-            runtime.initialize(mode='images', clone_distgits=False)
+            runtime.initialize(mode='images', clone_distgits=False, build_system="konflux")
             LOGGER.info("Fetching latest operator builds from Konflux DB...")
             operator_metas: List[ImageMetadata] = [operator_meta for operator_meta in runtime.ordered_image_metas() if operator_meta.is_olm_operator]
             records = await asyncio.gather(*(metadata.get_latest_build() for metadata in operator_metas))
@@ -325,7 +325,7 @@ class KonfluxBundleCli:
         if runtime.images and self.operator_nvrs:
             raise click.BadParameter("Do not specify operator NVRs when --images is specified")
 
-        runtime.initialize(config_only=True)
+        runtime.initialize(config_only=True, build_system="konflux")
         assembly = runtime.assembly
         if assembly is None:
             raise ValueError("Assemblies feature is disabled for this group. This is no longer supported.")

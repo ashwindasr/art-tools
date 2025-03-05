@@ -871,11 +871,11 @@ async def config_scan_source_changes(runtime: Runtime, ci_kubeconfig, as_yaml, r
     """
 
     # Initialize group config: we need this to determine the canonical builders behavior
-    runtime.initialize(config_only=True)
+    runtime.initialize(config_only=True, build_system="konflux")
 
     if runtime.group_config.canonical_builders_from_upstream:
-        runtime.initialize(mode="both", clone_distgits=True)
+        runtime.initialize(mode="both", clone_distgits=True, build_system="konflux")
     else:
-        runtime.initialize(mode='both', clone_distgits=False)
+        runtime.initialize(mode='both', clone_distgits=False, build_system="konflux")
 
     await ConfigScanSources(runtime, ci_kubeconfig, as_yaml, rebase_priv, dry_run).run()

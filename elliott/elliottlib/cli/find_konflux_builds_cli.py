@@ -24,7 +24,7 @@ LOGGER = logutil.get_logger(__name__)
 @pass_runtime
 @click_coroutine
 async def find_k_builds_cli(runtime: Runtime, kind, engine, outcome, output):
-    runtime.initialize(mode='images' if kind == 'image' else 'rpms')
+    runtime.initialize(mode='images' if kind == 'image' else 'rpms', build_system="konflux")
     if runtime.konflux_db is None:
         raise RuntimeError('Must run Elliott with Konflux DB initialized')
     runtime.konflux_db.bind(KonfluxBuildRecord)
