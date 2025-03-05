@@ -149,7 +149,7 @@ class KonfluxBuildCli:
     @start_as_current_span_async(TRACER, "images:konflux:build")
     async def run(self):
         runtime = self.runtime
-        runtime.initialize(mode='images', clone_distgits=False)
+        runtime.initialize(mode='images', clone_distgits=False, build_system="konflux")
         runtime.konflux_db.bind(KonfluxBuildRecord)
         assert runtime.source_resolver is not None, "source_resolver is not initialized. Doozer bug?"
         metas = runtime.ordered_image_metas()
