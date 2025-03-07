@@ -785,7 +785,7 @@ class KonfluxRebaser:
 
     def _add_build_repos(self, dfp: DockerfileParser, metadata: ImageMetadata, dest_dir: Path):
         # Populating the repo file needs to happen after every FROM before the original Dockerfile can invoke yum/dnf.
-        network_mode = metadata.config.get("konflux", {}).get("network_mode", "open")
+        network_mode = self._runtime.group_config.konflux.network_mode if self._runtime.group_config.konflux.network_mode else metadata.config.get("konflux", {}).get("network_mode", "open")
         valid_network_modes = ["hermetic", "internal-only", "open"]
         if network_mode not in valid_network_modes:
             raise ValueError(f"Invalid network mode; {network_mode}. Valid modes: {valid_network_modes}")
