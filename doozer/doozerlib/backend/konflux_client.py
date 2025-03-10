@@ -372,7 +372,7 @@ class KonfluxClient:
         # if prefetch:
         _modify_param(params, "prefetch-input", prefetch)
         if hermetic is not None:
-            _modify_param(params, "hermetic", hermetic)
+            _modify_param(params, "hermetic", True)
 
         # See https://konflux-ci.dev/docs/how-tos/configuring/customizing-the-build/#configuring-timeouts
         obj["spec"]["timeouts"] = {"pipeline": "12h"}
