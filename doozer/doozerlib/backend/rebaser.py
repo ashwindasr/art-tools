@@ -81,6 +81,7 @@ class KonfluxRebaser:
         self._source_modifier_factory = source_modifier_factory
         self.should_match_upstream = False  # FIXME: Matching upstream is not supported yet
         self._logger = logger or LOGGER
+        self._tmp_dir_gitignore = None
 
         self.konflux_db = self._runtime.konflux_db
         if self.konflux_db:
@@ -128,6 +129,19 @@ class KonfluxRebaser:
 
             # Commit changes
             await build_repo.commit(commit_message, allow_empty=True)
+
+            # Copy back the .gitignore, if it exists
+            if self._tmp_dir_gitignore:
+                rc, _, stderr = exectools.cmd_gather(["cp", f"{self._tmp_dir_gitignore}/.gitignore", dest_dir])
+                if rc != 0:
+                    raise Exception(f"Could not copy .gitignore from {self._tmp_dir_gitignore}/.gitignore to {dest_dir}: {stderr}")
+
+                rc, _, stderr = exectools.cmd_gather(["rm", "-rf", self._tmp_dir_gitignore])
+                if rc != 0:
+                    self._logger.warning(f"Could not delete temporary dir {self._tmp_dir_gitignore}: {stderr}")
+
+            # Commit the file
+            await build_repo.commit(f"{commit_message}-1", allow_empty=True)
 
             # Tag the commit
             # 1. components should have tagging modes in metadata; tagging_mode:  `disabled | enabled | legacy` .
@@ -440,6 +454,19 @@ class KonfluxRebaser:
         # Delete .gitignore since it may block full sync and is not needed here
         gitignore_path = dest_dir.joinpath('.gitignore')
         if gitignore_path.is_file():
+            # Make temp dir
+            rc, stdout, stderr = exectools.cmd_gather("mktemp -d")
+            if rc != 0:
+                raise Exception(f"Cannot create temporary directory for .gitignore {stderr}")
+            self._logger.info(f"Temporary directory created for .gitignore: {stdout}")
+            self._tmp_dir_gitignore = stdout.strip()
+
+            # Copy .gitignore to temp dir
+            rc, _, stderr = exectools.cmd_gather(["cp", dest_dir.joinpath('.gitignore'), f"{self._tmp_dir_gitignore}/.gitignore"])
+            if rc != 0:
+                raise Exception(f"Could not copy .gitignore from {dest_dir.joinpath('.gitignore')} to {self._tmp_dir_gitignore}/.gitignore: {stderr}")
+
+            # Now unlink/remove the file for doozer rebase
             gitignore_path.unlink()
 
         owners = []
