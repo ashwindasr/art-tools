@@ -116,6 +116,7 @@ class RHCOSBuildFinder:
         print("ash see")
         print(build_dict["arches"])
         print(arches_building)
+        print(build_dict)
         if len(build_dict["arches"]) != len(arches_building):
             missing_arches = set(arches_building) - set(build_dict["arches"])
             logger.info(f"Skipping {build_dict['id']} - missing these arch builds - {missing_arches}")
