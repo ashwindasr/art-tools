@@ -176,6 +176,7 @@ class RHCOSBuildFinder:
         if not arch:
             arch = self.brew_arch
         url = f"{self.rhcos_release_url()}/{build_id}/{arch}/{meta_type}.json"
+        print(f"ash-test url is: {url}")
         with request.urlopen(url) as req:
             return json.loads(req.read().decode())
 
