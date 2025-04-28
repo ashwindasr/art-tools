@@ -83,7 +83,10 @@ class PackageRpmFinder:
         Return a {package-name} -> {list[RPM build]} mapping associated with the packages installed in a Konflux build
         """
         installed_packages = build_record.installed_packages
+        print(f"installed pacakges for {build_record.name}: {installed_packages}")
+        print(f"self._not_found_packages {build_record.name}: {self._not_found_packages}")
         installed_packages = [pkg for pkg in installed_packages if pkg not in self._not_found_packages]
+
         self._cache_packages(installed_packages)
         return {self._packages_build_dicts[package_nvr]['name']: self._packages_build_dicts[package_nvr]
                 for package_nvr in installed_packages}
