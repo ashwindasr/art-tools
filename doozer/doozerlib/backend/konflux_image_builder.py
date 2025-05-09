@@ -420,7 +420,9 @@ class KonfluxImageBuilder:
 
         # Start a PipelineRun
         # Check if hermetic builds need to be enabled
-        hermetic = metadata.get_konflux_network_mode() == "hermetic"
+        network_mode = metadata.get_konflux_network_mode()
+        self._logger.info(f"Running in Konflux network mode: {network_mode}")
+        hermetic = (network_mode == "hermetic")
 
         prefetch = self._prefetch(metadata=metadata, dest_dir=dest_dir)
 
