@@ -65,7 +65,7 @@ class KonfluxRebaseCli:
     @start_as_current_span_async(TRACER, "beta:images:konflux:rebase")
     async def run(self):
         runtime = self.runtime
-        runtime.initialize(mode='images', clone_distgits=False, build_system='konflux')
+        runtime.initialize(mode='images', clone_distgits=False, build_system='konflux', disabled=True)
         assert runtime.source_resolver is not None, "source_resolver is required for this command"
         metas = runtime.ordered_image_metas()
         base_dir = Path(runtime.working_dir, constants.WORKING_SUBDIR_KONFLUX_BUILD_SOURCES)
