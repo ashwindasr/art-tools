@@ -886,6 +886,7 @@ class KonfluxRebaser:
     def _add_build_repos(self, dfp: DockerfileParser, metadata: ImageMetadata, dest_dir: Path):
         # Populating the repo file needs to happen after every FROM before the original Dockerfile can invoke yum/dnf.
         network_mode = metadata.get_konflux_network_mode()
+        self._logger.info(f"ash-test konflux network mode: {network_mode}")
 
         konflux_lines = ["\n# Start Konflux-specific steps"]
 

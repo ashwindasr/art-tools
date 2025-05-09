@@ -641,6 +641,10 @@ class Metadata(MetadataBase):
         group_config_network_mode = self.runtime.group_config.konflux.get("network_mode")
         image_config_network_mode = self.config.konflux.get("network_mode")
 
+        self.logger.info("ash test")
+        self.logger.info(group_config_network_mode)
+        self.logger.info(image_config_network_mode)
+
         # Image config supersedes group config, but set to "open" by default, if missing.
         network_mode = image_config_network_mode or group_config_network_mode or "open"
 
