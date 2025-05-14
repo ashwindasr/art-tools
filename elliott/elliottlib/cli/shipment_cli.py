@@ -67,11 +67,11 @@ class InitShipmentCli:
         if not self.for_fbc:
             data = Data(
                 releaseNotes=ReleaseNotes(
-                    type="RHBA",
-                    synopsis="Red Hat Openshift Test Release",
-                    topic="Topic for a test release for Red Hat Openshift.",
-                    description="Description for a test release for Red Hat Openshift.",
-                    solution="Solution for a test release for Red Hat Openshift.",
+                    type="",
+                    synopsis="",
+                    topic="",
+                    description="",
+                    solution="",
                 ),
             )
 

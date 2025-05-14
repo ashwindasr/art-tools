@@ -239,8 +239,8 @@ async def new_snapshot_cli(
     if not konflux_kubeconfig:
         konflux_kubeconfig = os.environ.get('KONFLUX_SA_KUBECONFIG')
 
-    if not konflux_kubeconfig:
-        raise ValueError("Must pass kubeconfig using --konflux-kubeconfig or KONFLUX_SA_KUBECONFIG env var")
+    # if not konflux_kubeconfig:
+    #     raise ValueError("Must pass kubeconfig using --konflux-kubeconfig or KONFLUX_SA_KUBECONFIG env var")
 
     # These will be needed for image inspection
     for secret in ['KONFLUX_ART_IMAGES_USERNAME', 'KONFLUX_ART_IMAGES_PASSWORD']:
