@@ -247,6 +247,7 @@ class GenAssemblyPipeline:
             if self.auto_previous:
                 cmd.append("--auto-previous")
         _, out, _ = await exectools.cmd_gather_async(cmd, stderr=None, env=self._doozer_env_vars)
+        self._logger.info(out)
         return yaml.load(out)
 
     async def _create_or_update_pull_request(self, assembly_definition: OrderedDict):
