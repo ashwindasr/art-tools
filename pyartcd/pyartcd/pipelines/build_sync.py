@@ -401,7 +401,7 @@ class BuildSyncPipeline:
         if self.doozer_data_gitref:
             group_param += f'@{self.doozer_data_gitref}'
         cmd.append(group_param)
-        cmd.append(f'--build-system={self.build_system}')
+        cmd.append(f'--build-system=konflux')
         cmd.extend(
             [
                 'release:gen-payload',
