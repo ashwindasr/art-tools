@@ -439,6 +439,11 @@ class KonfluxOcp4Pipeline:
             await sync_to_quay(image_pullspec, KONFLUX_ART_IMAGES_PUBLIC)
 
     async def run(self):
+        await sync_to_quay("quay.io/redhat-user-workloads/ocp-art-tenant/art-images:base-rhel9-v4.20.0-20250709.190516",
+                           KONFLUX_ART_IMAGES_PUBLIC)
+        return
+
+
         await self.initialize()
 
         version = f"v{self.version}.0"
