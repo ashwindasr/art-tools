@@ -439,6 +439,15 @@ class KonfluxOcp4Pipeline:
             await sync_to_quay(image_pullspec, KONFLUX_ART_IMAGES_PUBLIC)
 
     async def run(self):
+        cmd = [
+            'oc',
+            'registry',
+            'login',
+            '--registry',
+            'quay.io/redhat-user-workloads',
+            f'--registry-config={os.getenv("KONFLUX_ART_IMAGES_AUTH_FILE")}',
+        ]
+        await exectools.cmd_assert_async(cmd)
         await sync_to_quay("quay.io/redhat-user-workloads/ocp-art-tenant/art-images:base-rhel9-v4.20.0-20250709.190516",
                            KONFLUX_ART_IMAGES_PUBLIC)
         return
