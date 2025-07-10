@@ -467,5 +467,5 @@ async def sync_to_quay(source_pullspec, destination_repo):
     tag = source_pullspec.split(':')[-1]
     destination_pullspec = f"{destination_repo}:{tag}"
     LOGGER.info(f"Syncing image from {source_pullspec} to {destination_pullspec}")
-    cmd = ['oc', 'image', 'mirror', '--keep-manifest-list', source_pullspec, destination_pullspec]
+    cmd = ['oc', 'image', 'mirror', '--keep-manifest-list', source_pullspec, destination_pullspec, f'--registry-config={os.getenv("KONFLUX_ART_IMAGES_AUTH_FILE")}']
     await asyncio.wait_for(cmd_assert_async(cmd), timeout=7200)
