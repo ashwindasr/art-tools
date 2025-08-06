@@ -1048,8 +1048,14 @@ class ConfigScanSources:
                                     task_name = name_param.get('value', '')
                                     bundle_url = bundle_param.get('value', '')
                                     if 'quay.io/konflux-ci/tekton-catalog/' in bundle_url and '@sha256:' in bundle_url:
-                                        sha = bundle_url.split('@sha256:')[1]
-                                        task_bundles[task_name] = sha
+                                        # Extract task name from bundle URL like "quay.io/konflux-ci/tekton-catalog/task-init:0.2@sha256:..."
+                                        # The task name is between the last '/' and the first ':' or '@'
+                                        url_parts = bundle_url.split('/')
+                                        if len(url_parts) >= 4:
+                                            task_part = url_parts[-1]  # e.g., "task-init:0.2@sha256:..."
+                                            actual_task_name = task_part.split(':')[0] if ':' in task_part else task_part.split('@')[0]
+                                            sha = bundle_url.split('@sha256:')[1]
+                                            task_bundles[actual_task_name] = sha
                         else:
                             extract_task_refs(value)
                 elif isinstance(obj, list):
