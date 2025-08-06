@@ -914,12 +914,14 @@ class ConfigScanSources:
     async def scan_task_bundle_changes(self, image_meta: ImageMetadata):
         """
         Check if task bundles used in the build are outdated compared to current versions
-        and if old task bundles are more than 30 days old, trigger a rebuild.
+        and if old task bundles are more than 10 days old, trigger a rebuild.
         """
+        self.logger.info(f'Scanning task bundle changes for {image_meta.distgit_key}')
         build_record = self.latest_image_build_records_map[image_meta.distgit_key]
 
         try:
             # Get SLSA attestation for the build
+            self.logger.info(f'Fetching SLSA attestation for {build_record.image_pullspec}')
             attestation = await artcommonlib.util.get_konflux_slsa_attestation(
                 pullspec=build_record.image_pullspec,
                 registry_auth_file=self.registry_auth_file,
@@ -937,6 +939,7 @@ class ConfigScanSources:
             return
 
         # Extract tekton-catalog task bundles
+        self.logger.info(f'Extracting task bundles from {len(materials)} materials in SLSA attestation')
         task_bundles = {}
         for material in materials:
             uri = material.get("uri", "")
@@ -950,13 +953,19 @@ class ConfigScanSources:
             self.logger.info(f'No tekton-catalog task bundles found in {build_record.image_pullspec}')
             return
 
+        self.logger.info(f'Found {len(task_bundles)} task bundles: {list(task_bundles.keys())}')
+
         # Get current task bundle SHAs from GitHub
+        self.logger.info('Fetching current task bundle SHAs from GitHub template')
         current_task_bundles = await self.get_current_task_bundle_shas()
         if not current_task_bundles:
             self.logger.warning('Could not fetch current task bundle SHAs from GitHub')
             return
 
+        self.logger.info(f'Retrieved {len(current_task_bundles)} current task bundles from GitHub')
+
         # Check each task bundle for outdated versions
+        self.logger.info(f'Comparing task bundle versions for {image_meta.distgit_key}')
         for task_name, used_sha in task_bundles.items():
             current_sha = current_task_bundles.get(task_name)
             if not current_sha:
@@ -964,6 +973,9 @@ class ConfigScanSources:
                 continue
 
             if used_sha != current_sha:
+                self.logger.info(
+                    f'Task bundle {task_name} version differs: used={used_sha[:12]}... vs current={current_sha[:12]}...'
+                )
                 # Task bundle version differs, check if it's more than 10 days old and apply staggered rebuild logic
                 task_age_days = await self.get_task_bundle_age_days(task_name, used_sha)
                 if task_age_days and task_age_days >= 10:
@@ -974,10 +986,16 @@ class ConfigScanSources:
                     #   - At 25 days: 1 in 6 chance (~17%)
                     #   - At 29 days: 1 in 2 chance (50%)
                     #   - At 30+ days: Always rebuild (100%)
+                    self.logger.info(
+                        f'Task bundle {task_name} is {task_age_days} days old (>= 10 days), applying staggered rebuild logic'
+                    )
                     rebuild_probability_denominator = max(30 - task_age_days, 1)
                     should_rebuild = random.randint(1, rebuild_probability_denominator) == 1
 
                     if should_rebuild:
+                        self.logger.info(
+                            f'Triggering rebuild for {image_meta.distgit_key} due to outdated task bundle {task_name} ({task_age_days} days old)'
+                        )
                         self.add_image_meta_change(
                             image_meta,
                             RebuildHint(
@@ -992,11 +1010,18 @@ class ConfigScanSources:
                             f'Task bundle {task_name} is {task_age_days} days old but staggered rebuild '
                             f'logic decided not to rebuild (probability was 1/{rebuild_probability_denominator})'
                         )
+                elif task_age_days:
+                    self.logger.info(
+                        f'Task bundle {task_name} is only {task_age_days} days old (< 10 days), skipping rebuild'
+                    )
+            else:
+                self.logger.info(f'Task bundle {task_name} is up to date (SHA: {used_sha[:12]}...)')
 
     async def get_current_task_bundle_shas(self) -> Dict[str, str]:
         """
         Fetch current task bundle SHAs from the art-konflux-template GitHub repository
         """
+        self.logger.info(f'Fetching task bundle template from {KONFLUX_DEFAULT_IMAGE_BUILD_PLR_TEMPLATE_URL}')
         try:
             async with self.session.get(
                 KONFLUX_DEFAULT_IMAGE_BUILD_PLR_TEMPLATE_URL, headers={'Authorization': f'Bearer {self.github_token}'}
@@ -1005,6 +1030,7 @@ class ConfigScanSources:
                 yaml_content = await response.text()
 
             # Parse YAML to extract task bundle references
+            self.logger.info('Parsing YAML content to extract task bundle references')
             yaml_data = yaml.safe_load(yaml_content)
             task_bundles = {}
 
@@ -1031,6 +1057,7 @@ class ConfigScanSources:
                         extract_task_refs(item)
 
             extract_task_refs(yaml_data)
+            self.logger.info(f'Successfully extracted {len(task_bundles)} task bundle references from GitHub template')
             return task_bundles
 
         except Exception as e:
@@ -1041,8 +1068,9 @@ class ConfigScanSources:
         """
         Get the age of a task bundle in days using oc image info
         """
+        pullspec = f"quay.io/konflux-ci/tekton-catalog/{task_name}@sha256:{sha}"
+        self.logger.info(f'Getting age for task bundle {task_name} using pullspec {pullspec}')
         try:
-            pullspec = f"quay.io/konflux-ci/tekton-catalog/{task_name}@sha256:{sha}"
             cmd = f"oc image info {pullspec} -o json"
             _, out, _ = await cmd_gather_async(cmd)
 
@@ -1056,6 +1084,9 @@ class ConfigScanSources:
             now = datetime.now(timezone.utc)
             age_days = (now - created_time).days
 
+            self.logger.info(
+                f'Task bundle {task_name} was created on {created_time.strftime("%Y-%m-%d")}, age: {age_days} days'
+            )
             return age_days
 
         except Exception as e:
