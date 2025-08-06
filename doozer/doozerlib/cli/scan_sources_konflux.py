@@ -947,7 +947,7 @@ class ConfigScanSources:
                     task_bundles[task_name] = task_sha
 
         if not task_bundles:
-            self.logger.debug(f'No tekton-catalog task bundles found in {build_record.image_pullspec}')
+            self.logger.info(f'No tekton-catalog task bundles found in {build_record.image_pullspec}')
             return
 
         # Get current task bundle SHAs from GitHub
@@ -960,7 +960,7 @@ class ConfigScanSources:
         for task_name, used_sha in task_bundles.items():
             current_sha = current_task_bundles.get(task_name)
             if not current_sha:
-                self.logger.debug(f'Task {task_name} not found in current template')
+                self.logger.info(f'Task {task_name} not found in current template')
                 continue
 
             if used_sha != current_sha:
@@ -988,7 +988,7 @@ class ConfigScanSources:
                         )
                         return
                     else:
-                        self.logger.debug(
+                        self.logger.info(
                             f'Task bundle {task_name} is {task_age_days} days old but staggered rebuild '
                             f'logic decided not to rebuild (probability was 1/{rebuild_probability_denominator})'
                         )
