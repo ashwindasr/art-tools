@@ -414,6 +414,9 @@ class ConfigScanSources:
             )
             return
 
+        # Check for outdated task bundles
+        await self.scan_task_bundle_changes(image_meta)
+
         # Check for changes in image arches
         await self.scan_arch_changes(image_meta)
 
@@ -438,8 +441,7 @@ class ConfigScanSources:
         # Check for changes in extra packages
         await self.scan_extra_packages(image_meta)
 
-        # Check for outdated task bundles
-        await self.scan_task_bundle_changes(image_meta)
+
 
     def find_upstream_commit_hash(self, meta: Metadata):
         """
