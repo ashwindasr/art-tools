@@ -283,7 +283,7 @@ class TestGetCurrentTaskBundleShas(TestScanSourcesKonflux):
 
         result = await self.scanner.get_current_task_bundle_shas()
 
-        expected = {"git-clone": "abc123def456", "buildah": "def456ghi789"}
+        expected = {"git-clone@sha256": "abc123def456", "buildah@sha256": "def456ghi789"}
         self.assertEqual(result, expected)
 
         # Verify correct URL and headers were used
@@ -378,7 +378,7 @@ class TestGetCurrentTaskBundleShas(TestScanSourcesKonflux):
 
         result = await self.scanner.get_current_task_bundle_shas()
 
-        expected = {"nested-task": "nested123", "cleanup": "cleanup456"}
+        expected = {"nested-task@sha256": "nested123", "cleanup@sha256": "cleanup456"}
         self.assertEqual(result, expected)
 
 
