@@ -681,7 +681,7 @@ class FbcRebaseAndBuildCli:
 @click.option(
     '--plr-template',
     required=False,
-    default=constants.KONFLUX_DEFAULT_FBC_BUILD_PLR_TEMPLATE_URL,
+    default="https://raw.githubusercontent.com/ashwindasr/art-konflux-template/refs/heads/test-fast-fips/.tekton/art-fbc-konflux-template-push.yaml",
     help='Use a custom PipelineRun template to build the FBC fragement. Overrides the default template from openshift-priv/art-konflux-template',
 )
 @click.option(
