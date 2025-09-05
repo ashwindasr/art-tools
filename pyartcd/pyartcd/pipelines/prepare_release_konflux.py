@@ -519,6 +519,8 @@ class PrepareReleaseKonfluxPipeline:
 
         # prepare snapshot from the found builds
         for kind, shipment in shipments_by_kind.items():
+            if kind == 'prerelease':
+                continue
             shipment.shipment.snapshot = await self.get_snapshot(kind_to_builds[kind])
 
         # now that we have basic shipment configs setup, we can commit them to shipment MR
