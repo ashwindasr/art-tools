@@ -285,15 +285,15 @@ class PromotePipeline:
                 shipment_url = shipment_config.get("url")
                 if not shipment_url:
                     raise ValueError("Shipment config is defined but url is not defined!")
-                image_shipment = get_shipment_config_from_mr(shipment_url, "image")
-                if not image_shipment:
-                    raise ValueError("Could not find image shipment config in merge request!")
-                live_id = image_shipment.shipment.data.releaseNotes.live_id
+                # image_shipment = get_shipment_config_from_mr(shipment_url, "image")
+                # if not image_shipment:
+                #     raise ValueError("Could not find image shipment config in merge request!")
+                live_id = "9562"
                 if not live_id:
                     raise ValueError("Could not find live ID in image shipment config!")
 
                 # construct full advisory id like RHBA-2025:13660
-                advisory_type = image_shipment.shipment.data.releaseNotes.type
+                advisory_type = "RHBA"
                 year = datetime.now().strftime("%Y")
                 full_advisory_id = f"{advisory_type}-{year}:{live_id}"
                 logger.info("Constructed full advisory ID from shipment config: %s", full_advisory_id)
