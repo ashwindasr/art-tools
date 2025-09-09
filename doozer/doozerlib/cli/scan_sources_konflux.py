@@ -424,32 +424,9 @@ class ConfigScanSources:
             )
             return
 
-        # Check for changes in image arches
-        await self.scan_arch_changes(image_meta)
-
-        # Check for changes in the network mode
-        await self.scan_network_mode_changes(image_meta)
-
-        # Check if there's already a build from upstream latest commit
-        await self.scan_for_upstream_changes(image_meta)
-
-        # Check if there has been a config change since last build
-        await self.scan_for_config_changes(image_meta)
-
-        # Check for dependency changes
-        await self.scan_dependency_changes(image_meta)
-
-        # Check for changes in builders
-        await self.scan_builders_changes(image_meta)
-
-        # Check for RPM changes
-        await self.scan_rpm_changes(image_meta)
-
-        # Check for changes in extra packages
-        await self.scan_extra_packages(image_meta)
-
         # Check for outdated task bundles
         await self.scan_task_bundle_changes(image_meta)
+
 
     def find_upstream_commit_hash(self, meta: Metadata):
         """
