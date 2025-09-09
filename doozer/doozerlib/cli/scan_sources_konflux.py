@@ -8,7 +8,7 @@ import tempfile
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 from typing import Dict, List, Optional, cast
-
+from tenacity import retry, stop_after_attempt, wait_fixed
 import aiohttp
 import artcommonlib.util
 import click
@@ -1071,6 +1071,8 @@ class ConfigScanSources:
                 self.add_image_meta_change(image_meta, rebuild_hint)
                 return
 
+
+    @retry(reraise=True, stop=stop_after_attempt(10), wait=wait_fixed(5))
     async def get_current_task_bundle_shas(self) -> Dict[str, str]:
         """
         Fetch current task bundle SHAs from the art-konflux-template GitHub repository
