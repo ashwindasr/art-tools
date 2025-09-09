@@ -383,8 +383,21 @@ class RPMLockfileGenerator:
                 self.logger.info(f"Found digest in target branch for {image_meta.distgit_key}")
 
         if old_fingerprint == fingerprint:
-            self.logger.info(f"No changes in RPM list for {image_meta.distgit_key}. Skipping lockfile generation.")
-            return False, rpms_to_install
+            # RPM list hasn't changed, but check if any RPM versions have been updated in repositories
+            self.logger.info(f"RPM list unchanged for {image_meta.distgit_key}. Checking for RPM version updates...")
+            
+            # Check if the image needs rebuilding due to RPM updates
+            try:
+                _, rebuild_hint = await image_meta.does_image_need_change()
+                if rebuild_hint.code.name == 'PACKAGE_CHANGE':
+                    self.logger.info(f"RPM version updates detected for {image_meta.distgit_key}: {rebuild_hint.reason}. Regenerating lockfile.")
+                    return True, rpms_to_install
+                else:
+                    self.logger.info(f"No RPM version updates for {image_meta.distgit_key}. Skipping lockfile generation.")
+                    return False, rpms_to_install
+            except Exception as e:
+                self.logger.warning(f"Failed to check for RPM updates for {image_meta.distgit_key}: {e}. Skipping lockfile generation.")
+                return False, rpms_to_install
         elif old_fingerprint:
             self.logger.info(f"RPM list changed for {image_meta.distgit_key}. Regenerating lockfile.")
 
