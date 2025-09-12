@@ -2228,10 +2228,12 @@ class PromotePipeline:
 
                     # Update the file in the new branch
                     source_project.files.update(
-                        file_path=image_file_path,
-                        branch=sha_branch,
-                        content=updated_content,
-                        commit_message=f"Update shipment with payload SHAs for {self.assembly}",
+                        {
+                            'file_path': image_file_path,
+                            'branch': sha_branch,
+                            'content': updated_content,
+                            'commit_message': f"Update shipment with payload SHAs for {self.assembly}",
+                        }
                     )
 
                     # Create MR to merge SHA updates into the shipment MR branch
