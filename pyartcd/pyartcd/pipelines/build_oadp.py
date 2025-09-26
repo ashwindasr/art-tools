@@ -56,20 +56,14 @@ class BuildOadpPipeline:
     def trigger_bundle_build(self):
 
         try:
-            records = record_log.get('image_build_konflux', [])
-            operator_nvrs = []
-            for record in records:
-                if record['has_olm_bundle'] == '1' and record['status'] == '0' and record.get('nvrs', None):
-                    operator_nvrs.append(record['nvrs'].split(',')[0])
-            if operator_nvrs:
-                jenkins.start_olm_bundle_konflux(
-                    build_version=self.version,
-                    assembly=self.assembly,
-                    group=self.group,
-                    operator_nvrs=["oadp-operator-container-1.3.8-202509262014.p2.g25ddcb5.assembly.test.el9"],
-                    doozer_data_path=self._doozer_env_vars["DOOZER_DATA_PATH"] or '',
-                    doozer_data_gitref='',
-                )
+            jenkins.start_olm_bundle_konflux(
+                build_version=self.version,
+                assembly=self.assembly,
+                group=self.group,
+                operator_nvrs=["oadp-operator-container-1.3.8-202509262014.p2.g25ddcb5.assembly.test.el9"],
+                doozer_data_path=self._doozer_env_vars["DOOZER_DATA_PATH"] or '',
+                doozer_data_gitref='',
+            )
         except Exception as e:
             self._logger.exception(f"Failed to trigger bundle build: {e}")
 
