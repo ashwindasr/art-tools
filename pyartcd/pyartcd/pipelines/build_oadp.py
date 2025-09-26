@@ -52,9 +52,8 @@ class BuildOadpPipeline:
             )
         if data_path:
             self._doozer_env_vars["DOOZER_DATA_PATH"] = data_path
-        jenkins.init_jenkins()
     def trigger_bundle_build(self):
-
+        jenkins.init_jenkins()
         try:
             jenkins.start_olm_bundle_konflux(
                 build_version=self.version,
