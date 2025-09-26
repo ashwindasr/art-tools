@@ -54,14 +54,6 @@ class BuildOadpPipeline:
             self._doozer_env_vars["DOOZER_DATA_PATH"] = data_path
 
     def trigger_bundle_build(self):
-        if self.skip_bundle_build:
-            self._logger.warning("Skipping bundle build step because --skip-bundle-build flag is set")
-            return
-
-        record_log = self.parse_record_log()
-        if not record_log:
-            self._logger.warning('record.log not found, skipping bundle build')
-            return
 
         try:
             records = record_log.get('image_build_konflux', [])
