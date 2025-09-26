@@ -533,15 +533,20 @@ def start_olm_bundle_konflux(
         logger.warning('Empty operator NVR received: skipping olm-bundle')
         return
 
+    params = {
+        'BUILD_VERSION': build_version,
+        'ASSEMBLY': assembly,
+        'DOOZER_DATA_PATH': doozer_data_path,
+        'DOOZER_DATA_GITREF': doozer_data_gitref,
+        'OPERATOR_NVRS': ','.join(operator_nvrs),
+    }
+
+    if group:
+        params['GROUP'] = group
+
     return start_build(
         job=Jobs.OLM_BUNDLE_KONFLUX,
-        params={
-            'BUILD_VERSION': build_version,
-            'ASSEMBLY': assembly,
-            'DOOZER_DATA_PATH': doozer_data_path,
-            'DOOZER_DATA_GITREF': doozer_data_gitref,
-            'OPERATOR_NVRS': ','.join(operator_nvrs),
-        },
+        params=params,
         **kwargs,
     )
 
