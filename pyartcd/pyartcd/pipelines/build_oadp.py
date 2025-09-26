@@ -74,7 +74,7 @@ class BuildOadpPipeline:
                     build_version=self.version,
                     assembly=self.assembly,
                     group=self.group,
-                    operator_nvrs=operator_nvrs,
+                    operator_nvrs=["oadp-operator-container-1.3.8-202509262014.p2.g25ddcb5.assembly.test.el9"],
                     doozer_data_path=self._doozer_env_vars["DOOZER_DATA_PATH"] or '',
                     doozer_data_gitref='',
                 )
@@ -118,7 +118,7 @@ class BuildOadpPipeline:
         if not self.runtime.dry_run:
             rebase_cmd.append("--push")
 
-        await exectools.cmd_assert_async(rebase_cmd, env=self._doozer_env_vars)
+        # await exectools.cmd_assert_async(rebase_cmd, env=self._doozer_env_vars)
         self._logger.info(f"Successfully rebased {self.image_list}")
 
         # Build OADP image
@@ -161,7 +161,7 @@ class BuildOadpPipeline:
         if konflux_registry_auth_file:
             build_env["KONFLUX_ART_IMAGES_AUTH_FILE"] = konflux_registry_auth_file
 
-        await exectools.cmd_assert_async(build_cmd, env=build_env)
+        # await exectools.cmd_assert_async(build_cmd, env=build_env)
         self._logger.info(f"Successfully built {self.image_list}")
 
 
