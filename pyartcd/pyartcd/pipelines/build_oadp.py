@@ -55,7 +55,7 @@ class BuildOadpPipeline:
     def trigger_bundle_build(self):
         try:
             jenkins.start_olm_bundle_konflux(
-                build_version=self.version,
+                build_version="4.15",
                 assembly=self.assembly,
                 operator_nvrs=["oadp-operator-container-1.3.8-202509262014.p2.g25ddcb5.assembly.test.el9"],
                 doozer_data_path=self._doozer_env_vars["DOOZER_DATA_PATH"] or '',
