@@ -76,7 +76,9 @@ class BuildOadpPipeline:
 
     async def run(self):
         """Run the OADP rebase and build pipeline"""
+        self._logger.info("ash initializing jenkins")
         jenkins.init_jenkins()
+        self._logger.info("ash jenkins initialized")
         await self._rebase_and_build()
         self.trigger_bundle_build()
 
