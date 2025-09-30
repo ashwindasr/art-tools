@@ -53,7 +53,6 @@ class BuildOadpPipeline:
         if data_path:
             self._doozer_env_vars["DOOZER_DATA_PATH"] = data_path
     def trigger_bundle_build(self):
-        jenkins.init_jenkins()
         try:
             jenkins.start_olm_bundle_konflux(
                 build_version=self.version,
@@ -77,6 +76,7 @@ class BuildOadpPipeline:
 
     async def run(self):
         """Run the OADP rebase and build pipeline"""
+        jenkins.init_jenkins()
         await self._rebase_and_build()
         self.trigger_bundle_build()
 
