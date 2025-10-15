@@ -427,7 +427,7 @@ class KonfluxOcp4Pipeline:
         shutil.rmtree(self.runtime.doozer_working, ignore_errors=True)
         self.group_images = await get_group_images(
             group=f'openshift-{self.version}',
-            assembly=self.assembly,
+            assembly="stream",
             doozer_data_path=self.data_path,
             doozer_data_gitref=self.data_gitref,
         )
