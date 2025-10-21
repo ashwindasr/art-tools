@@ -2123,7 +2123,7 @@ class KonfluxRebaser:
         manifests_base = os.path.join(dest_dir, manifests_dir)
 
         art_yaml = os.path.join(manifests_base, 'art.yaml')
-
+        print(f"art_yaml_path: {art_yaml}")
         if os.path.isfile(art_yaml):
             with io.open(art_yaml, 'r', encoding="utf-8") as art_file:
                 art_yaml_str = art_file.read()
@@ -2131,6 +2131,7 @@ class KonfluxRebaser:
             try:
                 art_yaml_str = art_yaml_str.format(**replace_args)
                 art_yaml_data = yaml.full_load(art_yaml_str)
+                print(f"art_yaml_data: {art_yaml_data}")
             except Exception as ex:  # exception is low level, need to pull out the details and rethrow
                 raise IOError('Error processing art.yaml!\n{}\n\n{}'.format(str(ex), art_yaml_str))
 

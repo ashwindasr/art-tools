@@ -85,7 +85,12 @@ async def run_git_async(
     set_env.update(constants.GIT_NO_PROMPTS)
     if env:
         set_env.update(env)
-    return await exectools.cmd_assert_async(['git'] + list(args), check=check, env=set_env, stdout=stdout, **kwargs)
+
+    rc, out, error = await exectools.cmd_gather_async(['git'] + list(args), check=check, env=set_env, stdout=stdout, **kwargs)
+    print("debug:")
+    print(error)
+    print(stdout)
+    return rc == 0
 
 
 async def gather_git_async(args: Sequence[str], env: Optional[Dict[str, str]] = None, check: bool = True, **kwargs):
