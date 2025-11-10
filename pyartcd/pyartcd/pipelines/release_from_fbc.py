@@ -81,10 +81,8 @@ class ReleaseFromFbcPipeline:
         # Set default shipment_path if not provided, using same logic as elliott
         self.shipment_path_was_defaulted = not shipment_path
         if not shipment_path:
-            # For non-OpenShift products, default to 'ocp' product for shipment data
-            # This will be resolved to the actual product URL later in the pipeline
-            product = 'ocp'  # Default product, will be overridden once actual product is loaded
-            shipment_path = SHIPMENT_DATA_URL_TEMPLATE.format(product)
+            # Default to ocp-shipment-data for all products
+            shipment_path = SHIPMENT_DATA_URL_TEMPLATE
 
         # Setup shipment repo configuration
         self.shipment_data_repo_pull_url, self.shipment_data_repo_push_url = self._shipment_data_repo_vars(
@@ -107,17 +105,16 @@ class ReleaseFromFbcPipeline:
         """
         Determine shipment data repository URLs for pull and push operations.
         """
-        # Use the actual product if available, otherwise default to 'ocp'
-        product = getattr(self, 'product', 'ocp')
+        # All products now use ocp-shipment-data
 
         shipment_data_repo_pull_url = (
             shipment_data_repo_url
             or self.runtime.config.get("shipment_config", {}).get("shipment_data_url")
-            or SHIPMENT_DATA_URL_TEMPLATE.format(product)
+            or SHIPMENT_DATA_URL_TEMPLATE
         )
-        shipment_data_repo_push_url = self.runtime.config.get("shipment_config", {}).get(
-            "shipment_data_push_url"
-        ) or SHIPMENT_DATA_URL_TEMPLATE.format(product)
+        shipment_data_repo_push_url = (
+            self.runtime.config.get("shipment_config", {}).get("shipment_data_push_url") or SHIPMENT_DATA_URL_TEMPLATE
+        )
         return shipment_data_repo_pull_url, shipment_data_repo_push_url
 
     @staticmethod
@@ -545,7 +542,7 @@ class ReleaseFromFbcPipeline:
         # Recompute shipment repository with correct product if default was used
         if self.shipment_path_was_defaulted:
             self.logger.info(f"Updating shipment repository to use product '{self.product}' instead of default 'ocp'")
-            correct_shipment_path = SHIPMENT_DATA_URL_TEMPLATE.format(self.product)
+            correct_shipment_path = SHIPMENT_DATA_URL_TEMPLATE
 
             # Update shipment_data_repo_urls with correct product
             self.shipment_data_repo_pull_url, self.shipment_data_repo_push_url = self._shipment_data_repo_vars(
