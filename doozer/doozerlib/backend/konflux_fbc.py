@@ -969,6 +969,17 @@ class KonfluxFbcRebaser:
         self._logger.info("Destination repos found: %d", len(dest_repos))
         self._logger.info("Source repos found: %d", len(source_repos))
         
+        # Log all source repo digests for debugging
+        self._logger.info("Source repo digests: %s", sorted(source_repos.keys()))
+        
+        # Log sample of destination repo digests for debugging  
+        dest_digests = sorted(dest_repos.keys())
+        if len(dest_digests) > 10:
+            self._logger.info("Destination repo digests (first 10): %s", dest_digests[:10])
+            self._logger.info("Destination repo digests (last 10): %s", dest_digests[-10:])
+        else:
+            self._logger.info("Destination repo digests: %s", dest_digests)
+        
         if not dest_repos:
             self._logger.warning("No destination repos found in bundle blobs, returning None")
             return None
