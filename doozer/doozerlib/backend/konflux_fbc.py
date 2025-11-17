@@ -939,16 +939,65 @@ class KonfluxFbcRebaser:
 
     def _generate_image_digest_mirror_set(self, olm_bundle_blobs: Iterable[Dict], ref_pullspecs: Iterable[str]):
         dest_repos = {}
+        self._logger.debug("Processing OLM bundle blobs for IDMS generation")
         for bundle_blob in olm_bundle_blobs:
-            for related_image in bundle_blob.get("relatedImages", []):
-                if '@' in related_image["image"]:
-                    repo, digest = related_image["image"].split('@', 1)
+            bundle_name = bundle_blob.get("name", "unknown")
+            related_images = bundle_blob.get("relatedImages", [])
+            self._logger.debug("Bundle %s has %d related images", bundle_name, len(related_images))
+            for related_image in related_images:
+                image_pullspec = related_image["image"]
+                self._logger.debug("Processing related image: %s", image_pullspec)
+                if '@' in image_pullspec:
+                    repo, digest = image_pullspec.split('@', 1)
                     dest_repos[digest] = repo
+                    self._logger.debug("Added dest repo mapping: %s -> %s", digest, repo)
                 else:
+                    self._logger.debug("Skipping image without digest: %s", image_pullspec)
                     continue
-        source_repos = {p_split[1]: p_split[0] for pullspec in ref_pullspecs if (p_split := pullspec.split('@', 1))}
+        
+        self._logger.debug("Processing ref_pullspecs for IDMS generation")
+        source_repos = {}
+        for pullspec in ref_pullspecs:
+            self._logger.debug("Processing ref pullspec: %s", pullspec)
+            if '@' in pullspec:
+                repo, digest = pullspec.split('@', 1)
+                source_repos[digest] = repo
+                self._logger.debug("Added source repo mapping: %s -> %s", digest, repo)
+            else:
+                self._logger.debug("Skipping ref pullspec without digest: %s", pullspec)
+        
+        self._logger.info("Destination repos found: %d", len(dest_repos))
+        self._logger.info("Source repos found: %d", len(source_repos))
+        
         if not dest_repos:
+            self._logger.warning("No destination repos found in bundle blobs, returning None")
             return None
+        # Generate IDMS mappings
+        idms_mappings = []
+        matching_digests = 0
+        filtered_same_repo = 0
+        
+        for sha, source_repo in source_repos.items():
+            if sha in dest_repos:
+                matching_digests += 1
+                dest_repo = dest_repos[sha]
+                self._logger.debug("Found matching digest %s: source=%s, dest=%s", sha, source_repo, dest_repo)
+                if source_repo != dest_repo:
+                    idms_mappings.append({
+                        "source": dest_repo,
+                        "mirrors": [source_repo],
+                    })
+                    self._logger.debug("Added IDMS mapping: %s -> [%s]", dest_repo, source_repo)
+                else:
+                    filtered_same_repo += 1
+                    self._logger.debug("Filtered out same repo mapping: %s", source_repo)
+        
+        self._logger.info("IDMS generation summary: %d matching digests, %d mappings created, %d filtered (same repo)", 
+                         matching_digests, len(idms_mappings), filtered_same_repo)
+        
+        if not idms_mappings:
+            self._logger.warning("No IDMS mappings generated - all images either don't match or have same source/dest repos")
+        
         image_digest_mirror_set = {
             "apiVersion": "config.openshift.io/v1",
             "kind": "ImageDigestMirrorSet",
@@ -957,20 +1006,7 @@ class KonfluxFbcRebaser:
                 "namespace": "openshift-marketplace",
             },
             "spec": {
-                "imageDigestMirrors": sorted(
-                    [
-                        {
-                            "source": dest_repos[sha],
-                            "mirrors": [
-                                source_repo,
-                            ],
-                        }
-                        # If source is same as destination, we don't need to add an IDMS mapping
-                        for sha, source_repo in source_repos.items()
-                        if sha in dest_repos and source_repo != dest_repos[sha]
-                    ],
-                    key=lambda x: x["source"],
-                ),
+                "imageDigestMirrors": sorted(idms_mappings, key=lambda x: x["source"]),
             },
         }
         return image_digest_mirror_set
