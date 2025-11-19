@@ -704,7 +704,10 @@ def resolve_upstream_from(runtime, image_entry):
     minor = runtime.group_config.vars['MINOR']
 
     if image_entry.member:
-        target_meta = runtime.resolve_image(image_entry.member, True)
+        target_meta = runtime.resolve_image(image_entry.member, False)
+        if target_meta is None:
+            # Image is disabled/not found, return None to skip it
+            return None
 
         if target_meta.config.content.source.ci_alignment.upstream_image is not Missing:
             # If the upstream is specified in the metadata, use this information
@@ -1183,6 +1186,9 @@ def images_streams_prs(
         desired_ci_build_root_image = ''
         if streams_pr_config.ci_build_root is not Missing:
             desired_ci_build_root_image = resolve_upstream_from(runtime, streams_pr_config.ci_build_root)
+            if desired_ci_build_root_image is None:
+                logger.warning('Unable to resolve ci_build_root upstream image; skipping image')
+                continue
             check_if_upstream_image_exists(desired_ci_build_root_image)
 
             # Split the pullspec into an openshift namespace, imagestream, and tag.
