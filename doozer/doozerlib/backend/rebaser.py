@@ -590,7 +590,7 @@ class KonfluxRebaser:
                         try:
                             # Convert to semver format (add .0 patch version for comparison)
                             current_version = semver.VersionInfo.parse(f"{version_part}.0")
-                            min_version = semver.VersionInfo.parse("1.22.0")
+                            min_version = semver.VersionInfo.parse("1.20.0")
 
                             if current_version >= min_version:
                                 self._logger.info(f"Missing patch in golang version: {stripped_line}. Appending .0")
