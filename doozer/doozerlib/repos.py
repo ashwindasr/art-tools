@@ -541,13 +541,27 @@ class Repos(object):
                     # Include disabled repo with enabled=0 and print warning
                     LOGGER.warning(f"Repository '{r.name}' is disabled but included in repo file")
 
+            # Check if this is an architecture-specific repository
+            arch_suffixes = ['-x86_64', '-aarch64', '-ppc64le', '-s390x']
+            repo_target_arch = None
+            for suffix in arch_suffixes:
+                if r.name.endswith(suffix):
+                    repo_target_arch = suffix[1:]  # Remove the leading dash
+                    break
+
             if arch:  # Generating a single arch?
+                # Skip arch-specific repos that don't match the target arch
+                if repo_target_arch and repo_target_arch != arch:
+                    continue
                 # Just use the configured name for the set. This behavior needs to be preserved to
                 # prevent changing mirrored repos by reposync.
                 result += r.conf_section(repo_type, enabled=enabled, arch=arch, section_name=r.name, konflux=konflux)
             else:
                 # When generating a repo file for multi-arch builds, we need all arches in the same repo file.
                 for iarch in r.arches:
+                    # Skip arch-specific repos that don't match the target arch
+                    if repo_target_arch and repo_target_arch != iarch:
+                        continue
                     section_name = '{}-{}'.format(r.name, iarch)
                     result += r.conf_section(
                         repo_type, enabled=enabled, arch=iarch, section_name=section_name, konflux=konflux
