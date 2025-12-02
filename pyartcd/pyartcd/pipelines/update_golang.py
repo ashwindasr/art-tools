@@ -18,6 +18,7 @@ from artcommonlib.release_util import split_el_suffix_in_release
 from artcommonlib.rpm_utils import parse_nvr
 from artcommonlib.util import new_roundtrip_yaml_handler
 from doozerlib.brew import watch_task_async
+from elliottlib import brew as elliott_brew
 from elliottlib import util as elliottutil
 from elliottlib.constants import GOLANG_BUILDER_CVE_COMPONENT
 from ghapi.all import GhApi
@@ -340,13 +341,64 @@ class UpdateGolangPipeline:
                 latest_rhel8_builds = self.koji_session.listTagged(rhel8_module_tag, latest=True, inherit=True)
                 # need to tag delve go-toolset golang 3 module builds
                 builds_to_tag = [b['nvr'] for b in latest_rhel8_builds]
-        for build in builds_to_tag:
-            if self.dry_run:
+
+        if self.dry_run:
+            for build in builds_to_tag:
                 _LOGGER.info(f"[DRY RUN] Would have tagged {build} into {build_tag}")
-                continue
-            self.koji_session.tagBuild(build_tag, build)
-            _LOGGER.info(f"Tagged {build} with {build_tag} tag")
-            await self._slack_client.say_in_thread(f"Tagged {build} with {build_tag} tag")
+            return
+
+        # Tag builds using elliott's robust pattern
+        _LOGGER.info(f"Tagging {len(builds_to_tag)} build(s) into {build_tag}...")
+        task_id_nvr_map = {}
+        failed_to_tag = []
+
+        # Use multicall for better error handling
+        multicall_tasks = elliott_brew.tag_builds(build_tag, builds_to_tag, self.koji_session)
+
+        for index, task in enumerate(multicall_tasks):
+            build = builds_to_tag[index]
+            try:
+                task_id = task.result
+                task_id_nvr_map[task_id] = build
+                _LOGGER.debug(f"Submitted tagging task {task_id} for {build}")
+            except Exception as ex:
+                failed_to_tag.append(build)
+                _LOGGER.error(f"Failed to submit tag task for {build}: {ex}")
+
+        if task_id_nvr_map:
+            # Wait for tag tasks to finish
+            _LOGGER.info("Waiting for tag tasks to finish...")
+            elliott_brew.wait_tasks(task_id_nvr_map.keys(), self.koji_session, logger=_LOGGER)
+
+            # Get tagging results and verify success
+            stopped_tasks = list(task_id_nvr_map.keys())
+            with self.koji_session.multicall(strict=False) as m:
+                multicall_tasks = []
+                for task_id in stopped_tasks:
+                    multicall_tasks.append(m.getTaskResult(task_id, raise_fault=False))
+
+            for index, t in enumerate(multicall_tasks):
+                task_id = stopped_tasks[index]
+                build = task_id_nvr_map[task_id]
+                tag_res = t.result
+                _LOGGER.debug(f"Tagging task {task_id} {build} returned result {tag_res}")
+
+                if tag_res and 'faultCode' in tag_res:
+                    if "already tagged" not in tag_res["faultString"]:
+                        failed_to_tag.append(build)
+                        _LOGGER.error(f'Failed to tag {build} into {build_tag}: {tag_res["faultString"]}')
+                        continue
+
+                _LOGGER.info(f"Tagged {build} with {build_tag} tag")
+                await self._slack_client.say_in_thread(f"Tagged {build} with {build_tag} tag")
+
+        if failed_to_tag:
+            error_msg = f"Failed to tag the following builds: {', '.join(failed_to_tag)}"
+            _LOGGER.error(error_msg)
+            await self._slack_client.say_in_thread(f"❌ {error_msg}")
+            raise RuntimeError(error_msg)
+
+        _LOGGER.info(f"Successfully tagged all {len(builds_to_tag)} builds into {build_tag}")
 
     def get_existing_builders(self, el_nvr_map, go_version):
         component = GOLANG_BUILDER_CVE_COMPONENT
