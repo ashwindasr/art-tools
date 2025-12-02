@@ -395,7 +395,7 @@ class UpdateGolangPipeline:
         if failed_to_tag:
             error_msg = f"Failed to tag the following builds: {', '.join(failed_to_tag)}"
             _LOGGER.error(error_msg)
-            await self._slack_client.say_in_thread(f"❌ {error_msg}")
+            await self._slack_client.say_in_thread(error_msg)
             raise RuntimeError(error_msg)
 
         _LOGGER.info(f"Successfully tagged all {len(builds_to_tag)} builds into {build_tag}")
