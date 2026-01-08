@@ -462,7 +462,8 @@ class KonfluxClient:
         else:
             LOGGER.warning('GITHUB_TOKEN not set. Template retrieval may be rate limited.')
 
-        async with aiohttp.ClientSession() as session:
+        timeout = aiohttp.ClientTimeout(total=300, connect=30, sock_read=30)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
             async with session.get(template_url, headers=headers) as response:
                 response.raise_for_status()
                 template_text = await response.text()
