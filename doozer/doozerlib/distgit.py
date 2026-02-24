@@ -2491,13 +2491,15 @@ class ImageDistGitRepo(DistGitRepo):
             version = version[1:]  # strip off leading v
 
         x, y, z = version.split('.')[0:3]
+        date_time = release.split('.')[0]  # Extract datestamp (YYYYMMDDHHMM[SS])
 
         replace_args = {
             'MAJOR': x,
             'MINOR': y,
             'SUBMINOR': z,
             'RELEASE': release,
-            'FULL_VER': '{}-{}'.format(version, release.split('.')[0]),
+            'DATE_TIME': date_time,
+            'FULL_VER': '{}-{}'.format(version, date_time),
         }
 
         manifests_base = os.path.join(self.distgit_dir, csv_config['manifests-dir'])

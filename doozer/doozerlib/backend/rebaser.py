@@ -2345,7 +2345,7 @@ class KonfluxRebaser:
         This function reads the art.yaml file from the operator's manifests directory
         and performs search-and-replace operations defined in the 'updates' section.
         The art.yaml supports template variables like {MAJOR}, {MINOR}, {SUBMINOR},
-        {RELEASE}, and {FULL_VER} which are substituted before processing.
+        {RELEASE}, {DATE_TIME}, and {FULL_VER} which are substituted before processing.
 
         Args:
             metadata: The ImageMetadata for this operator bundle.
@@ -2363,13 +2363,15 @@ class KonfluxRebaser:
             version = version[1:]  # strip off leading v
 
         x, y, z = version.split('.')[0:3]
+        date_time = release.split('.')[0]  # Extract datestamp (YYYYMMDDHHMM[SS])
 
         replace_args = {
             'MAJOR': x,
             'MINOR': y,
             'SUBMINOR': z,
             'RELEASE': release,
-            'FULL_VER': '{}-{}'.format(version, release.split('.')[0]),
+            'DATE_TIME': date_time,
+            'FULL_VER': '{}-{}'.format(version, date_time),
         }
 
         manifests_dir, _, _ = self._get_bundle_paths(csv_config)
