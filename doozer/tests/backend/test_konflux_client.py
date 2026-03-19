@@ -1,5 +1,5 @@
-from unittest import TestCase
-from unittest.mock import patch
+from unittest import IsolatedAsyncioTestCase, TestCase
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from doozerlib.backend.konflux_client import GitHubApiUrlInfo, KonfluxClient, parse_github_api_url
 
@@ -88,3 +88,137 @@ class TestParseGitHubApiUrl(TestCase):
         self.assertEqual(result[1], "repo")  # repo
         self.assertEqual(result[2], "file.yaml")  # file_path
         self.assertEqual(result[3], "main")  # ref
+
+
+class TestNewPipelinerunAdditionalBuildArgs(IsolatedAsyncioTestCase):
+    """Tests for additional_build_args in _new_pipelinerun_for_image_build."""
+
+    def _make_template_yaml(self):
+        """Return a minimal PLR template YAML string."""
+        return """
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: test-plr
+  namespace: test-ns
+  annotations:
+    build.appstudio.openshift.io/repo: "{{ source_url }}?rev={{ revision }}"
+    pipelinesascode.tekton.dev/on-cel-expression: "true"
+  labels:
+    appstudio.openshift.io/application: test-app
+    appstudio.openshift.io/component: test-component
+spec:
+  params:
+  - name: output-image
+    value: ""
+  - name: skip-checks
+    value: "false"
+  - name: build-source-image
+    value: "false"
+  - name: build-platforms
+    value: []
+  pipelineSpec:
+    tasks:
+    - name: build-images
+      params: []
+    - name: apply-tags
+      params:
+      - name: ADDITIONAL_TAGS
+        value: []
+    - name: clone-repository
+      params: []
+  taskRunTemplate:
+    serviceAccountName: default
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: "{{ git_auth_secret }}"
+"""
+
+    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
+    async def test_additional_build_args_set_on_params(self, mock_get_template):
+        """Test that additional_build_args are added to spec.params."""
+        import jinja2
+        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
+
+        client = KonfluxClient.__new__(KonfluxClient)
+        client._logger = MagicMock()
+
+        result = await client._new_pipelinerun_for_image_build(
+            generate_name="test-",
+            namespace="test-ns",
+            application_name="test-app",
+            component_name="test-component",
+            git_url="https://github.com/openshift/test.git",
+            commit_sha="abc123",
+            target_branch="main",
+            output_image="quay.io/test/image:tag",
+            build_platforms=["linux/amd64"],
+            additional_build_args=[
+                {"privileged-nested": "true"},
+                {"release-value": "quay.io/release:4.21"},
+                {"major-minor-version": "4.21"},
+            ],
+        )
+
+        params = result["spec"]["params"]
+        param_dict = {p["name"]: p["value"] for p in params}
+
+        self.assertEqual(param_dict["privileged-nested"], "true")
+        self.assertEqual(param_dict["release-value"], "quay.io/release:4.21")
+        self.assertEqual(param_dict["major-minor-version"], "4.21")
+
+    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
+    async def test_additional_build_args_none_is_noop(self, mock_get_template):
+        """Test that None additional_build_args doesn't add any extra params."""
+        import jinja2
+        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
+
+        client = KonfluxClient.__new__(KonfluxClient)
+        client._logger = MagicMock()
+
+        result = await client._new_pipelinerun_for_image_build(
+            generate_name="test-",
+            namespace="test-ns",
+            application_name="test-app",
+            component_name="test-component",
+            git_url="https://github.com/openshift/test.git",
+            commit_sha="abc123",
+            target_branch="main",
+            output_image="quay.io/test/image:tag",
+            build_platforms=["linux/amd64"],
+            additional_build_args=None,
+        )
+
+        params = result["spec"]["params"]
+        param_names = {p["name"] for p in params}
+        self.assertNotIn("privileged-nested", param_names)
+        self.assertNotIn("release-value", param_names)
+
+    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
+    async def test_additional_build_args_bool_converted_to_string(self, mock_get_template):
+        """Test that boolean values in additional_build_args are converted to strings."""
+        import jinja2
+        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
+
+        client = KonfluxClient.__new__(KonfluxClient)
+        client._logger = MagicMock()
+
+        result = await client._new_pipelinerun_for_image_build(
+            generate_name="test-",
+            namespace="test-ns",
+            application_name="test-app",
+            component_name="test-component",
+            git_url="https://github.com/openshift/test.git",
+            commit_sha="abc123",
+            target_branch="main",
+            output_image="quay.io/test/image:tag",
+            build_platforms=["linux/amd64"],
+            additional_build_args=[
+                {"privileged-nested": True},
+            ],
+        )
+
+        params = result["spec"]["params"]
+        param_dict = {p["name"]: p["value"] for p in params}
+        self.assertEqual(param_dict["privileged-nested"], "True")

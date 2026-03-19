@@ -626,6 +626,7 @@ class KonfluxClient:
         artifact_type: Optional[str] = None,
         service_account: Optional[str] = None,
         rebuild: Optional[bool] = None,
+        additional_build_args: Optional[list[dict[str, str]]] = None,
     ) -> dict:
         if additional_tags is None:
             additional_tags = []
@@ -703,6 +704,11 @@ class KonfluxClient:
 
         if rebuild is not None:
             _modify_param(params, "rebuild", rebuild)
+
+        if additional_build_args:
+            for arg in additional_build_args:
+                for key, value in arg.items():
+                    _modify_param(params, key, str(value))
 
         # See https://konflux-ci.dev/docs/how-tos/configuring/customizing-the-build/#configuring-timeouts
         obj["spec"]["timeouts"] = {"pipeline": "12h"}
@@ -851,6 +857,7 @@ class KonfluxClient:
         artifact_type: Optional[str] = None,
         service_account: Optional[str] = None,
         rebuild: Optional[bool] = None,
+        additional_build_args: Optional[list[dict[str, str]]] = None,
     ) -> PipelineRunInfo:
         """
         Start a PipelineRun for building an image.
@@ -916,6 +923,7 @@ class KonfluxClient:
             service_account=service_account,
             rebuild=rebuild,
             build_priority=build_priority,
+            additional_build_args=additional_build_args,
         )
         if self.dry_run:
             fake_pipelinerun = resource.ResourceInstance(self.dyn_client, pipelinerun_manifest)

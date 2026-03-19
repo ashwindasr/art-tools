@@ -125,10 +125,11 @@ class BuildLayeredProductsPipeline:
 
         # Extract product from group config
         product = group_config.get('product', 'ocp')
-        await self._rebase_and_build(product)
+        image_repo = group_config.get('konflux', {}).get('image_repo', KONFLUX_DEFAULT_IMAGE_REPO)
+        await self._rebase_and_build(product, image_repo)
         self.trigger_bundle_build()
 
-    async def _rebase_and_build(self, product: str):
+    async def _rebase_and_build(self, product: str, image_repo: str):
         """Rebase and build layered product image"""
         release = default_release_suffix()
 
@@ -177,7 +178,7 @@ class BuildLayeredProductsPipeline:
             "--latest-parent-version",
             f"--images={self.image_list}",
             "beta:images:konflux:build",
-            f"--image-repo={KONFLUX_DEFAULT_IMAGE_REPO}",
+            f"--image-repo={image_repo}",
             "--build-priority=1",
         ]
 
