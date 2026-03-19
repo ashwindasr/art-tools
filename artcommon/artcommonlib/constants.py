@@ -67,6 +67,7 @@ PRODUCT_NAMESPACE_MAP = {
     "logging": "art-logging-tenant",
     "openshift-logging": "art-logging-tenant",
     "ocp": "ocp-art-tenant",
+    "installer-ove-ui": "art-installer-agent-tenant",
 }
 
 PRODUCT_KUBECONFIG_MAP = {
@@ -76,6 +77,7 @@ PRODUCT_KUBECONFIG_MAP = {
     "logging": "LOGGING_KONFLUX_SA_KUBECONFIG",
     "openshift-logging": "LOGGING_KONFLUX_SA_KUBECONFIG",
     "ocp": "KONFLUX_SA_KUBECONFIG",
+    "installer-ove-ui": "ASSISTED_INSTALLER_SA_KUBECONFIG",
 }
 
 # Default namespace for Konflux operations
