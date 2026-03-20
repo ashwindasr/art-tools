@@ -630,6 +630,7 @@ class KonfluxClient:
         build_args: Optional[list[str]] = None,
         additional_secret: Optional[str] = None,
         privileged_nested: Optional[bool] = None,
+        build_step_memory: Optional[str] = None,
     ) -> dict:
         if additional_tags is None:
             additional_tags = []
@@ -804,6 +805,14 @@ class KonfluxClient:
                     ],
                 }
             ]
+            if build_step_memory:
+                task_run_specs[0]["stepSpecs"].append({
+                    "name": "build",
+                    "computeResources": {
+                        "requests": {"memory": build_step_memory},
+                        "limits": {"memory": build_step_memory},
+                    },
+                })
             task_run_specs += [
                 {
                     "pipelineTaskName": "prefetch-dependencies",
@@ -865,6 +874,7 @@ class KonfluxClient:
         build_args: Optional[list[str]] = None,
         additional_secret: Optional[str] = None,
         privileged_nested: Optional[bool] = None,
+        build_step_memory: Optional[str] = None,
     ) -> PipelineRunInfo:
         """
         Start a PipelineRun for building an image.
@@ -896,6 +906,7 @@ class KonfluxClient:
         :param build_args: Optional list of buildah build-arg strings ("KEY=VALUE") to set on the build-args pipeline param.
         :param additional_secret: Optional Kubernetes secret name to mount in the build-images task via ADDITIONAL_SECRET.
         :param privileged_nested: Optional bool to enable privileged nested builds (e.g. for bootc/fuse). Sets PRIVILEGED_NESTED on build-images task.
+        :param build_step_memory: Optional memory request/limit (e.g. "8Gi") for the build step in the build-images task.
         :return: The PipelineRun resource as a PipelineRunInfo.
         """
 
@@ -936,6 +947,7 @@ class KonfluxClient:
             build_args=build_args,
             additional_secret=additional_secret,
             privileged_nested=privileged_nested,
+            build_step_memory=build_step_memory,
         )
         if self.dry_run:
             fake_pipelinerun = resource.ResourceInstance(self.dyn_client, pipelinerun_manifest)

@@ -568,6 +568,11 @@ class KonfluxImageBuilder:
         image_priv = metadata.config.get("konflux", {}).get("privileged_nested", Missing)
         privileged_nested = bool(image_priv) if image_priv is not Missing else (bool(group_priv) if group_priv else None)
 
+        # Read build_step_memory from group config, with image-level override
+        group_mem = metadata.runtime.group_config.get("konflux", {}).get("build_step_memory", None)
+        image_mem = metadata.config.get("konflux", {}).get("build_step_memory", Missing)
+        build_step_memory = str(image_mem) if image_mem is not Missing else (str(group_mem) if group_mem else None)
+
         # Prepare annotations
         annotations = {
             "art-network-mode": metadata.get_konflux_network_mode(),
@@ -602,6 +607,7 @@ class KonfluxImageBuilder:
             build_args=build_args,
             additional_secret=additional_secret,
             privileged_nested=privileged_nested,
+            build_step_memory=build_step_memory,
         )
 
         logger.info(f"Created PipelineRun: {self._konflux_client.resource_url(pipelinerun_info.to_dict())}")

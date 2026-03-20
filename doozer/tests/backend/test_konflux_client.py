@@ -406,3 +406,109 @@ spec:
         task_param_names = {p["name"] for p in build_images_task["params"]}
 
         self.assertNotIn("PRIVILEGED_NESTED", task_param_names)
+
+
+class TestNewPipelinerunBuildStepMemory(IsolatedAsyncioTestCase):
+    """Tests for build_step_memory in _new_pipelinerun_for_image_build."""
+
+    def _make_template_yaml(self):
+        """Return a minimal PLR template YAML string with a build-images task."""
+        return """
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: test-plr
+  namespace: test-ns
+  annotations:
+    build.appstudio.openshift.io/repo: "{{ source_url }}?rev={{ revision }}"
+    pipelinesascode.tekton.dev/on-cel-expression: "true"
+  labels:
+    appstudio.openshift.io/application: test-app
+    appstudio.openshift.io/component: test-component
+spec:
+  params:
+  - name: output-image
+    value: ""
+  - name: skip-checks
+    value: "false"
+  - name: build-source-image
+    value: "false"
+  - name: build-platforms
+    value: []
+  pipelineSpec:
+    tasks:
+    - name: build-images
+      params:
+      - name: IMAGE
+        value: ""
+    - name: apply-tags
+      params:
+      - name: ADDITIONAL_TAGS
+        value: []
+    - name: clone-repository
+      params: []
+  taskRunTemplate:
+    serviceAccountName: default
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: "{{ git_auth_secret }}"
+"""
+
+    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
+    async def test_build_step_memory_set_on_task_run_specs(self, mock_get_template):
+        """Test that build_step_memory adds a build stepSpec to build-images taskRunSpecs."""
+        import jinja2
+        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
+
+        client = KonfluxClient.__new__(KonfluxClient)
+        client._logger = MagicMock()
+
+        result = await client._new_pipelinerun_for_image_build(
+            generate_name="test-",
+            namespace="test-ns",
+            application_name="test-app",
+            component_name="test-component",
+            git_url="https://github.com/openshift/test.git",
+            commit_sha="abc123",
+            target_branch="main",
+            output_image="quay.io/test/image:tag",
+            build_platforms=["linux/amd64"],
+            build_step_memory="8Gi",
+        )
+
+        task_run_specs = result["spec"]["taskRunSpecs"]
+        build_images_spec = next(s for s in task_run_specs if s["pipelineTaskName"] == "build-images")
+        step_names = {s["name"] for s in build_images_spec["stepSpecs"]}
+        self.assertIn("build", step_names)
+
+        build_step = next(s for s in build_images_spec["stepSpecs"] if s["name"] == "build")
+        self.assertEqual(build_step["computeResources"]["requests"]["memory"], "8Gi")
+        self.assertEqual(build_step["computeResources"]["limits"]["memory"], "8Gi")
+
+    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
+    async def test_build_step_memory_none_is_noop(self, mock_get_template):
+        """Test that None build_step_memory doesn't add a build stepSpec."""
+        import jinja2
+        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
+
+        client = KonfluxClient.__new__(KonfluxClient)
+        client._logger = MagicMock()
+
+        result = await client._new_pipelinerun_for_image_build(
+            generate_name="test-",
+            namespace="test-ns",
+            application_name="test-app",
+            component_name="test-component",
+            git_url="https://github.com/openshift/test.git",
+            commit_sha="abc123",
+            target_branch="main",
+            output_image="quay.io/test/image:tag",
+            build_platforms=["linux/amd64"],
+            build_step_memory=None,
+        )
+
+        task_run_specs = result["spec"]["taskRunSpecs"]
+        build_images_spec = next(s for s in task_run_specs if s["pipelineTaskName"] == "build-images")
+        step_names = {s["name"] for s in build_images_spec["stepSpecs"]}
+        self.assertNotIn("build", step_names)
