@@ -372,3 +372,107 @@ spec:
             "RELEASE_VALUE=$(params.release-value)",
             "ARCH=x86_64",
         ])
+
+
+class TestNewPipelinerunAdditionalSecret(IsolatedAsyncioTestCase):
+    """Tests for additional_secret in _new_pipelinerun_for_image_build."""
+
+    def _make_template_yaml(self):
+        """Return a minimal PLR template YAML string with a build-images task."""
+        return """
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: test-plr
+  namespace: test-ns
+  annotations:
+    build.appstudio.openshift.io/repo: "{{ source_url }}?rev={{ revision }}"
+    pipelinesascode.tekton.dev/on-cel-expression: "true"
+  labels:
+    appstudio.openshift.io/application: test-app
+    appstudio.openshift.io/component: test-component
+spec:
+  params:
+  - name: output-image
+    value: ""
+  - name: skip-checks
+    value: "false"
+  - name: build-source-image
+    value: "false"
+  - name: build-platforms
+    value: []
+  pipelineSpec:
+    tasks:
+    - name: build-images
+      params:
+      - name: IMAGE
+        value: ""
+    - name: apply-tags
+      params:
+      - name: ADDITIONAL_TAGS
+        value: []
+    - name: clone-repository
+      params: []
+  taskRunTemplate:
+    serviceAccountName: default
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: "{{ git_auth_secret }}"
+"""
+
+    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
+    async def test_additional_secret_set_on_build_images_task(self, mock_get_template):
+        """Test that additional_secret is set as ADDITIONAL_SECRET on the build-images task."""
+        import jinja2
+        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
+
+        client = KonfluxClient.__new__(KonfluxClient)
+        client._logger = MagicMock()
+
+        result = await client._new_pipelinerun_for_image_build(
+            generate_name="test-",
+            namespace="test-ns",
+            application_name="test-app",
+            component_name="test-component",
+            git_url="https://github.com/openshift/test.git",
+            commit_sha="abc123",
+            target_branch="main",
+            output_image="quay.io/test/image:tag",
+            build_platforms=["linux/amd64"],
+            additional_secret="ove-ui-image-pull-secret",
+        )
+
+        tasks = result["spec"]["pipelineSpec"]["tasks"]
+        build_images_task = next(t for t in tasks if t["name"] == "build-images")
+        task_param_dict = {p["name"]: p["value"] for p in build_images_task["params"]}
+
+        self.assertEqual(task_param_dict["ADDITIONAL_SECRET"], "ove-ui-image-pull-secret")
+
+    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
+    async def test_additional_secret_none_is_noop(self, mock_get_template):
+        """Test that None additional_secret doesn't add ADDITIONAL_SECRET to the task."""
+        import jinja2
+        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
+
+        client = KonfluxClient.__new__(KonfluxClient)
+        client._logger = MagicMock()
+
+        result = await client._new_pipelinerun_for_image_build(
+            generate_name="test-",
+            namespace="test-ns",
+            application_name="test-app",
+            component_name="test-component",
+            git_url="https://github.com/openshift/test.git",
+            commit_sha="abc123",
+            target_branch="main",
+            output_image="quay.io/test/image:tag",
+            build_platforms=["linux/amd64"],
+            additional_secret=None,
+        )
+
+        tasks = result["spec"]["pipelineSpec"]["tasks"]
+        build_images_task = next(t for t in tasks if t["name"] == "build-images")
+        task_param_names = {p["name"] for p in build_images_task["params"]}
+
+        self.assertNotIn("ADDITIONAL_SECRET", task_param_names)

@@ -569,6 +569,11 @@ class KonfluxImageBuilder:
                 for arg in raw_ba
             ]
 
+        # Read additional secret from group config, with image-level override
+        group_secret = metadata.runtime.group_config.get("konflux", {}).get("additional_secret", None)
+        image_secret = metadata.config.get("konflux", {}).get("additional_secret", Missing)
+        additional_secret = str(image_secret) if image_secret is not Missing else (str(group_secret) if group_secret else None)
+
         # Prepare annotations
         annotations = {
             "art-network-mode": metadata.get_konflux_network_mode(),
@@ -602,6 +607,7 @@ class KonfluxImageBuilder:
             build_priority=build_priority,
             additional_build_args=additional_build_args,
             build_args=build_args,
+            additional_secret=additional_secret,
         )
 
         logger.info(f"Created PipelineRun: {self._konflux_client.resource_url(pipelinerun_info.to_dict())}")

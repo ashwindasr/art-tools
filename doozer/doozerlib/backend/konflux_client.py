@@ -629,6 +629,7 @@ class KonfluxClient:
         rebuild: Optional[bool] = None,
         additional_build_args: Optional[list[dict[str, str]]] = None,
         build_args: Optional[list[str]] = None,
+        additional_secret: Optional[str] = None,
     ) -> dict:
         if additional_tags is None:
             additional_tags = []
@@ -732,6 +733,8 @@ class KonfluxClient:
                     has_build_images_task = True
                     task["timeout"] = "12h"
                     _modify_param(task["params"], "SBOM_TYPE", "spdx")
+                    if additional_secret:
+                        _modify_param(task["params"], "ADDITIONAL_SECRET", additional_secret)
                 case "prefetch-dependencies":
                     _modify_param(task["params"], "sbom-type", "spdx")
                     if rpm_lockfile_prefetch_enabled:
@@ -864,6 +867,7 @@ class KonfluxClient:
         rebuild: Optional[bool] = None,
         additional_build_args: Optional[list[dict[str, str]]] = None,
         build_args: Optional[list[str]] = None,
+        additional_secret: Optional[str] = None,
     ) -> PipelineRunInfo:
         """
         Start a PipelineRun for building an image.
@@ -893,6 +897,7 @@ class KonfluxClient:
         :param rebuild: Forces rebuild of the image, even if it already exists. If None, the default behavior is to not changed.
         :param build_priority: The Kueue build priority (1-10, where 1 is highest priority). If specified, adds the kueue.x-k8s.io/priority-class label.
         :param build_args: Optional list of buildah build-arg strings ("KEY=VALUE") to set on the build-args pipeline param.
+        :param additional_secret: Optional Kubernetes secret name to mount in the build-images task via ADDITIONAL_SECRET.
         :return: The PipelineRun resource as a PipelineRunInfo.
         """
 
@@ -932,6 +937,7 @@ class KonfluxClient:
             build_priority=build_priority,
             additional_build_args=additional_build_args,
             build_args=build_args,
+            additional_secret=additional_secret,
         )
         if self.dry_run:
             fake_pipelinerun = resource.ResourceInstance(self.dyn_client, pipelinerun_manifest)
