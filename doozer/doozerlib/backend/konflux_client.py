@@ -630,6 +630,7 @@ class KonfluxClient:
         additional_build_args: Optional[list[dict[str, str]]] = None,
         build_args: Optional[list[str]] = None,
         additional_secret: Optional[str] = None,
+        privileged_nested: Optional[bool] = None,
     ) -> dict:
         if additional_tags is None:
             additional_tags = []
@@ -735,6 +736,8 @@ class KonfluxClient:
                     _modify_param(task["params"], "SBOM_TYPE", "spdx")
                     if additional_secret:
                         _modify_param(task["params"], "ADDITIONAL_SECRET", additional_secret)
+                    if privileged_nested is not None:
+                        _modify_param(task["params"], "PRIVILEGED_NESTED", str(privileged_nested).lower())
                 case "prefetch-dependencies":
                     _modify_param(task["params"], "sbom-type", "spdx")
                     if rpm_lockfile_prefetch_enabled:
@@ -868,6 +871,7 @@ class KonfluxClient:
         additional_build_args: Optional[list[dict[str, str]]] = None,
         build_args: Optional[list[str]] = None,
         additional_secret: Optional[str] = None,
+        privileged_nested: Optional[bool] = None,
     ) -> PipelineRunInfo:
         """
         Start a PipelineRun for building an image.
@@ -898,6 +902,7 @@ class KonfluxClient:
         :param build_priority: The Kueue build priority (1-10, where 1 is highest priority). If specified, adds the kueue.x-k8s.io/priority-class label.
         :param build_args: Optional list of buildah build-arg strings ("KEY=VALUE") to set on the build-args pipeline param.
         :param additional_secret: Optional Kubernetes secret name to mount in the build-images task via ADDITIONAL_SECRET.
+        :param privileged_nested: Optional bool to enable privileged nested builds (e.g. for bootc/fuse). Sets PRIVILEGED_NESTED on build-images task.
         :return: The PipelineRun resource as a PipelineRunInfo.
         """
 
@@ -938,6 +943,7 @@ class KonfluxClient:
             additional_build_args=additional_build_args,
             build_args=build_args,
             additional_secret=additional_secret,
+            privileged_nested=privileged_nested,
         )
         if self.dry_run:
             fake_pipelinerun = resource.ResourceInstance(self.dyn_client, pipelinerun_manifest)
