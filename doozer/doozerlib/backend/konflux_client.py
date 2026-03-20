@@ -627,7 +627,6 @@ class KonfluxClient:
         artifact_type: Optional[str] = None,
         service_account: Optional[str] = None,
         rebuild: Optional[bool] = None,
-        additional_build_args: Optional[list[dict[str, str]]] = None,
         build_args: Optional[list[str]] = None,
         additional_secret: Optional[str] = None,
         privileged_nested: Optional[bool] = None,
@@ -708,11 +707,6 @@ class KonfluxClient:
 
         if rebuild is not None:
             _modify_param(params, "rebuild", rebuild)
-
-        if additional_build_args:
-            for arg in additional_build_args:
-                for key, value in arg.items():
-                    _modify_param(params, key, str(value))
 
         if build_args:
             _modify_param(params, "build-args", build_args)
@@ -868,7 +862,6 @@ class KonfluxClient:
         artifact_type: Optional[str] = None,
         service_account: Optional[str] = None,
         rebuild: Optional[bool] = None,
-        additional_build_args: Optional[list[dict[str, str]]] = None,
         build_args: Optional[list[str]] = None,
         additional_secret: Optional[str] = None,
         privileged_nested: Optional[bool] = None,
@@ -940,7 +933,6 @@ class KonfluxClient:
             service_account=service_account,
             rebuild=rebuild,
             build_priority=build_priority,
-            additional_build_args=additional_build_args,
             build_args=build_args,
             additional_secret=additional_secret,
             privileged_nested=privileged_nested,

@@ -547,17 +547,6 @@ class KonfluxImageBuilder:
         image_config_sast_task = metadata.config.get("konflux", {}).get("sast", {}).get("enabled", Missing)
         sast = image_config_sast_task if image_config_sast_task is not Missing else group_config_sast_task
 
-        # Read additional build args from group config, with image-level override
-        group_build_args = metadata.runtime.group_config.get("konflux", {}).get("additional_build_args", [])
-        image_build_args = metadata.config.get("konflux", {}).get("additional_build_args", Missing)
-        raw_build_args = image_build_args if image_build_args is not Missing else group_build_args
-        additional_build_args = None
-        if raw_build_args:
-            additional_build_args = [
-                arg.primitive() if hasattr(arg, 'primitive') else arg
-                for arg in raw_build_args
-            ]
-
         # Read buildah build-args from group config, with image-level override
         group_ba = metadata.runtime.group_config.get("konflux", {}).get("build_args", [])
         image_ba = metadata.config.get("konflux", {}).get("build_args", Missing)
@@ -610,7 +599,6 @@ class KonfluxImageBuilder:
             sast=sast,
             annotations=annotations,
             build_priority=build_priority,
-            additional_build_args=additional_build_args,
             build_args=build_args,
             additional_secret=additional_secret,
             privileged_nested=privileged_nested,
