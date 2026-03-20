@@ -25,7 +25,7 @@ from artcommonlib.util import fetch_slsa_attestation, get_konflux_data
 from dockerfile_parse import DockerfileParser
 from doozerlib import constants, util
 from doozerlib.backend.build_repo import BuildRepo
-from doozerlib.backend.konflux_client import KonfluxClient
+from doozerlib.backend.konflux_client import ImageBuildParams, KonfluxClient
 from doozerlib.backend.pipelinerun_utils import PipelineRunInfo
 from doozerlib.backend.rebaser import KonfluxRebaser
 from doozerlib.image import ImageMetadata
@@ -43,6 +43,13 @@ class KonfluxImageBuildError(Exception):
         super().__init__(message)
         self.pipelinerun_name = pipelinerun_name
         self.pipelinerun_dict = pipelinerun_dict
+
+
+def _get_konflux_config(metadata, key, default=None):
+    """Read a value from konflux config, image-level overrides group-level."""
+    group_val = metadata.runtime.group_config.get("konflux", {}).get(key, default)
+    image_val = metadata.config.get("konflux", {}).get(key, Missing)
+    return image_val if image_val is not Missing else group_val
 
 
 @dataclass
@@ -541,49 +548,47 @@ class KonfluxImageBuilder:
 
         prefetch = self._prefetch(metadata=metadata, dest_dir=dest_dir, group=self._config.group_name)
 
-        # Check if SAST tasks should be enabled (default: True)
-        # Image config value overrides group config value
-        group_config_sast_task = metadata.runtime.group_config.get("konflux", {}).get("sast", {}).get("enabled", True)
-        image_config_sast_task = metadata.config.get("konflux", {}).get("sast", {}).get("enabled", Missing)
-        sast = image_config_sast_task if image_config_sast_task is not Missing else group_config_sast_task
+        sast_config = _get_konflux_config(metadata, "sast", {})
+        sast = sast_config.get("enabled", True) if hasattr(sast_config, 'get') else sast_config
 
-        # Read buildah build-args from group config, with image-level override
-        group_ba = metadata.runtime.group_config.get("konflux", {}).get("build_args", [])
-        image_ba = metadata.config.get("konflux", {}).get("build_args", Missing)
-        raw_ba = image_ba if image_ba is not Missing else group_ba
+        raw_ba = _get_konflux_config(metadata, "build_args", [])
         build_args = None
         if raw_ba:
-            build_args = [
-                str(arg.primitive()) if hasattr(arg, 'primitive') else str(arg)
-                for arg in raw_ba
-            ]
+            build_args = [str(arg.primitive()) if hasattr(arg, 'primitive') else str(arg) for arg in raw_ba]
 
-        # Read additional secret from group config, with image-level override
-        group_secret = metadata.runtime.group_config.get("konflux", {}).get("additional_secret", None)
-        image_secret = metadata.config.get("konflux", {}).get("additional_secret", Missing)
-        additional_secret = str(image_secret) if image_secret is not Missing else (str(group_secret) if group_secret else None)
+        raw_secret = _get_konflux_config(metadata, "additional_secret")
+        additional_secret = str(raw_secret) if raw_secret else None
 
-        # Read privileged_nested from group config, with image-level override
-        group_priv = metadata.runtime.group_config.get("konflux", {}).get("privileged_nested", None)
-        image_priv = metadata.config.get("konflux", {}).get("privileged_nested", Missing)
-        privileged_nested = bool(image_priv) if image_priv is not Missing else (bool(group_priv) if group_priv else None)
+        raw_priv = _get_konflux_config(metadata, "privileged_nested")
+        privileged_nested = bool(raw_priv) if raw_priv else None
 
-        # Read build_step_memory from group config, with image-level override
-        group_mem = metadata.runtime.group_config.get("konflux", {}).get("build_step_memory", None)
-        image_mem = metadata.config.get("konflux", {}).get("build_step_memory", Missing)
-        build_step_memory = str(image_mem) if image_mem is not Missing else (str(group_mem) if group_mem else None)
+        raw_mem = _get_konflux_config(metadata, "build_step_memory")
+        build_step_memory = str(raw_mem) if raw_mem else None
 
-        # Prepare annotations
         annotations = {
             "art-network-mode": metadata.get_konflux_network_mode(),
             "art-nvr": nvr,
         }
 
-        # Add timeout annotation if configured
         build_timeout_minutes = metadata.config.konflux.build_timeout
         if build_timeout_minutes:
             annotations["art-overall-timeout-minutes"] = str(build_timeout_minutes)
             logger.info(f"Setting custom build timeout: {build_timeout_minutes} minutes")
+
+        build_params = ImageBuildParams(
+            hermetic=hermetic,
+            prefetch=prefetch,
+            sast=sast,
+            build_args=build_args,
+            additional_secret=additional_secret,
+            privileged_nested=privileged_nested,
+            build_step_memory=build_step_memory,
+            vm_override=metadata.config.get("konflux", {}).get("vm_override"),
+            skip_checks=self._config.skip_checks,
+            annotations=annotations,
+            build_priority=build_priority,
+            additional_tags=additional_tags or [],
+        )
 
         pipelinerun_info = await self._konflux_client.start_pipeline_run_for_image_build(
             generate_name=f"{component_name}-",
@@ -595,19 +600,8 @@ class KonfluxImageBuilder:
             target_branch=git_branch,
             output_image=output_image,
             building_arches=building_arches,
-            additional_tags=additional_tags,
-            skip_checks=self._config.skip_checks,
-            hermetic=hermetic,
-            vm_override=metadata.config.get("konflux", {}).get("vm_override"),
             pipelinerun_template_url=self._config.plr_template,
-            prefetch=prefetch,
-            sast=sast,
-            annotations=annotations,
-            build_priority=build_priority,
-            build_args=build_args,
-            additional_secret=additional_secret,
-            privileged_nested=privileged_nested,
-            build_step_memory=build_step_memory,
+            build_params=build_params,
         )
 
         logger.info(f"Created PipelineRun: {self._konflux_client.resource_url(pipelinerun_info.to_dict())}")

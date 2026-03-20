@@ -1,7 +1,79 @@
 from unittest import IsolatedAsyncioTestCase, TestCase
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
-from doozerlib.backend.konflux_client import GitHubApiUrlInfo, KonfluxClient, parse_github_api_url
+from doozerlib.backend.konflux_client import (
+    GitHubApiUrlInfo,
+    ImageBuildParams,
+    KonfluxClient,
+    parse_github_api_url,
+)
+
+# Shared minimal PLR template used by all _new_pipelinerun_for_image_build tests
+_MINIMAL_PLR_TEMPLATE = """
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  name: test-plr
+  namespace: test-ns
+  annotations:
+    build.appstudio.openshift.io/repo: "{{ source_url }}?rev={{ revision }}"
+    pipelinesascode.tekton.dev/on-cel-expression: "true"
+  labels:
+    appstudio.openshift.io/application: test-app
+    appstudio.openshift.io/component: test-component
+spec:
+  params:
+  - name: output-image
+    value: ""
+  - name: skip-checks
+    value: "false"
+  - name: build-source-image
+    value: "false"
+  - name: build-platforms
+    value: []
+  - name: build-args
+    value: []
+  pipelineSpec:
+    tasks:
+    - name: build-images
+      params:
+      - name: IMAGE
+        value: ""
+    - name: apply-tags
+      params:
+      - name: ADDITIONAL_TAGS
+        value: []
+    - name: clone-repository
+      params: []
+  taskRunTemplate:
+    serviceAccountName: default
+  workspaces:
+  - name: git-auth
+    secret:
+      secretName: "{{ git_auth_secret }}"
+"""
+
+# Common required kwargs for _new_pipelinerun_for_image_build calls
+_COMMON_KWARGS = dict(
+    generate_name="test-",
+    namespace="test-ns",
+    application_name="test-app",
+    component_name="test-component",
+    git_url="https://github.com/openshift/test.git",
+    commit_sha="abc123",
+    target_branch="main",
+    output_image="quay.io/test/image:tag",
+    build_platforms=["linux/amd64"],
+)
+
+
+def _make_mock_client(mock_get_template):
+    """Create a KonfluxClient instance with a mocked template."""
+    import jinja2
+    mock_get_template.return_value = jinja2.Template(_MINIMAL_PLR_TEMPLATE, autoescape=True)
+    client = KonfluxClient.__new__(KonfluxClient)
+    client._logger = MagicMock()
+    return client
 
 
 class TestResourceUrl(TestCase):
@@ -83,89 +155,32 @@ class TestParseGitHubApiUrl(TestCase):
         result = parse_github_api_url(url)
 
         self.assertIsInstance(result, GitHubApiUrlInfo)
-        # Test named tuple access
-        self.assertEqual(result[0], "owner")  # owner
-        self.assertEqual(result[1], "repo")  # repo
-        self.assertEqual(result[2], "file.yaml")  # file_path
-        self.assertEqual(result[3], "main")  # ref
+        self.assertEqual(result[0], "owner")
+        self.assertEqual(result[1], "repo")
+        self.assertEqual(result[2], "file.yaml")
+        self.assertEqual(result[3], "main")
 
 
 class TestNewPipelinerunBuildArgs(IsolatedAsyncioTestCase):
     """Tests for build_args in _new_pipelinerun_for_image_build."""
 
-    def _make_template_yaml(self):
-        """Return a minimal PLR template YAML string."""
-        return """
-apiVersion: tekton.dev/v1
-kind: PipelineRun
-metadata:
-  name: test-plr
-  namespace: test-ns
-  annotations:
-    build.appstudio.openshift.io/repo: "{{ source_url }}?rev={{ revision }}"
-    pipelinesascode.tekton.dev/on-cel-expression: "true"
-  labels:
-    appstudio.openshift.io/application: test-app
-    appstudio.openshift.io/component: test-component
-spec:
-  params:
-  - name: output-image
-    value: ""
-  - name: skip-checks
-    value: "false"
-  - name: build-source-image
-    value: "false"
-  - name: build-platforms
-    value: []
-  - name: build-args
-    value: []
-  pipelineSpec:
-    tasks:
-    - name: build-images
-      params: []
-    - name: apply-tags
-      params:
-      - name: ADDITIONAL_TAGS
-        value: []
-    - name: clone-repository
-      params: []
-  taskRunTemplate:
-    serviceAccountName: default
-  workspaces:
-  - name: git-auth
-    secret:
-      secretName: "{{ git_auth_secret }}"
-"""
-
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_build_args_set_on_params(self, mock_get_template):
         """Test that build_args are set as the build-args pipeline parameter."""
-        import jinja2
-        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
-
-        client = KonfluxClient.__new__(KonfluxClient)
-        client._logger = MagicMock()
+        client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
-            generate_name="test-",
-            namespace="test-ns",
-            application_name="test-app",
-            component_name="test-component",
-            git_url="https://github.com/openshift/test.git",
-            commit_sha="abc123",
-            target_branch="main",
-            output_image="quay.io/test/image:tag",
-            build_platforms=["linux/amd64"],
-            build_args=[
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(build_args=[
                 "RELEASE_FLAG=--release-image-url",
                 "RELEASE_VALUE=$(params.release-value)",
                 "MAJOR_MINOR_VERSION=$(params.major-minor-version)",
                 "ARCH=x86_64",
-            ],
+            ]),
         )
 
-        params = result["spec"]["params"]
-        param_dict = {p["name"]: p["value"] for p in params}
+        plr_params = result["spec"]["params"]
+        param_dict = {p["name"]: p["value"] for p in plr_params}
 
         self.assertEqual(param_dict["build-args"], [
             "RELEASE_FLAG=--release-image-url",
@@ -177,96 +192,29 @@ spec:
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_build_args_none_is_noop(self, mock_get_template):
         """Test that None build_args leaves the default build-args param unchanged."""
-        import jinja2
-        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
-
-        client = KonfluxClient.__new__(KonfluxClient)
-        client._logger = MagicMock()
+        client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
-            generate_name="test-",
-            namespace="test-ns",
-            application_name="test-app",
-            component_name="test-component",
-            git_url="https://github.com/openshift/test.git",
-            commit_sha="abc123",
-            target_branch="main",
-            output_image="quay.io/test/image:tag",
-            build_platforms=["linux/amd64"],
-            build_args=None,
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(build_args=None),
         )
 
-        params = result["spec"]["params"]
-        param_dict = {p["name"]: p["value"] for p in params}
+        plr_params = result["spec"]["params"]
+        param_dict = {p["name"]: p["value"] for p in plr_params}
         self.assertEqual(param_dict["build-args"], [])
+
 
 class TestNewPipelinerunAdditionalSecret(IsolatedAsyncioTestCase):
     """Tests for additional_secret in _new_pipelinerun_for_image_build."""
 
-    def _make_template_yaml(self):
-        """Return a minimal PLR template YAML string with a build-images task."""
-        return """
-apiVersion: tekton.dev/v1
-kind: PipelineRun
-metadata:
-  name: test-plr
-  namespace: test-ns
-  annotations:
-    build.appstudio.openshift.io/repo: "{{ source_url }}?rev={{ revision }}"
-    pipelinesascode.tekton.dev/on-cel-expression: "true"
-  labels:
-    appstudio.openshift.io/application: test-app
-    appstudio.openshift.io/component: test-component
-spec:
-  params:
-  - name: output-image
-    value: ""
-  - name: skip-checks
-    value: "false"
-  - name: build-source-image
-    value: "false"
-  - name: build-platforms
-    value: []
-  pipelineSpec:
-    tasks:
-    - name: build-images
-      params:
-      - name: IMAGE
-        value: ""
-    - name: apply-tags
-      params:
-      - name: ADDITIONAL_TAGS
-        value: []
-    - name: clone-repository
-      params: []
-  taskRunTemplate:
-    serviceAccountName: default
-  workspaces:
-  - name: git-auth
-    secret:
-      secretName: "{{ git_auth_secret }}"
-"""
-
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_additional_secret_set_on_build_images_task(self, mock_get_template):
         """Test that additional_secret is set as ADDITIONAL_SECRET on the build-images task."""
-        import jinja2
-        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
-
-        client = KonfluxClient.__new__(KonfluxClient)
-        client._logger = MagicMock()
+        client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
-            generate_name="test-",
-            namespace="test-ns",
-            application_name="test-app",
-            component_name="test-component",
-            git_url="https://github.com/openshift/test.git",
-            commit_sha="abc123",
-            target_branch="main",
-            output_image="quay.io/test/image:tag",
-            build_platforms=["linux/amd64"],
-            additional_secret="ove-ui-image-pull-secret",
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(additional_secret="ove-ui-image-pull-secret"),
         )
 
         tasks = result["spec"]["pipelineSpec"]["tasks"]
@@ -278,23 +226,11 @@ spec:
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_additional_secret_none_is_noop(self, mock_get_template):
         """Test that None additional_secret doesn't add ADDITIONAL_SECRET to the task."""
-        import jinja2
-        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
-
-        client = KonfluxClient.__new__(KonfluxClient)
-        client._logger = MagicMock()
+        client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
-            generate_name="test-",
-            namespace="test-ns",
-            application_name="test-app",
-            component_name="test-component",
-            git_url="https://github.com/openshift/test.git",
-            commit_sha="abc123",
-            target_branch="main",
-            output_image="quay.io/test/image:tag",
-            build_platforms=["linux/amd64"],
-            additional_secret=None,
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(additional_secret=None),
         )
 
         tasks = result["spec"]["pipelineSpec"]["tasks"]
@@ -307,70 +243,14 @@ spec:
 class TestNewPipelinerunPrivilegedNested(IsolatedAsyncioTestCase):
     """Tests for privileged_nested in _new_pipelinerun_for_image_build."""
 
-    def _make_template_yaml(self):
-        """Return a minimal PLR template YAML string with a build-images task."""
-        return """
-apiVersion: tekton.dev/v1
-kind: PipelineRun
-metadata:
-  name: test-plr
-  namespace: test-ns
-  annotations:
-    build.appstudio.openshift.io/repo: "{{ source_url }}?rev={{ revision }}"
-    pipelinesascode.tekton.dev/on-cel-expression: "true"
-  labels:
-    appstudio.openshift.io/application: test-app
-    appstudio.openshift.io/component: test-component
-spec:
-  params:
-  - name: output-image
-    value: ""
-  - name: skip-checks
-    value: "false"
-  - name: build-source-image
-    value: "false"
-  - name: build-platforms
-    value: []
-  pipelineSpec:
-    tasks:
-    - name: build-images
-      params:
-      - name: IMAGE
-        value: ""
-    - name: apply-tags
-      params:
-      - name: ADDITIONAL_TAGS
-        value: []
-    - name: clone-repository
-      params: []
-  taskRunTemplate:
-    serviceAccountName: default
-  workspaces:
-  - name: git-auth
-    secret:
-      secretName: "{{ git_auth_secret }}"
-"""
-
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_privileged_nested_true_set_on_build_images_task(self, mock_get_template):
         """Test that privileged_nested=True sets PRIVILEGED_NESTED=true on the build-images task."""
-        import jinja2
-        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
-
-        client = KonfluxClient.__new__(KonfluxClient)
-        client._logger = MagicMock()
+        client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
-            generate_name="test-",
-            namespace="test-ns",
-            application_name="test-app",
-            component_name="test-component",
-            git_url="https://github.com/openshift/test.git",
-            commit_sha="abc123",
-            target_branch="main",
-            output_image="quay.io/test/image:tag",
-            build_platforms=["linux/amd64"],
-            privileged_nested=True,
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(privileged_nested=True),
         )
 
         tasks = result["spec"]["pipelineSpec"]["tasks"]
@@ -382,23 +262,11 @@ spec:
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_privileged_nested_none_is_noop(self, mock_get_template):
         """Test that None privileged_nested doesn't add PRIVILEGED_NESTED to the task."""
-        import jinja2
-        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
-
-        client = KonfluxClient.__new__(KonfluxClient)
-        client._logger = MagicMock()
+        client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
-            generate_name="test-",
-            namespace="test-ns",
-            application_name="test-app",
-            component_name="test-component",
-            git_url="https://github.com/openshift/test.git",
-            commit_sha="abc123",
-            target_branch="main",
-            output_image="quay.io/test/image:tag",
-            build_platforms=["linux/amd64"],
-            privileged_nested=None,
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(privileged_nested=None),
         )
 
         tasks = result["spec"]["pipelineSpec"]["tasks"]
@@ -411,70 +279,14 @@ spec:
 class TestNewPipelinerunBuildStepMemory(IsolatedAsyncioTestCase):
     """Tests for build_step_memory in _new_pipelinerun_for_image_build."""
 
-    def _make_template_yaml(self):
-        """Return a minimal PLR template YAML string with a build-images task."""
-        return """
-apiVersion: tekton.dev/v1
-kind: PipelineRun
-metadata:
-  name: test-plr
-  namespace: test-ns
-  annotations:
-    build.appstudio.openshift.io/repo: "{{ source_url }}?rev={{ revision }}"
-    pipelinesascode.tekton.dev/on-cel-expression: "true"
-  labels:
-    appstudio.openshift.io/application: test-app
-    appstudio.openshift.io/component: test-component
-spec:
-  params:
-  - name: output-image
-    value: ""
-  - name: skip-checks
-    value: "false"
-  - name: build-source-image
-    value: "false"
-  - name: build-platforms
-    value: []
-  pipelineSpec:
-    tasks:
-    - name: build-images
-      params:
-      - name: IMAGE
-        value: ""
-    - name: apply-tags
-      params:
-      - name: ADDITIONAL_TAGS
-        value: []
-    - name: clone-repository
-      params: []
-  taskRunTemplate:
-    serviceAccountName: default
-  workspaces:
-  - name: git-auth
-    secret:
-      secretName: "{{ git_auth_secret }}"
-"""
-
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_build_step_memory_set_on_task_run_specs(self, mock_get_template):
         """Test that build_step_memory adds a build stepSpec to build-images taskRunSpecs."""
-        import jinja2
-        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
-
-        client = KonfluxClient.__new__(KonfluxClient)
-        client._logger = MagicMock()
+        client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
-            generate_name="test-",
-            namespace="test-ns",
-            application_name="test-app",
-            component_name="test-component",
-            git_url="https://github.com/openshift/test.git",
-            commit_sha="abc123",
-            target_branch="main",
-            output_image="quay.io/test/image:tag",
-            build_platforms=["linux/amd64"],
-            build_step_memory="8Gi",
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(build_step_memory="8Gi"),
         )
 
         task_run_specs = result["spec"]["taskRunSpecs"]
@@ -489,23 +301,11 @@ spec:
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_build_step_memory_none_is_noop(self, mock_get_template):
         """Test that None build_step_memory doesn't add a build stepSpec."""
-        import jinja2
-        mock_get_template.return_value = jinja2.Template(self._make_template_yaml(), autoescape=True)
-
-        client = KonfluxClient.__new__(KonfluxClient)
-        client._logger = MagicMock()
+        client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
-            generate_name="test-",
-            namespace="test-ns",
-            application_name="test-app",
-            component_name="test-component",
-            git_url="https://github.com/openshift/test.git",
-            commit_sha="abc123",
-            target_branch="main",
-            output_image="quay.io/test/image:tag",
-            build_platforms=["linux/amd64"],
-            build_step_memory=None,
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(build_step_memory=None),
         )
 
         task_run_specs = result["spec"]["taskRunSpecs"]
