@@ -190,6 +190,7 @@ class KonfluxClient:
     # The arch to Konflux VM name mapping. The specs for each of the VMs can be seen in the doc link shared above.
     SUPPORTED_ARCHES = {
         "x86_64": ["linux/x86_64"],
+        "x86_64_root": ["linux-root/amd64"],
         "s390x": ["linux/s390x"],
         "ppc64le": ["linux/ppc64le"],
         "aarch64": ["linux/arm64"],
@@ -627,6 +628,7 @@ class KonfluxClient:
         service_account: Optional[str] = None,
         rebuild: Optional[bool] = None,
         additional_build_args: Optional[list[dict[str, str]]] = None,
+        build_args: Optional[list[str]] = None,
     ) -> dict:
         if additional_tags is None:
             additional_tags = []
@@ -709,6 +711,9 @@ class KonfluxClient:
             for arg in additional_build_args:
                 for key, value in arg.items():
                     _modify_param(params, key, str(value))
+
+        if build_args:
+            _modify_param(params, "build-args", build_args)
 
         # See https://konflux-ci.dev/docs/how-tos/configuring/customizing-the-build/#configuring-timeouts
         obj["spec"]["timeouts"] = {"pipeline": "12h"}
@@ -858,6 +863,7 @@ class KonfluxClient:
         service_account: Optional[str] = None,
         rebuild: Optional[bool] = None,
         additional_build_args: Optional[list[dict[str, str]]] = None,
+        build_args: Optional[list[str]] = None,
     ) -> PipelineRunInfo:
         """
         Start a PipelineRun for building an image.
@@ -886,6 +892,7 @@ class KonfluxClient:
         :param service_account: The service account to use for the PipelineRun.
         :param rebuild: Forces rebuild of the image, even if it already exists. If None, the default behavior is to not changed.
         :param build_priority: The Kueue build priority (1-10, where 1 is highest priority). If specified, adds the kueue.x-k8s.io/priority-class label.
+        :param build_args: Optional list of buildah build-arg strings ("KEY=VALUE") to set on the build-args pipeline param.
         :return: The PipelineRun resource as a PipelineRunInfo.
         """
 
@@ -924,6 +931,7 @@ class KonfluxClient:
             rebuild=rebuild,
             build_priority=build_priority,
             additional_build_args=additional_build_args,
+            build_args=build_args,
         )
         if self.dry_run:
             fake_pipelinerun = resource.ResourceInstance(self.dyn_client, pipelinerun_manifest)

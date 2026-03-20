@@ -558,6 +558,17 @@ class KonfluxImageBuilder:
                 for arg in raw_build_args
             ]
 
+        # Read buildah build-args from group config, with image-level override
+        group_ba = metadata.runtime.group_config.get("konflux", {}).get("build_args", [])
+        image_ba = metadata.config.get("konflux", {}).get("build_args", Missing)
+        raw_ba = image_ba if image_ba is not Missing else group_ba
+        build_args = None
+        if raw_ba:
+            build_args = [
+                str(arg.primitive()) if hasattr(arg, 'primitive') else str(arg)
+                for arg in raw_ba
+            ]
+
         # Prepare annotations
         annotations = {
             "art-network-mode": metadata.get_konflux_network_mode(),
@@ -590,6 +601,7 @@ class KonfluxImageBuilder:
             annotations=annotations,
             build_priority=build_priority,
             additional_build_args=additional_build_args,
+            build_args=build_args,
         )
 
         logger.info(f"Created PipelineRun: {self._konflux_client.resource_url(pipelinerun_info.to_dict())}")
