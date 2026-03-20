@@ -1432,7 +1432,7 @@ class KonfluxRebaser:
         config_final_stage_user_set = False
 
         # Just for last stage
-        if network_mode != "hermetic":
+        if network_mode != "hermetic" and not no_shell:
             last_stage = self.split_dockerfile_into_stages(dfp)[-1]
 
             # Find all the USERs in the last stage
