@@ -1,4 +1,3 @@
-import os
 import tempfile
 from pathlib import Path
 from unittest import IsolatedAsyncioTestCase
@@ -10,7 +9,6 @@ from pyartcd.runtime import Runtime
 
 
 class TestBuildLayeredProductsPipeline(IsolatedAsyncioTestCase):
-
     def setUp(self):
         self.runtime = Mock(spec=Runtime)
         self.runtime.working_dir = Path(tempfile.mkdtemp())
@@ -22,7 +20,10 @@ class TestBuildLayeredProductsPipeline(IsolatedAsyncioTestCase):
     @patch('pyartcd.pipelines.build_layered_products.jenkins.init_jenkins')
     @patch('pyartcd.pipelines.build_layered_products.load_group_config')
     @patch('pyartcd.pipelines.build_layered_products.exectools.cmd_assert_async', new_callable=AsyncMock)
-    @patch('pyartcd.pipelines.build_layered_products.resolve_konflux_kubeconfig_by_product', return_value='/path/to/kubeconfig')
+    @patch(
+        'pyartcd.pipelines.build_layered_products.resolve_konflux_kubeconfig_by_product',
+        return_value='/path/to/kubeconfig',
+    )
     @patch('pyartcd.pipelines.build_layered_products.resolve_konflux_namespace_by_product', return_value='test-ns')
     async def test_image_repo_from_group_config(
         self, mock_resolve_ns, mock_resolve_kube, mock_cmd, mock_load_config, mock_jenkins
@@ -60,7 +61,10 @@ class TestBuildLayeredProductsPipeline(IsolatedAsyncioTestCase):
     @patch('pyartcd.pipelines.build_layered_products.jenkins.init_jenkins')
     @patch('pyartcd.pipelines.build_layered_products.load_group_config')
     @patch('pyartcd.pipelines.build_layered_products.exectools.cmd_assert_async', new_callable=AsyncMock)
-    @patch('pyartcd.pipelines.build_layered_products.resolve_konflux_kubeconfig_by_product', return_value='/path/to/kubeconfig')
+    @patch(
+        'pyartcd.pipelines.build_layered_products.resolve_konflux_kubeconfig_by_product',
+        return_value='/path/to/kubeconfig',
+    )
     @patch('pyartcd.pipelines.build_layered_products.resolve_konflux_namespace_by_product', return_value='test-ns')
     async def test_image_repo_falls_back_to_default(
         self, mock_resolve_ns, mock_resolve_kube, mock_cmd, mock_load_config, mock_jenkins

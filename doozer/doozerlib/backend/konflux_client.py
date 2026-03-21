@@ -53,6 +53,7 @@ class ImageBuildParams:
     skip_checks: bool = False
     skip_fips_check: bool = False
 
+
 # Label key used to filter PipelineRuns for this process
 _COMMON_RUNTIME_LABEL_KEY = "doozer-watch-id"
 # Label value is set once on first use and remains fixed for the process lifetime
@@ -817,13 +818,15 @@ class KonfluxClient:
                 }
             ]
             if build_params.build_step_resources:
-                task_run_specs[0]["stepSpecs"].append({
-                    "name": "build",
-                    "computeResources": {
-                        "requests": dict(build_params.build_step_resources),
-                        "limits": dict(build_params.build_step_resources),
-                    },
-                })
+                task_run_specs[0]["stepSpecs"].append(
+                    {
+                        "name": "build",
+                        "computeResources": {
+                            "requests": dict(build_params.build_step_resources),
+                            "limits": dict(build_params.build_step_resources),
+                        },
+                    }
+                )
             task_run_specs += [
                 {
                     "pipelineTaskName": "prefetch-dependencies",

@@ -70,6 +70,7 @@ _COMMON_KWARGS = dict(
 def _make_mock_client(mock_get_template):
     """Create a KonfluxClient instance with a mocked template."""
     import jinja2
+
     mock_get_template.return_value = jinja2.Template(_MINIMAL_PLR_TEMPLATE, autoescape=True)
     client = KonfluxClient.__new__(KonfluxClient)
     client._logger = MagicMock()
@@ -171,23 +172,28 @@ class TestNewPipelinerunBuildArgs(IsolatedAsyncioTestCase):
 
         result = await client._new_pipelinerun_for_image_build(
             **_COMMON_KWARGS,
-            build_params=ImageBuildParams(build_args=[
-                "RELEASE_FLAG=--release-image-url",
-                "RELEASE_VALUE=$(params.release-value)",
-                "MAJOR_MINOR_VERSION=$(params.major-minor-version)",
-                "ARCH=x86_64",
-            ]),
+            build_params=ImageBuildParams(
+                build_args=[
+                    "RELEASE_FLAG=--release-image-url",
+                    "RELEASE_VALUE=$(params.release-value)",
+                    "MAJOR_MINOR_VERSION=$(params.major-minor-version)",
+                    "ARCH=x86_64",
+                ]
+            ),
         )
 
         plr_params = result["spec"]["params"]
         param_dict = {p["name"]: p["value"] for p in plr_params}
 
-        self.assertEqual(param_dict["build-args"], [
-            "RELEASE_FLAG=--release-image-url",
-            "RELEASE_VALUE=$(params.release-value)",
-            "MAJOR_MINOR_VERSION=$(params.major-minor-version)",
-            "ARCH=x86_64",
-        ])
+        self.assertEqual(
+            param_dict["build-args"],
+            [
+                "RELEASE_FLAG=--release-image-url",
+                "RELEASE_VALUE=$(params.release-value)",
+                "MAJOR_MINOR_VERSION=$(params.major-minor-version)",
+                "ARCH=x86_64",
+            ],
+        )
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_build_args_none_is_noop(self, mock_get_template):
