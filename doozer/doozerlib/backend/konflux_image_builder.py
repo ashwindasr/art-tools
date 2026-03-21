@@ -562,8 +562,8 @@ class KonfluxImageBuilder:
         raw_priv = _get_konflux_config(metadata, "privileged_nested")
         privileged_nested = bool(raw_priv) if raw_priv else None
 
-        raw_mem = _get_konflux_config(metadata, "build_step_memory")
-        build_step_memory = str(raw_mem) if raw_mem else None
+        raw_res = _get_konflux_config(metadata, "build_step_resources")
+        build_step_resources = dict(raw_res) if raw_res else None
 
         annotations = {
             "art-network-mode": metadata.get_konflux_network_mode(),
@@ -582,7 +582,7 @@ class KonfluxImageBuilder:
             build_args=build_args,
             additional_secret=additional_secret,
             privileged_nested=privileged_nested,
-            build_step_memory=build_step_memory,
+            build_step_resources=build_step_resources,
             vm_override=metadata.config.get("konflux", {}).get("vm_override"),
             skip_checks=self._config.skip_checks,
             annotations=annotations,

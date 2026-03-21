@@ -276,17 +276,17 @@ class TestNewPipelinerunPrivilegedNested(IsolatedAsyncioTestCase):
         self.assertNotIn("PRIVILEGED_NESTED", task_param_names)
 
 
-class TestNewPipelinerunBuildStepMemory(IsolatedAsyncioTestCase):
-    """Tests for build_step_memory in _new_pipelinerun_for_image_build."""
+class TestNewPipelinerunBuildStepResources(IsolatedAsyncioTestCase):
+    """Tests for build_step_resources in _new_pipelinerun_for_image_build."""
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
-    async def test_build_step_memory_set_on_task_run_specs(self, mock_get_template):
-        """Test that build_step_memory adds a build stepSpec to build-images taskRunSpecs."""
+    async def test_build_step_resources_set_on_task_run_specs(self, mock_get_template):
+        """Test that build_step_resources adds a build stepSpec to build-images taskRunSpecs."""
         client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
             **_COMMON_KWARGS,
-            build_params=ImageBuildParams(build_step_memory="8Gi"),
+            build_params=ImageBuildParams(build_step_resources={"memory": "8Gi", "ephemeral-storage": "70Gi"}),
         )
 
         task_run_specs = result["spec"]["taskRunSpecs"]
@@ -297,15 +297,17 @@ class TestNewPipelinerunBuildStepMemory(IsolatedAsyncioTestCase):
         build_step = next(s for s in build_images_spec["stepSpecs"] if s["name"] == "build")
         self.assertEqual(build_step["computeResources"]["requests"]["memory"], "8Gi")
         self.assertEqual(build_step["computeResources"]["limits"]["memory"], "8Gi")
+        self.assertEqual(build_step["computeResources"]["requests"]["ephemeral-storage"], "70Gi")
+        self.assertEqual(build_step["computeResources"]["limits"]["ephemeral-storage"], "70Gi")
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
-    async def test_build_step_memory_none_is_noop(self, mock_get_template):
-        """Test that None build_step_memory doesn't add a build stepSpec."""
+    async def test_build_step_resources_none_is_noop(self, mock_get_template):
+        """Test that None build_step_resources doesn't add a build stepSpec."""
         client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
             **_COMMON_KWARGS,
-            build_params=ImageBuildParams(build_step_memory=None),
+            build_params=ImageBuildParams(build_step_resources=None),
         )
 
         task_run_specs = result["spec"]["taskRunSpecs"]

@@ -42,7 +42,7 @@ class ImageBuildParams:
     build_args: Optional[list[str]] = None
     additional_secret: Optional[str] = None
     privileged_nested: Optional[bool] = None
-    build_step_memory: Optional[str] = None
+    build_step_resources: Optional[dict[str, str]] = None
     prefetch: Optional[list] = None
     artifact_type: Optional[str] = None
     service_account: Optional[str] = None
@@ -816,12 +816,12 @@ class KonfluxClient:
                     ],
                 }
             ]
-            if build_params.build_step_memory:
+            if build_params.build_step_resources:
                 task_run_specs[0]["stepSpecs"].append({
                     "name": "build",
                     "computeResources": {
-                        "requests": {"memory": build_params.build_step_memory},
-                        "limits": {"memory": build_params.build_step_memory},
+                        "requests": dict(build_params.build_step_resources),
+                        "limits": dict(build_params.build_step_resources),
                     },
                 })
             task_run_specs += [
