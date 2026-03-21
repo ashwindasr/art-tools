@@ -7,6 +7,7 @@ RHCOS_BREW_COMPONENTS = {f"rhcos-{arch}" for arch in BREW_ARCHES} - {"rhcos-mult
 
 
 def go_arch_for_brew_arch(brew_arch: str) -> str:
+    brew_arch = brew_arch.removesuffix("_root")
     if brew_arch in GO_ARCHES:
         return brew_arch  # allow to already be a go arch, just keep same
     if brew_arch in BREW_ARCHES:
@@ -33,6 +34,7 @@ def go_suffix_for_arch(arch: str, is_private: bool = False) -> str:
 
 
 def brew_arch_for_go_arch(go_arch: str) -> str:
+    go_arch = go_arch.removesuffix("_root")
     if go_arch in BREW_ARCHES:
         return go_arch  # allow to already be a brew arch, just keep same
     if go_arch in GO_ARCHES:
