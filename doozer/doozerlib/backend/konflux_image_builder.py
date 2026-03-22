@@ -565,6 +565,9 @@ class KonfluxImageBuilder:
         raw_res = _get_konflux_config(metadata, "build_step_resources")
         build_step_resources = dict(raw_res) if raw_res else None
 
+        raw_ws = _get_konflux_config(metadata, "workspace_storage")
+        workspace_storage = str(raw_ws) if raw_ws else None
+
         annotations = {
             "art-network-mode": metadata.get_konflux_network_mode(),
             "art-nvr": nvr,
@@ -583,6 +586,7 @@ class KonfluxImageBuilder:
             additional_secret=additional_secret,
             privileged_nested=privileged_nested,
             build_step_resources=build_step_resources,
+            workspace_storage=workspace_storage,
             vm_override=metadata.config.get("konflux", {}).get("vm_override"),
             skip_checks=self._config.skip_checks,
             annotations=annotations,
