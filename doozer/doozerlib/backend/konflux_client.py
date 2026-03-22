@@ -804,10 +804,6 @@ class KonfluxClient:
                 "requests": {"memory": "5Gi"},
                 "limits": {"memory": "10Gi"},
             }
-            if ephemeral_storage:
-                sbom_resources["requests"]["ephemeral-storage"] = ephemeral_storage
-                sbom_resources["limits"]["ephemeral-storage"] = ephemeral_storage
-
             build_images_step_specs: list[dict] = [
                 {"name": "sbom-syft-generate", "computeResources": sbom_resources},
             ]
@@ -824,13 +820,16 @@ class KonfluxClient:
                 )
 
             if ephemeral_storage:
+                baseline_es = {"ephemeral-storage": "1Gi"}
+                sbom_resources["requests"]["ephemeral-storage"] = "1Gi"
+                sbom_resources["limits"]["ephemeral-storage"] = "1Gi"
                 for step_name in ("push", "prepare-sboms", "upload-sbom"):
                     build_images_step_specs.append(
                         {
                             "name": step_name,
                             "computeResources": {
-                                "requests": {"ephemeral-storage": ephemeral_storage},
-                                "limits": {"ephemeral-storage": ephemeral_storage},
+                                "requests": dict(baseline_es),
+                                "limits": dict(baseline_es),
                             },
                         }
                     )

@@ -287,7 +287,7 @@ class TestNewPipelinerunBuildStepResources(IsolatedAsyncioTestCase):
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_ephemeral_storage_propagated_to_all_steps(self, mock_get_template):
-        """Test that ephemeral-storage is propagated to build and all post-build steps."""
+        """Test that ephemeral-storage is set on build step and a 1Gi baseline on other steps."""
         client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
@@ -299,7 +299,6 @@ class TestNewPipelinerunBuildStepResources(IsolatedAsyncioTestCase):
         build_images_spec = next(s for s in task_run_specs if s["pipelineTaskName"] == "build-images")
         step_names = {s["name"] for s in build_images_spec["stepSpecs"]}
 
-        self.assertIn("build", step_names)
         build_step = next(s for s in build_images_spec["stepSpecs"] if s["name"] == "build")
         self.assertEqual(build_step["computeResources"]["requests"]["memory"], "8Gi")
         self.assertEqual(build_step["computeResources"]["requests"]["ephemeral-storage"], "200Gi")
@@ -309,8 +308,8 @@ class TestNewPipelinerunBuildStepResources(IsolatedAsyncioTestCase):
             step = next(s for s in build_images_spec["stepSpecs"] if s["name"] == name)
             self.assertEqual(
                 step["computeResources"]["requests"]["ephemeral-storage"],
-                "200Gi",
-                f"step {name} should have ephemeral-storage request",
+                "1Gi",
+                f"step {name} should have 1Gi baseline ephemeral-storage",
             )
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
