@@ -799,26 +799,21 @@ class KonfluxClient:
         # ose-installer-artifacts fails with OOM with default values, hence bumping memory limit
         task_run_specs = []
         if has_build_images_task:
-            task_run_specs += [
-                {
-                    "pipelineTaskName": "build-images",
-                    "stepSpecs": [
-                        {
-                            "name": "sbom-syft-generate",
-                            "computeResources": {
-                                "requests": {
-                                    "memory": "5Gi",
-                                },
-                                "limits": {
-                                    "memory": "10Gi",
-                                },
-                            },
-                        }
-                    ],
-                }
+            ephemeral_storage = (build_params.build_step_resources or {}).get("ephemeral-storage")
+            sbom_resources: dict = {
+                "requests": {"memory": "5Gi"},
+                "limits": {"memory": "10Gi"},
+            }
+            if ephemeral_storage:
+                sbom_resources["requests"]["ephemeral-storage"] = ephemeral_storage
+                sbom_resources["limits"]["ephemeral-storage"] = ephemeral_storage
+
+            build_images_step_specs: list[dict] = [
+                {"name": "sbom-syft-generate", "computeResources": sbom_resources},
             ]
+
             if build_params.build_step_resources:
-                task_run_specs[0]["stepSpecs"].append(
+                build_images_step_specs.append(
                     {
                         "name": "build",
                         "computeResources": {
@@ -827,6 +822,25 @@ class KonfluxClient:
                         },
                     }
                 )
+
+            if ephemeral_storage:
+                for step_name in ("push", "prepare-sboms", "upload-sbom"):
+                    build_images_step_specs.append(
+                        {
+                            "name": step_name,
+                            "computeResources": {
+                                "requests": {"ephemeral-storage": ephemeral_storage},
+                                "limits": {"ephemeral-storage": ephemeral_storage},
+                            },
+                        }
+                    )
+
+            task_run_specs += [
+                {
+                    "pipelineTaskName": "build-images",
+                    "stepSpecs": build_images_step_specs,
+                }
+            ]
             task_run_specs += [
                 {
                     "pipelineTaskName": "prefetch-dependencies",

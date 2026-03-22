@@ -286,8 +286,8 @@ class TestNewPipelinerunBuildStepResources(IsolatedAsyncioTestCase):
     """Tests for build_step_resources in _new_pipelinerun_for_image_build."""
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
-    async def test_build_step_resources_set_on_task_run_specs(self, mock_get_template):
-        """Test that build_step_resources adds a build stepSpec to build-images taskRunSpecs."""
+    async def test_ephemeral_storage_propagated_to_all_steps(self, mock_get_template):
+        """Test that ephemeral-storage is propagated to build and all post-build steps."""
         client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
@@ -298,14 +298,38 @@ class TestNewPipelinerunBuildStepResources(IsolatedAsyncioTestCase):
         task_run_specs = result["spec"]["taskRunSpecs"]
         build_images_spec = next(s for s in task_run_specs if s["pipelineTaskName"] == "build-images")
         step_names = {s["name"] for s in build_images_spec["stepSpecs"]}
-        self.assertIn("build", step_names)
 
+        self.assertIn("build", step_names)
         build_step = next(s for s in build_images_spec["stepSpecs"] if s["name"] == "build")
         self.assertEqual(build_step["computeResources"]["requests"]["memory"], "8Gi")
-        self.assertEqual(build_step["computeResources"]["limits"]["memory"], "8Gi")
         self.assertEqual(build_step["computeResources"]["requests"]["ephemeral-storage"], "200Gi")
-        self.assertEqual(build_step["computeResources"]["limits"]["ephemeral-storage"], "200Gi")
-        self.assertNotIn("computeResources", build_images_spec)
+
+        for name in ("sbom-syft-generate", "push", "prepare-sboms", "upload-sbom"):
+            self.assertIn(name, step_names, f"step {name} missing from stepSpecs")
+            step = next(s for s in build_images_spec["stepSpecs"] if s["name"] == name)
+            self.assertEqual(
+                step["computeResources"]["requests"]["ephemeral-storage"],
+                "200Gi",
+                f"step {name} should have ephemeral-storage request",
+            )
+
+    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
+    async def test_memory_only_no_extra_steps(self, mock_get_template):
+        """Test that memory-only resources don't add post-build step overrides."""
+        client = _make_mock_client(mock_get_template)
+
+        result = await client._new_pipelinerun_for_image_build(
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(build_step_resources={"memory": "8Gi"}),
+        )
+
+        task_run_specs = result["spec"]["taskRunSpecs"]
+        build_images_spec = next(s for s in task_run_specs if s["pipelineTaskName"] == "build-images")
+        step_names = {s["name"] for s in build_images_spec["stepSpecs"]}
+        self.assertIn("build", step_names)
+        self.assertNotIn("push", step_names)
+        self.assertNotIn("prepare-sboms", step_names)
+        self.assertNotIn("upload-sbom", step_names)
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
     async def test_build_step_resources_none_is_noop(self, mock_get_template):
