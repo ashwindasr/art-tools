@@ -43,7 +43,6 @@ class ImageBuildParams:
     additional_secret: Optional[str] = None
     privileged_nested: Optional[bool] = None
     build_step_resources: Optional[dict[str, str]] = None
-    workspace_storage: Optional[str] = None
     prefetch: Optional[list] = None
     artifact_type: Optional[str] = None
     service_account: Optional[str] = None
@@ -800,15 +799,32 @@ class KonfluxClient:
         # ose-installer-artifacts fails with OOM with default values, hence bumping memory limit
         task_run_specs = []
         if has_build_images_task:
+            ephemeral_storage = (build_params.build_step_resources or {}).get("ephemeral-storage")
+
+            sbom_syft_resources: dict = {
+                "requests": {"memory": "5Gi"},
+                "limits": {"memory": "10Gi"},
+            }
+            if ephemeral_storage:
+                sbom_syft_resources["requests"]["ephemeral-storage"] = "1Gi"
+                sbom_syft_resources["limits"]["ephemeral-storage"] = "1Gi"
+
             build_images_step_specs: list[dict] = [
                 {
                     "name": "sbom-syft-generate",
-                    "computeResources": {
-                        "requests": {"memory": "5Gi"},
-                        "limits": {"memory": "10Gi"},
-                    },
+                    "computeResources": sbom_syft_resources,
                 },
             ]
+
+            if ephemeral_storage:
+                post_build_resources: dict = {
+                    "requests": {"ephemeral-storage": "1Gi"},
+                    "limits": {"ephemeral-storage": "1Gi"},
+                }
+                for step_name in ("push", "prepare-sboms", "upload-sbom"):
+                    build_images_step_specs.append(
+                        {"name": step_name, "computeResources": post_build_resources}
+                    )
 
             if build_params.build_step_resources:
                 build_images_step_specs.append(
@@ -856,27 +872,6 @@ class KonfluxClient:
             ]
 
         obj["spec"]["taskRunSpecs"] = task_run_specs
-
-        if build_params.workspace_storage:
-            pipeline_workspaces = obj["spec"]["pipelineSpec"].setdefault("workspaces", [])
-            if not any(ws.get("name") == "workspace" for ws in pipeline_workspaces):
-                pipeline_workspaces.append({"name": "workspace", "optional": True})
-
-            plr_workspaces = obj["spec"].setdefault("workspaces", [])
-            if not any(ws.get("name") == "workspace" for ws in plr_workspaces):
-                plr_workspaces.append(
-                    {
-                        "name": "workspace",
-                        "volumeClaimTemplate": {
-                            "spec": {
-                                "accessModes": ["ReadWriteOnce"],
-                                "resources": {
-                                    "requests": {"storage": build_params.workspace_storage},
-                                },
-                            },
-                        },
-                    }
-                )
 
         return obj
 

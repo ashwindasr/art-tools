@@ -316,39 +316,48 @@ class TestNewPipelinerunBuildStepResources(IsolatedAsyncioTestCase):
         self.assertNotIn("build", step_names)
 
 
-class TestNewPipelinerunWorkspaceStorage(IsolatedAsyncioTestCase):
-    """Tests for workspace_storage (PVC) in _new_pipelinerun_for_image_build."""
+class TestNewPipelinerunEphemeralStorage(IsolatedAsyncioTestCase):
+    """Tests for ephemeral-storage in build_step_resources propagating to post-build steps."""
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
-    async def test_workspace_storage_adds_pvc(self, mock_get_template):
-        """Test that workspace_storage adds a volumeClaimTemplate workspace."""
+    async def test_ephemeral_storage_propagates_to_post_build_steps(self, mock_get_template):
+        """Test that ephemeral-storage in build_step_resources adds 1Gi to post-build steps."""
         client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
             **_COMMON_KWARGS,
-            build_params=ImageBuildParams(workspace_storage="100Gi"),
+            build_params=ImageBuildParams(build_step_resources={"memory": "8Gi", "ephemeral-storage": "250Gi"}),
         )
 
-        pipeline_ws = result["spec"]["pipelineSpec"]["workspaces"]
-        ws_names = {ws["name"] for ws in pipeline_ws}
-        self.assertIn("workspace", ws_names)
+        task_run_specs = result["spec"]["taskRunSpecs"]
+        build_images_spec = next(s for s in task_run_specs if s["pipelineTaskName"] == "build-images")
+        step_specs = {s["name"]: s for s in build_images_spec["stepSpecs"]}
 
-        plr_ws = result["spec"]["workspaces"]
-        ws_binding = next(ws for ws in plr_ws if ws["name"] == "workspace")
-        vct = ws_binding["volumeClaimTemplate"]
-        self.assertEqual(vct["spec"]["resources"]["requests"]["storage"], "100Gi")
-        self.assertEqual(vct["spec"]["accessModes"], ["ReadWriteOnce"])
+        self.assertEqual(
+            step_specs["build"]["computeResources"]["requests"]["ephemeral-storage"], "250Gi"
+        )
+        for step_name in ("push", "sbom-syft-generate", "prepare-sboms", "upload-sbom"):
+            self.assertIn(step_name, step_specs, f"Missing stepSpec for {step_name}")
+            self.assertEqual(
+                step_specs[step_name]["computeResources"]["requests"]["ephemeral-storage"],
+                "1Gi",
+                f"Wrong ephemeral-storage for {step_name}",
+            )
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
-    async def test_workspace_storage_none_no_pvc(self, mock_get_template):
-        """Test that None workspace_storage doesn't add a workspace PVC."""
+    async def test_no_ephemeral_storage_no_post_build_steps(self, mock_get_template):
+        """Test that without ephemeral-storage, post-build steps don't get extra resources."""
         client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
             **_COMMON_KWARGS,
-            build_params=ImageBuildParams(workspace_storage=None),
+            build_params=ImageBuildParams(build_step_resources={"memory": "8Gi"}),
         )
 
-        plr_ws = result["spec"].get("workspaces", [])
-        ws_names = {ws["name"] for ws in plr_ws}
-        self.assertNotIn("workspace", ws_names)
+        task_run_specs = result["spec"]["taskRunSpecs"]
+        build_images_spec = next(s for s in task_run_specs if s["pipelineTaskName"] == "build-images")
+        step_names = {s["name"] for s in build_images_spec["stepSpecs"]}
+        self.assertIn("build", step_names)
+        self.assertNotIn("push", step_names)
+        self.assertNotIn("prepare-sboms", step_names)
+        self.assertNotIn("upload-sbom", step_names)
