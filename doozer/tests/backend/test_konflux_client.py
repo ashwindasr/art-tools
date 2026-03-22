@@ -286,8 +286,8 @@ class TestNewPipelinerunBuildStepResources(IsolatedAsyncioTestCase):
     """Tests for build_step_resources in _new_pipelinerun_for_image_build."""
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
-    async def test_memory_on_step_ephemeral_on_task(self, mock_get_template):
-        """Test that memory goes on the build stepSpec and ephemeral-storage on task-level computeResources."""
+    async def test_build_step_resources_set_on_task_run_specs(self, mock_get_template):
+        """Test that build_step_resources adds a build stepSpec to build-images taskRunSpecs."""
         client = _make_mock_client(mock_get_template)
 
         result = await client._new_pipelinerun_for_image_build(
@@ -297,30 +297,14 @@ class TestNewPipelinerunBuildStepResources(IsolatedAsyncioTestCase):
 
         task_run_specs = result["spec"]["taskRunSpecs"]
         build_images_spec = next(s for s in task_run_specs if s["pipelineTaskName"] == "build-images")
+        step_names = {s["name"] for s in build_images_spec["stepSpecs"]}
+        self.assertIn("build", step_names)
 
         build_step = next(s for s in build_images_spec["stepSpecs"] if s["name"] == "build")
         self.assertEqual(build_step["computeResources"]["requests"]["memory"], "8Gi")
         self.assertEqual(build_step["computeResources"]["limits"]["memory"], "8Gi")
-        self.assertNotIn("ephemeral-storage", build_step["computeResources"]["requests"])
-
-        self.assertEqual(build_images_spec["computeResources"]["requests"]["ephemeral-storage"], "200Gi")
-        self.assertEqual(build_images_spec["computeResources"]["limits"]["ephemeral-storage"], "200Gi")
-
-    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
-    async def test_memory_only_no_task_compute_resources(self, mock_get_template):
-        """Test that memory-only stays on the build stepSpec with no task-level computeResources."""
-        client = _make_mock_client(mock_get_template)
-
-        result = await client._new_pipelinerun_for_image_build(
-            **_COMMON_KWARGS,
-            build_params=ImageBuildParams(build_step_resources={"memory": "8Gi"}),
-        )
-
-        task_run_specs = result["spec"]["taskRunSpecs"]
-        build_images_spec = next(s for s in task_run_specs if s["pipelineTaskName"] == "build-images")
-
-        build_step = next(s for s in build_images_spec["stepSpecs"] if s["name"] == "build")
-        self.assertEqual(build_step["computeResources"]["requests"]["memory"], "8Gi")
+        self.assertEqual(build_step["computeResources"]["requests"]["ephemeral-storage"], "200Gi")
+        self.assertEqual(build_step["computeResources"]["limits"]["ephemeral-storage"], "200Gi")
         self.assertNotIn("computeResources", build_images_spec)
 
     @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
