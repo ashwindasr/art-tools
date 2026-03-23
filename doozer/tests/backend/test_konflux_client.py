@@ -316,6 +316,48 @@ class TestNewPipelinerunBuildStepResources(IsolatedAsyncioTestCase):
         self.assertNotIn("build", step_names)
 
 
+class TestNewPipelinerunWorkspaceStorage(IsolatedAsyncioTestCase):
+    """Tests for workspace_storage volumeClaimTemplate injection."""
+
+    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
+    async def test_workspace_storage_adds_volume_claim(self, mock_get_template):
+        """Test that workspace_storage injects a volumeClaimTemplate into the PLR."""
+        client = _make_mock_client(mock_get_template)
+
+        result = await client._new_pipelinerun_for_image_build(
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(workspace_storage="100Gi"),
+        )
+
+        pipeline_workspaces = result["spec"]["pipelineSpec"].get("workspaces", [])
+        ws_entry = next((ws for ws in pipeline_workspaces if ws["name"] == "workspace"), None)
+        self.assertIsNotNone(ws_entry)
+        self.assertTrue(ws_entry.get("optional"))
+
+        plr_workspaces = result["spec"].get("workspaces", [])
+        plr_ws = next((ws for ws in plr_workspaces if ws["name"] == "workspace"), None)
+        self.assertIsNotNone(plr_ws)
+        self.assertIn("volumeClaimTemplate", plr_ws)
+        self.assertEqual(
+            plr_ws["volumeClaimTemplate"]["spec"]["resources"]["requests"]["storage"],
+            "100Gi",
+        )
+
+    @patch("doozerlib.backend.konflux_client.KonfluxClient._get_pipelinerun_template")
+    async def test_no_workspace_storage_no_volume_claim(self, mock_get_template):
+        """Test that without workspace_storage, no volumeClaimTemplate is injected."""
+        client = _make_mock_client(mock_get_template)
+
+        result = await client._new_pipelinerun_for_image_build(
+            **_COMMON_KWARGS,
+            build_params=ImageBuildParams(),
+        )
+
+        plr_workspaces = result["spec"].get("workspaces", [])
+        ws_entry = next((ws for ws in plr_workspaces if ws.get("name") == "workspace"), None)
+        self.assertIsNone(ws_entry)
+
+
 class TestNewPipelinerunEphemeralStorage(IsolatedAsyncioTestCase):
     """Tests for ephemeral-storage in build_step_resources propagating to post-build steps."""
 

@@ -43,6 +43,7 @@ class ImageBuildParams:
     additional_secret: Optional[str] = None
     privileged_nested: Optional[bool] = None
     build_step_resources: Optional[dict[str, str]] = None
+    workspace_storage: Optional[str] = None
     prefetch: Optional[list] = None
     artifact_type: Optional[str] = None
     service_account: Optional[str] = None
@@ -872,6 +873,27 @@ class KonfluxClient:
             ]
 
         obj["spec"]["taskRunSpecs"] = task_run_specs
+
+        if build_params.workspace_storage:
+            pipeline_workspaces = obj["spec"]["pipelineSpec"].setdefault("workspaces", [])
+            if not any(ws.get("name") == "workspace" for ws in pipeline_workspaces):
+                pipeline_workspaces.append({"name": "workspace", "optional": True})
+
+            plr_workspaces = obj["spec"].setdefault("workspaces", [])
+            if not any(ws.get("name") == "workspace" for ws in plr_workspaces):
+                plr_workspaces.append(
+                    {
+                        "name": "workspace",
+                        "volumeClaimTemplate": {
+                            "spec": {
+                                "accessModes": ["ReadWriteOnce"],
+                                "resources": {
+                                    "requests": {"storage": build_params.workspace_storage},
+                                },
+                            },
+                        },
+                    }
+                )
 
         return obj
 
