@@ -53,3 +53,7 @@ im getting this error when im running with the params for the fbc job
 the API version in the data (tekton.dev/v1beta1) does not match the expected API version (tekton.dev/v1)
 
 revert it back to just tring
+
+---
+
+okay that worked now the layred product scan has an issue: https://console-openshift-console.apps.artc2023.pc3z.p1.openshiftapps.com/k8s/ns/art-cd/tekton.dev~v1~PipelineRun/layered-products-scan-ri9urq/logs
