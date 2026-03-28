@@ -1,0 +1,18 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "7c33054cfc90",
+  "strategy": "manual-commit",
+  "branch": "add-oras-to-base-image",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "art-cluster/pipelines/data/project/art-cd/image/Containerfile.base"
+  ],
+  "sessions": [
+    {
+      "metadata": "/7c/33054cfc90/0/metadata.json",
+      "transcript": "/7c/33054cfc90/0/full.jsonl",
+      "content_hash": "/7c/33054cfc90/0/content_hash.txt",
+      "prompt": "/7c/33054cfc90/0/prompt.txt"
+    }
+  ]
+}

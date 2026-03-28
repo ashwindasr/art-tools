@@ -1,0 +1,38 @@
+i will add the gilab secret - just give me the command
+
+---
+
+curious why do we need to have the same task for all the pipelnies
+
+---
+
+what is the name of the GITLAB_TOKEN on jenkins credentials page ( get it from aos-cd-jobs)
+
+---
+
+okay - created secret lets proceed
+
+---
+
+uset he MCP server
+
+---
+
+https://console-openshift-console.apps.artc2023.pc3z.p1.openshiftapps.com/k8s/ns/art-cd/tekton.dev~v1~PipelineRun/release-from-fbc-a8vb9c/logs  - release from fbc failed
+
+---
+
+lets add it to the base dockerfile
+
+---
+
+https://console-openshift-console.apps.artc2023.pc3z.p1.openshiftapps.com/k8s/ns/art-cd/tekton.dev~v1~TaskRun/release-from-fbc-bjrtkc-release-from-fbc/logs  - the pipeline still failed with oras
+
+the correct way seems to be
+
+VERSION="1.3.0"
+curl -LO "https://github.com/oras-project/oras/releases/download/v${VERSION}/oras_${VERSION}_linux_amd64.tar.gz"
+mkdir -p oras-install/
+tar -zxf oras_${VERSION}_*.tar.gz -C oras-install/
+sudo mv oras-install/oras /usr/local/bin/
+rm -rf oras_${VERSION}_*.tar.gz oras-install/
