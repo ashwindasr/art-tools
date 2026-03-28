@@ -1,1 +1,1 @@
-https://github.com/openshift-eng/art-tools/pull/2676#discussion_r3005256260
+no --no-verify

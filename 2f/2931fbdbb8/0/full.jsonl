@@ -8,3 +8,4 @@
 {"role":"assistant","message":{"content":[{"type":"text","text":"Resolving the merge conflict: keeping upstream `opm` and `cosign` blocks and applying the ORAS SHA256 + `install` fix."}]}}
 {"role":"user","message":{"content":[{"type":"text","text":"<user_query>\nno --no-verify\n</user_query>"}]}}
 {"role":"assistant","message":{"content":[{"type":"text","text":"Committing with hooks enabled. Running the commit outside the sandbox so pre-commit can run."}]}}
+{"role":"assistant","message":{"content":[{"type":"text","text":"Here’s what ran:\n\n1. **`git commit`** (no `--no-verify`) with full permissions so **Global rh-pre-commit** and **commit-msg** could run — both **Passed**.\n2. **`git push origin add-oras-to-base-image`** — updated remote `aa627d31..18981e5a`.\n\nPR **#2676** should show the new commit **18981e5a** (“Verify oras tarball SHA256 and install with fixed permissions”)."}]}}
