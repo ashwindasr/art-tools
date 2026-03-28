@@ -1,0 +1,79 @@
+https://console-openshift-console.apps.artc2023.pc3z.p1.openshiftapps.com/k8s/ns/art-cd/tekton.dev~v1~PipelineRun/release-from-fbc-ncawl4/logs  new error
+
+---
+
+the fbc-pullspecs parameters were truncted - can we modify this to a field where i can see the full values
+
+---
+
+there is a new error https://console-openshift-console.apps.artc2023.pc3z.p1.openshiftapps.com/k8s/ns/art-cd/tekton.dev~v1~PipelineRun/release-from-fbc-bjrtkc/logs
+
+---
+
+i didn't add the other kubeconfigs to the secret - give me the command to add them in
+
+---
+
+what are the names in jenkins from aos-cd-jobs
+
+---
+
+lets add the ocp one to this too
+
+---
+
+give me the enterie list of kubeconfig names on jenkins (for all namespaces)
+
+---
+
+now what is the command to replace the secret
+
+---
+
+remove this path/to/
+
+---
+
+asdas@asdas-mac /t/scratch> oc create secret generic konflux-sa-kubeconfigs -n art-cd \
+                                  --from-file=ocp=ocp.kubeconfig \
+                                  --from-file=oadp=oadp.kubeconfig \
+                                  --from-file=mta=mta.kubeconfig \
+                                  --from-file=mtc=mtc.kubeconfig \
+                                  --from-file=logging=logging.kubeconfig \
+                                  --dry-run=client -o yaml | oc apply -f -
+Warning: resource secrets/konflux-sa-kubeconfigs is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by oc apply. oc apply should only be used on resources created declaratively by either oc create --save-config or oc apply. The missing annotation will be patched automatically.
+secret/konflux-sa-kubeconfigs configured
+asdas@asdas-mac /t/scratch>
+
+---
+
+im getting this error when im running with the params for the fbc job
+
+
+the API version in the data (tekton.dev/v1beta1) does not match the expected API version (tekton.dev/v1)
+
+revert it back to just tring
+
+---
+
+okay that worked now the layred product scan has an issue: https://console-openshift-console.apps.artc2023.pc3z.p1.openshiftapps.com/k8s/ns/art-cd/tekton.dev~v1~PipelineRun/layered-products-scan-ri9urq/logs
+
+---
+
+https://console-openshift-console.apps.artc2023.pc3z.p1.openshiftapps.com/k8s/ns/art-cd/tekton.dev~v1~PipelineRun/layered-products-scan-wyb16f/logs  - what is the command to retrigger this but with dry run false
+
+---
+
+jenkins has a scheduled job for layered-operator-scan that runs every 30 mins - how can we replicate that on tekton
+
+---
+
+jenkins has a scheduled job for layered-operator-scan that runs every 30 mins - how can we replicate that on tekton
+
+---
+
+@schedule_layered-products-scan_cronjob_1c7fa614.plan.md (8-9) for now lets just do mta-8.0 in the new Kubernetes one
+
+---
+
+@schedule_layered-products-scan_cronjob_1c7fa614.plan.md (38) disable the cron job for now, we can enable it later
