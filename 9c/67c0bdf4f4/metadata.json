@@ -2,7 +2,7 @@
   "cli_version": "0.5.1",
   "checkpoint_id": "9c67c0bdf4f4",
   "strategy": "manual-commit",
-  "branch": "tekton-layered-builds",
+  "branch": "tekton-layered-builds-with-github-app",
   "checkpoints_count": 0,
   "files_touched": [
     "pyartcd/pyartcd/pipelines/layered_products_scan_konflux.py"
@@ -12,7 +12,7 @@
       "metadata": "/9c/67c0bdf4f4/0/metadata.json",
       "transcript": "/9c/67c0bdf4f4/0/full.jsonl",
       "content_hash": "/9c/67c0bdf4f4/0/content_hash.txt",
-      "prompt": "/9c/67c0bdf4f4/0/prompt.txt"
+      "prompt": ""
     }
   ]
 }
