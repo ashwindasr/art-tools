@@ -1,0 +1,66 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "d0d0513f52ab",
+  "session_id": "f7ef00ce-94a5-436a-92b4-7f4652bfc8f6",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-28T20:25:29.734584Z",
+  "branch": "tekton-layered-builds-with-github-app",
+  "checkpoints_count": 10,
+  "files_touched": [],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "0f6e5e0084f6",
+  "checkpoint_transcript_start": 571,
+  "transcript_lines_at_start": 571,
+  "session_metrics": {
+    "turn_count": 19,
+    "context_tokens": 196595,
+    "context_window_size": 200000
+  },
+  "summary": {
+    "intent": "Migrate the Jenkins 'release-from-fbc' pipeline to Tekton/Konflux and troubleshoot authentication and configuration issues to get it running successfully on the cluster.",
+    "outcome": "Fixed oras authentication via Docker config symlink, added missing ELLIOTT_DATA_PATH and DOOZER_DATA_PATH environment variables, populated the konflux-sa-kubeconfigs secret with all required kubeconfigs, and progressed the pipeline past initial failures to a new error in the layered-products-scan step.",
+    "learnings": {
+      "repo": [
+        "oras commands in artcommonlib/util.py (lines 819, 877) don't pass auth flags and rely on DOCKER_CONFIG env var or ~/.docker/config.json",
+        "artcd Task expects kubeconfig keys: ocp, oadp, mta, mtc, logging, assisted-installer",
+        "Jenkins credentials map to specific IDs: openshift-bot-ocp-konflux-service-account, openshift-bot-oadp-konflux-service-account, openshift-bot-mta-konflux-service-account, openshift-bot-mtc-konflux-service-account, openshift-bot-logging-konflux-service-account",
+        "Elliott and Doozer require ELLIOTT_DATA_PATH and DOOZER_DATA_PATH pointing to https://github.com/openshift-eng/ocp-build-data",
+        "cmd_gather_async inherits environment variables from parent process, so DOCKER_CONFIG propagates through subprocess calls"
+      ],
+      "code": [
+        {
+          "path": "artcommonlib/util.py",
+          "line": 819,
+          "end_line": 819,
+          "finding": "oras discover command lacks auth configuration flags"
+        },
+        {
+          "path": "artcommonlib/util.py",
+          "line": 877,
+          "end_line": 877,
+          "finding": "oras pull command lacks auth configuration flags"
+        }
+      ],
+      "workflow": [
+        "Tekton v1 Pipeline parameters only support string, array, and object types - no textarea for multi-line inputs",
+        "Tekton array parameters can only be expanded in args fields using $(params.name[*]), not in script blocks",
+        "oras may require explicit /root/.docker/config.json symlink even when DOCKER_CONFIG env var is set",
+        "OpenShift Console may generate v1beta1 PipelineRuns when using array parameters, causing API version mismatch with v1 pipelines",
+        "oc apply warning about missing kubectl.kubernetes.io/last-applied-configuration annotation is harmless and auto-fixed"
+      ]
+    },
+    "friction": [
+      "oras authentication failed with only DOCKER_CONFIG set - required explicit symlink to /root/.docker/config.json",
+      "Tekton string parameters render as single-line inputs in OpenShift Console, truncating long fbc-pullspecs values",
+      "Array parameter type caused API version mismatch (v1beta1 vs v1) preventing PipelineRun creation from Console UI",
+      "konflux-sa-kubeconfigs secret was incomplete - only had oadp key, missing ocp, mta, mtc, logging",
+      "ELLIOTT_DATA_PATH and DOOZER_DATA_PATH were configured in devcontainer but missing from production Tekton environment"
+    ],
+    "open_items": [
+      "New error in layered-products-scan pipeline needs investigation",
+      "assisted-installer kubeconfig key referenced in artcd Task but no corresponding Jenkins credential exists",
+      "artcd.toml is created empty in Tekton whereas Jenkins uses proper config with ocp-build-data URL"
+    ]
+  }
+}
