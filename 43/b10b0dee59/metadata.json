@@ -1,0 +1,18 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "43b10b0dee59",
+  "strategy": "manual-commit",
+  "branch": "art-dashboard",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "art-dashboard/k8s/deployment.yaml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/43/b10b0dee59/0/metadata.json",
+      "transcript": "/43/b10b0dee59/0/full.jsonl",
+      "content_hash": "/43/b10b0dee59/0/content_hash.txt",
+      "prompt": "/43/b10b0dee59/0/prompt.txt"
+    }
+  ]
+}

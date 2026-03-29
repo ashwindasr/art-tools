@@ -1,0 +1,59 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "43b10b0dee59",
+  "session_id": "d6419a92-f868-411c-95b7-705c8f2f2ca2",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-29T22:23:57.822353Z",
+  "branch": "art-dashboard",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "art-dashboard/k8s/deployment.yaml"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "3f953c77456d",
+  "checkpoint_transcript_start": 40,
+  "transcript_lines_at_start": 40,
+  "session_metrics": {
+    "turn_count": 6
+  },
+  "summary": {
+    "intent": "Fix direct-linking to older pipeline runs that were being filtered out when URL parameters opened in a new tab with default 24h time range instead of the needed 48h+ range.",
+    "outcome": "Backend fix was implemented and committed (f5c9df7d), build succeeded and deployed after manual rollout restart. Deployment configuration was updated to add OpenShift ImageStream trigger annotations for automatic redeployment on new image pushes.",
+    "learnings": {
+      "repo": [
+        "art-dashboard uses OpenShift BuildConfig to build images and apps/v1 Deployment (not DeploymentConfig) for deployment",
+        "Pipeline runs have time range filters that can hide older runs when URL parameters are used with default time ranges"
+      ],
+      "code": [
+        {
+          "path": "art-dashboard/k8s/deployment.yaml",
+          "finding": "Added image.openshift.io/triggers annotation to enable automatic rollout when ImageStreamTag updates"
+        }
+      ],
+      "workflow": [
+        "OpenShift apps/v1 Deployments don't auto-rollout on new image pushes by default - imagePullPolicy: Always only pulls on pod creation",
+        "Manual 'kubectl rollout restart' needed after new image build completes unless ImageStream triggers are configured",
+        "Image digest verification can be done with 'kubectl get pod -o jsonpath' to check if deployment picked up new image"
+      ]
+    },
+    "friction": [
+      "Pre-commit hook required unsandboxed access and took 80+ seconds to complete",
+      "Deployment didn't auto-rollout after build completed, requiring manual intervention to restart deployment",
+      "New image was built but old pod continued running with stale image digest until manual restart"
+    ],
+    "open_items": [
+      "Verify ImageStream trigger annotation works correctly on next image build",
+      "Confirm ImageStream resource exists and is properly configured for art-dashboard"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-29T22:23:35.251726Z",
+    "agent_lines": 0,
+    "human_added": 50,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 50,
+    "agent_percentage": 0
+  }
+}

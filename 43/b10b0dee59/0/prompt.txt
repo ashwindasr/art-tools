@@ -1,0 +1,23 @@
+are piplines dashboard is not working anymore its not listing any logs https://art-dashboard-art-cd.apps.artc2023.pc3z.p1.openshiftapps.com/?run=build-fbc-wbvqr
+
+---
+
+use the kubernetes mcp server
+
+---
+
+ah its working - its just that https://art-dashboard-art-cd.apps.artc2023.pc3z.p1.openshiftapps.com/?run=build-layered-products-ympixd  is a job thats more that 24 hrs so its not being listed - if i use a url that points to a specific job, it does not need to filter by time range or anoh other filter
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+the code is in the config map in the art-cd namespace - what are you modifying here
+
+---
+
+i dont understand there is no code here - its diredtly defined inthe ocnfig map right - just direcly edit there
