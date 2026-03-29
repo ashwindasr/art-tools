@@ -1,0 +1,25 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "71743881c014",
+  "strategy": "manual-commit",
+  "branch": "add-tekton-resources-to-argocd",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "art-cluster/pipelines/config/argocd/project/art-cd/common/artcd-task.yaml",
+    "art-cluster/pipelines/config/argocd/project/art-cd/layered-products/build-fbc-pipeline.yaml",
+    "art-cluster/pipelines/config/argocd/project/art-cd/layered-products/build-layered-products-pipeline.yaml",
+    "art-cluster/pipelines/config/argocd/project/art-cd/layered-products/layered-products-scan-pipeline.yaml",
+    "art-cluster/pipelines/config/argocd/project/art-cd/layered-products/olm-bundle-konflux-pipeline.yaml",
+    "art-cluster/pipelines/config/argocd/project/art-cd/layered-products/release-from-fbc-pipeline.yaml",
+    "art-cluster/pipelines/config/argocd/project/art-cd/layered-products/schedule-layered-products-scan-cronjob.yaml",
+    "art-cluster/pipelines/config/argocd/project/art-cd/layered-products/schedule-layered-products-scan-pipeline.yaml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/71/743881c014/0/metadata.json",
+      "transcript": "/71/743881c014/0/full.jsonl",
+      "content_hash": "/71/743881c014/0/content_hash.txt",
+      "prompt": "/71/743881c014/0/prompt.txt"
+    }
+  ]
+}

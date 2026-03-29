@@ -1,0 +1,1 @@
+what about the tasks https://console-openshift-console.apps.artc2023.pc3z.p1.openshiftapps.com/tasks/ns/art-cd
