@@ -1,0 +1,70 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "96fde6f7c00d",
+  "session_id": "d6419a92-f868-411c-95b7-705c8f2f2ca2",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-29T22:17:32.728501Z",
+  "branch": "art-dashboard",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "art-dashboard/main.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "962c398708bf",
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "summary": {
+    "intent": "Fix the ART pipeline dashboard so that runs older than 24 hours can be accessed via direct URL links (e.g., ?run=build-layered-products-ympixd), as they were being filtered out by the default time range filter.",
+    "outcome": "Identified the root cause in main.py where get_run_detail() applied time filters to all runs, and implemented a fix adding fetch_single_run() and fetch_chain_nodes() helpers to directly fetch PipelineRuns from Kubernetes API when not found in the time-filtered set. Code changes ready to push.",
+    "learnings": {
+      "repo": [
+        "The dashboard runs from the art-dashboard branch of ashwindasr/art-tools fork, not the main repo",
+        "Dashboard code lives in art-dashboard/ directory and is built into container images via BuildConfig, not mounted from ConfigMaps",
+        "The deployed dashboard is a Python FastAPI/uvicorn app, not the Next.js art-dashboard-ui which is a separate older project",
+        "BuildConfig art-dashboard in namespace art-cd pulls from https://github.com/ashwindasr/art-tools.git ref art-dashboard",
+        "Pipeline runs have parent/child relationships via labels art.openshift.io/parent-pipelinerun and annotations tekton.dev/tags: triggered"
+      ],
+      "code": [
+        {
+          "path": "art-dashboard/main.py",
+          "line": 180,
+          "end_line": 191,
+          "finding": "get_run_detail() endpoint calls fetch_all_nodes(hours, '', '') which applies time cutoff filter, causing runs older than the time window to return {\"error\": \"not found\"}"
+        },
+        {
+          "path": "art-dashboard/main.py",
+          "line": 95,
+          "end_line": 125,
+          "finding": "fetch_all_nodes() calculates cutoff timestamp and skips PipelineRuns with startTime before the cutoff, which is the root cause of the direct-link issue"
+        }
+      ],
+      "workflow": [
+        "Use oc start-build art-dashboard -n art-cd to trigger new builds after pushing code changes",
+        "Kubernetes MCP server can inspect pods, deployments, ConfigMaps, and custom resources like Tekton PipelineRuns",
+        "PipelineRuns are Tekton custom resources (tekton.dev/v1) accessed via custom_api.get_namespaced_custom_object() and custom_api.list_namespaced_custom_object()"
+      ]
+    },
+    "friction": [
+      "Initial confusion about which dashboard repo/deployment was being discussed (art-dashboard vs art-dashboard-ui)",
+      "User repeatedly insisted code was in a ConfigMap despite evidence it was baked into container image",
+      "Had to investigate multiple resources (pods, deployments, BuildConfigs, ConfigMaps) to clarify the actual deployment architecture"
+    ],
+    "open_items": [
+      "Code changes need to be committed and pushed to origin/art-dashboard branch",
+      "New build must be triggered on cluster: oc start-build art-dashboard -n art-cd",
+      "Should verify fix works after deployment by testing with older run like build-layered-products-ympixd",
+      "Optional frontend optimization in templates/index.html to omit hours parameter for direct-linked runs was not implemented"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-29T22:17:00.251299Z",
+    "agent_lines": 305,
+    "human_added": 649,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 954,
+    "agent_percentage": 31.970649895178198
+  }
+}
