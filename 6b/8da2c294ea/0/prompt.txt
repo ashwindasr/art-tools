@@ -1,0 +1,5 @@
+we need the deployment to redeploy wehn there is a new image
+
+---
+
+when i search for the pipeline run it shows me the correct graph till build-fbc - but whne i copy past the url i only see till bundle - i don't see the build-fbc

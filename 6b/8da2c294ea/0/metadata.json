@@ -1,0 +1,56 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "6b8da2c294ea",
+  "session_id": "d6419a92-f868-411c-95b7-705c8f2f2ca2",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-29T22:27:33.351246Z",
+  "branch": "art-dashboard",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "art-dashboard/main.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "a26e334ef59d",
+  "checkpoint_transcript_start": 55,
+  "transcript_lines_at_start": 55,
+  "session_metrics": {
+    "turn_count": 7
+  },
+  "summary": {
+    "intent": "Fix issue where copying a URL with a pipeline run parameter didn't show the full build chain (specifically build-fbc children) when accessed with default 24h time filter, even though searching for the run showed the complete chain.",
+    "outcome": "Implemented direct-link time filter bypass using fetch_single_run() and fetch_chain_nodes() in main.py, and added auto-rollout annotation to Deployment. However, discovered that fetch_chain_nodes only traverses one level deep, missing grandchildren (build-fbc runs) in the pipeline chain.",
+    "learnings": {
+      "repo": [
+        "Build chain relationships encoded via art.openshift.io/parent-pipelinerun label and art.openshift.io/triggered-* annotations",
+        "Pipeline structure: build-layered-products → olm-bundle-konflux → build-fbc-* (multi-level chain)",
+        "ImageStream auto-rollout requires image.openshift.io/triggers annotation on Deployment"
+      ],
+      "code": [
+        {
+          "path": "art-dashboard/main.py",
+          "finding": "fetch_chain_nodes function only fetches direct children/parent, missing grandchildren in multi-level pipeline chains"
+        }
+      ],
+      "workflow": [
+        "Need to test with different time filters and direct URL access to catch chain traversal edge cases"
+      ]
+    },
+    "friction": [
+      "Initial fix didn't account for multi-level chain traversal",
+      "Single-level traversal in fetch_chain_nodes only revealed after testing with actual multi-level pipeline chain"
+    ],
+    "open_items": [
+      "Rewrite fetch_chain_nodes to do breadth-first recursive traversal of entire pipeline chain instead of stopping at one level"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-29T22:27:15.891788Z",
+    "agent_lines": 0,
+    "human_added": 6,
+    "human_modified": 24,
+    "human_removed": 0,
+    "total_committed": 6,
+    "agent_percentage": 0
+  }
+}
