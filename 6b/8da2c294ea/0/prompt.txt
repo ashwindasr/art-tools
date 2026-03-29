@@ -1,5 +1,11 @@
-we need the deployment to redeploy wehn there is a new image
+[Image]
+[Image]
+<image_files>
+The following images were provdied by the user and saved to the workspace for future use:
+1. /Users/asdas/.cursor/projects/Users-asdas-JetBrains-PycharmProjects-art-tools/assets/image-46d356c8-963e-431d-8368-29cfd5b564fd.png
+2. /Users/asdas/.cursor/projects/Users-asdas-JetBrains-PycharmProjects-art-tools/assets/image-9e40ed2b-f834-4e56-9730-0786e9e32d84.png
 
----
+These images can be copied for use in other locations.
+</image_files>
 
 when i search for the pipeline run it shows me the correct graph till build-fbc - but whne i copy past the url i only see till bundle - i don't see the build-fbc
