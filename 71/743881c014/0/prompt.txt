@@ -90,3 +90,7 @@ what about the tasks https://console-openshift-console.apps.artc2023.pc3z.p1.ope
 ---
 
 also no --no-verify
+
+---
+
+i already update the base image for the oras-cli - we can remove it from the release from FBC task -
