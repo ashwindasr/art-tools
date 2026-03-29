@@ -1,0 +1,48 @@
+i have deployed tekton results on the cluster - i want to enable the Tekton dAHSBOARD TOO
+
+---
+
+check the cluster - use the kubenertes MCP server https://console-openshift-console.apps.artc2023.pc3z.p1.openshiftapps.com/k8s/cluster/project.openshift.io~v1~Project
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+no i want this https://tekton.dev/docs/dashboard/
+
+---
+
+how does it work? wehre does it get the data from? i want to know the full flow and how it connects to this@/Users/asdas/Downloads/ART CD Cluster Logging & Pipeline Log Retention Infrastructure.md
+
+---
+
+i need to connect to tekton results too
+
+---
+
+lets do it
+
+---
+
+its fine for now - on the main page i see ReadOnly
+True
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+An error occurred when rerunning layered-products-scan-run-ntstt: check the dashboard logs for details. Status code: 403
+
+- when i tried a button it says this
+
+---
+
+it should have acces to modify only the art-cd namespace for now

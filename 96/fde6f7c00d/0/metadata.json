@@ -1,0 +1,63 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "96fde6f7c00d",
+  "session_id": "398c4eb0-6669-438e-9f8b-672de8a73cb2",
+  "strategy": "manual-commit",
+  "created_at": "2026-03-29T22:17:00.233535Z",
+  "branch": "art-dashboard",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "art-dashboard/main.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "014ee262ab1f",
+  "session_metrics": {
+    "turn_count": 7,
+    "context_tokens": 181761,
+    "context_window_size": 200000
+  },
+  "summary": {
+    "intent": "Enable the standalone Tekton Dashboard on the artc2023 OpenShift cluster and connect it to the existing Tekton Results infrastructure for log retention and viewing pipeline runs.",
+    "outcome": "Cleaned up a broken 2-year-old manual installation, deployed Tekton Dashboard v0.66.0 with external logs integration to Tekton Results API, switched it to read-write mode, and configured namespace-scoped RBAC for write access to art-cd namespace only.",
+    "learnings": {
+      "repo": [
+        "OpenShift Pipelines operator v1.21.0 does not include a TektonDashboard controller or CRD - the dashboard must be installed manually from upstream",
+        "The cluster uses `openshift-pipelines` namespace instead of upstream's `tekton-pipelines` default",
+        "Console-plugin (pipelines-console-plugin) provides limited UI in OpenShift Console but is separate from standalone Tekton Dashboard",
+        "Log retrieval flow: Dashboard → Results API (v1alpha3) → PostgreSQL → Loki Gateway → S3 bucket (artc2023-artcd-logs)",
+        "Tekton Dashboard's --external-logs expects /\u003cnamespace\u003e/\u003cpod\u003e/\u003ccontainer\u003e URL pattern, which Results API v1alpha3 supports at /apis/results.tekton.dev/v1alpha3/parents"
+      ],
+      "code": [],
+      "workflow": [
+        "Tekton Dashboard no longer ships OpenShift-specific release manifests (openshift-tekton-dashboard-release.yaml removed) - must adapt standard release.yaml",
+        "OpenShift requires creating a Route with edge TLS termination rather than using Ingress",
+        "Upstream Tekton Dashboard manifest defaults to --read-only=true and namespace tekton-pipelines, both need changing for OpenShift",
+        "RBAC should be namespace-scoped (Role/RoleBinding) for write access rather than cluster-wide ClusterRole modifications",
+        "Dashboard ServiceAccount needs create/delete/update/patch verbs on tekton.dev resources (pipelineruns, taskruns, etc.) for rerun functionality"
+      ]
+    },
+    "friction": [
+      "Old manually-installed dashboard deployment had been stuck in ImagePullBackOff for ~2 years pulling from inaccessible gcr.io registry",
+      "Initial confusion about whether OpenShift Pipelines operator manages the dashboard (it doesn't)",
+      "OpenShift-specific release manifest URL pattern no longer exists in newer Tekton releases",
+      "Switching to read-write mode caused 403 errors until RBAC was updated with write permissions",
+      "Had to manually adapt namespace references from tekton-pipelines to openshift-pipelines throughout the manifest"
+    ],
+    "open_items": [
+      "TektonConfig remains in 'Not Ready' state due to TektonAddon reconciliation issue (addon-custom-pipelinestemplate failing webhook validation)",
+      "Could extend dashboard write access to additional namespaces beyond art-cd as needed",
+      "No end-to-end verification of log retrieval from S3 through Results API integration was performed",
+      "PipelinesAsCode tekton-dashboard-url was updated but integration not tested"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-03-29T22:16:26.064712Z",
+    "agent_lines": 305,
+    "human_added": 649,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 954,
+    "agent_percentage": 31.970649895178198
+  }
+}
