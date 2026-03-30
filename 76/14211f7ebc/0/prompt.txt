@@ -1,0 +1,5 @@
+in /Users/asdas/JetBrains/PycharmProjects/art-tools/pyartcd/pyartcd/pipelines/release_from_fbc.py we raise an MR
+
+---
+
+i want to add the Jenkins job description to the MR @art-tools/pyartcd/pyartcd/pipelines/prepare_release_konflux.py:1117-1118 similar to how we do here
