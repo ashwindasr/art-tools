@@ -1,25 +1,93 @@
-@/Users/asdas/Downloads/Quay-ART onboarding.md /art-ai-helpers/plugins/onboard-external-operator/commands/onboard 
+<cursor_commands>
 
-see where we are now - next up i would like to create a new ocp-build-data branch
-
+--- Cursor Command: art-ai-helpers/plugins/onboard-external-operator/commands/onboard ---
+---
+description: Onboard a layered operator to the ART pipeline
+argument-hint: [jira-ticket-or-repo-url]
 ---
 
-@quay_ocp-build-data_branch_25b80328.plan.md (99-100) its art-quay-tenant @quay_ocp-build-data_branch_25b80328.plan.md (100-102) add this as well - the SA is created and added to jenkins
+## Name
+onboard-external-operator:onboard
 
----
+## Synopsis
+```
+/onboard-external-operator:onboard [jira-ticket-or-repo-url]
+```
 
-Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+## Description
+The `onboard-external-operator:onboard` command walks an ART team member through
+the full onboarding process for a layered operator. It generates configuration
+files across multiple repositories and creates PRs/MRs.
 
-To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+The onboarding process spans up to five repositories:
+1. **konflux-release-data** -- Tenant creation + release pipeline configuration
+2. **ocp-build-data** -- Image build definitions and group configuration
+3. **openshift/release** -- Commit forwarding to openshift-priv
+4. **art-tools** -- Product-to-namespace/kubeconfig mapping (new products only)
+5. **aos-cd-jobs** -- Jenkins credential bindings (new products only)
 
----
+## Implementation
 
-we can push to prod for this one direclty since this is a new branch
+Read and follow the skill at `plugins/onboard-external-operator/skills/onboard-external-operator/SKILL.md`.
 
----
+**Before generators:** maintain `onboarding-spec.json` from
+`skills/onboard-external-operator/onboarding-spec.example.json`, then run
+`scripts/validate_onboarding_spec.py` until it passes (see skill **Gate 0**).
 
-lets do it
+The skill defines a phased workflow:
 
----
+1. **Phase 0: Parse Request** -- Build and validate `onboarding-spec.json`; then extract/confirm details from Jira or ART-ist input
+2. **Phase 1: Tenant Creation** -- Check if tenant exists, create if needed
+3. **Phase 2: ocp-build-data** -- Generate image YAML, create PR
+4. **Phase 2.5: Pipeline Wiring** -- (New products only) Constants, kubeconfig, Jenkins
+5. **Phase 3: openshift/release** -- Add repo to openshift-priv whitelist
+6. **Phase 4: Release Config** -- Generate RPAs + constraints
+7. **Phase 5: Summary** -- Present PRs/MRs and merge-order checklist
+
+Scripts in `plugins/onboard-external-operator/scripts/` handle generation:
+- `validate_onboarding_spec.py` -- Validate `onboarding-spec.json` (JSON Schema + ART rules; `--no-check-paths` for placeholders)
+- `check_tenant.py` -- Check if a tenant already exists
+- `generate_tenant.py` -- Create tenant namespace/RBAC files
+- `generate_image_yaml.py` -- Render ocp-build-data image YAML from template
+- `generate_rpa.py` -- Render ReleasePlanAdmission YAML (stage + prod)
+- `generate_constraint.py` -- Render constraint YAML
+- `generate_whitelist_entry.py` -- Update openshift-priv whitelist
+
+## Return Value
+- **Format**: Summary of all PRs/MRs created with URLs and merge-order checklist
+- **Exit Code**: 0 on success, non-zero if any phase fails
+
+## Examples
+
+1. **Start with a Jira ticket**:
+   ```
+   /onboard-external-operator:onboard https://issues.redhat.com/browse/ART-12345
+   ```
+
+2. **Start with a repo URL**:
+   ```
+   /onboard-external-operator:onboard https://github.com/openshift/my-operator
+   ```
+
+3. **Start interactively**:
+   ```
+   /onboard-external-operator:onboard
+   ```
+
+## Arguments
+- `$1` (optional): Jira ticket URL or GitHub repository URL. If a Jira URL is
+  provided, the AI fetches ticket details to extract onboarding info. If a GitHub
+  URL is provided, org and repo are extracted. If omitted, the AI asks for details.
+
+## Notes
+- Requires local checkouts of ocp-build-data, openshift/release, and konflux-release-data
+- New products also need art-tools and aos-cd-jobs checkouts
+- Tenant MR is raised first so namespace secrets can be set up before builds run
+- Production RPAs default to `block-releases: "true"` (manual approval)
+- Stage RPAs default to `block-releases: "false"` (auto-release)
+- `git_url` in image YAML always points to `openshift-priv`
+
+--- End Command ---
+</cursor_commands>
 
 checkout from prod/main
