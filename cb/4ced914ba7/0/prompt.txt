@@ -1,0 +1,25 @@
+@/Users/asdas/Downloads/Quay-ART onboarding.md /art-ai-helpers/plugins/onboard-external-operator/commands/onboard 
+
+see where we are now - next up i would like to create a new ocp-build-data branch
+
+---
+
+@quay_ocp-build-data_branch_25b80328.plan.md (99-100) its art-quay-tenant @quay_ocp-build-data_branch_25b80328.plan.md (100-102) add this as well - the SA is created and added to jenkins
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+we can push to prod for this one direclty since this is a new branch
+
+---
+
+lets do it
+
+---
+
+checkout from prod/main
