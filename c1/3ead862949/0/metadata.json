@@ -1,0 +1,55 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "c13ead862949",
+  "session_id": "02c33b7e-4c0f-4227-9c6f-0730468a4cb4",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-01T13:54:38.583139Z",
+  "branch": "add-mr-approvers-support",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "pyartcd/tests/pipelines/test_release_from_fbc.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "4b24f81967fe",
+  "checkpoint_transcript_start": 74,
+  "transcript_lines_at_start": 74,
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "summary": {
+    "intent": "User was addressing review feedback on a merge request, including type annotations, API call ordering, JSON schema tightening, and formatting. After pushing the changes, tests that previously passed started failing.",
+    "outcome": "Identified that asyncio.get_event_loop() is deprecated in Python 3.10+ and causes RuntimeError when no event loop exists. Fixed by replacing asyncio.get_event_loop().run_until_complete() with asyncio.run() in test_release_from_fbc.py.",
+    "learnings": {
+      "repo": [
+        "This codebase implements MR approval rules functionality that loads approver configuration from group config and sets GitLab MR approval rules",
+        "Uses ruff for code formatting",
+        "Has 35 pipeline tests and 74 validator tests"
+      ],
+      "code": [
+        {
+          "path": "pyartcd/tests/pipelines/test_release_from_fbc.py",
+          "finding": "Tests were using deprecated asyncio.get_event_loop() pattern which fails in Python 3.10+ when there's no current event loop. Must use asyncio.run() instead to create a new event loop."
+        }
+      ],
+      "workflow": [
+        "Tests can pass in one environment but fail under make test due to stricter settings or different Python runtime behavior",
+        "asyncio.get_event_loop() is deprecated - asyncio.run() should be used to create and manage event loops in modern Python"
+      ]
+    },
+    "friction": [
+      "Tests passed initially (reported as 'all green') but failed when run via make test command",
+      "All 17 test failures had identical root cause (RuntimeError: no current event loop) masking the single underlying issue"
+    ],
+    "open_items": []
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-01T13:54:16.910959Z",
+    "agent_lines": 0,
+    "human_added": 0,
+    "human_modified": 17,
+    "human_removed": 2,
+    "total_committed": 0,
+    "agent_percentage": 0
+  }
+}

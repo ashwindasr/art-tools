@@ -1,0 +1,18 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "c13ead862949",
+  "strategy": "manual-commit",
+  "branch": "add-mr-approvers-support",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "pyartcd/tests/pipelines/test_release_from_fbc.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/c1/3ead862949/0/metadata.json",
+      "transcript": "/c1/3ead862949/0/full.jsonl",
+      "content_hash": "/c1/3ead862949/0/content_hash.txt",
+      "prompt": "/c1/3ead862949/0/prompt.txt"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+run format too
+
+Run make test
+uv run ruff check --output-format concise
+All checks passed!
+uv run ruff format --check
+Would reformat: pyartcd/tests/pipelines/test_release_from_fbc.py
+1 file would be reformatted, 460 files already formatted
+make: *** [Makefile:11: format-check] Error 1
+
+---
+
+make test is failing
+
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestLoadMrApproversFromGroupConfig::test_empty_output_returns_empty - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestLoadMrApproversFromGroupConfig::test_exception_returns_empty - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestLoadMrApproversFromGroupConfig::test_non_dict_returns_empty - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestLoadMrApproversFromGroupConfig::test_none_output_returns_empty - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestLoadMrApproversFromGroupConfig::test_null_output_returns_empty - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestLoadMrApproversFromGroupConfig::test_scalar_string_returns_empty - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestLoadMrApproversFromGroupConfig::test_valid_dict_returned - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestCreateShipmentMrApprovalRules::test_approval_rules_exception_logged_not_raised - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestCreateShipmentMrApprovalRules::test_dry_run_skips_set_mr_approval_rules - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestCreateShipmentMrApprovalRules::test_no_approvers_skips_call - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestCreateShipmentMrApprovalRules::test_non_dry_run_calls_set_mr_approval_rules - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestSetMrApprovalRules::test_deletes_non_art_and_creates_new - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestSetMrApprovalRules::test_dry_run_does_not_mutate - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestSetMrApprovalRules::test_empty_config_returns_early - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestSetMrApprovalRules::test_empty_url_returns_early - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestSetMrApprovalRules::test_multiple_groups_created - RuntimeError: There is no current event loop in thread 'MainThread'.
+FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestSetMrApprovalRules::test_skips_rule_when_no_users_resolved - RuntimeError: There is no current event loop in thread 'MainThread'.
