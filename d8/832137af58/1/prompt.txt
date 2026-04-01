@@ -1,0 +1,55 @@
+go through all the jobs that were changed in https://github.com/openshift-eng/art-tools/pull/2587/changes  - i want to trigger minimal jobs to test all the code paths we modfieid 
+
+use the Jenkins MCP server to find the jobs as well https://art-jenkins.apps.prod-stable-spoke1-dc-iad2.itup.redhat.com/job/aos-cd-builds/
+
+---
+
+you seem stuck - try again
+
+---
+
+you seem stuck again - for now just figure out which minimal set of jobs test all the code paths in the PR, find the job name in aos-cd-jobs and look at that directly
+
+---
+
+befroe that give me the minimal list of jobs that tests all of the code changes
+
+---
+
+lets run ocp4-scan-konflux for now with DRY_RUN true - mock doesnt work
+
+use the mcp server
+
+---
+
+https://art-jenkins.apps.prod-stable-spoke1-dc-iad2.itup.redhat.com/job/aos-cd-builds/job/build%252Focp4-scan-konflux/
+
+---
+
+check the logs, did all the code paths works with M1 M2 and M3? GITHUB_TOKEN should not have been used
+
+---
+
+add a commet to the GH PR summarizing this
+
+---
+
+lets run gen-assembly next show me the params first
+
+---
+
+assembly could be 4.18.36
+
+---
+
+it completed - check the logs to make sure GITHUB_TOKEN was not used
+
+---
+
+create a PR seperate from this from prod/main to fix this issue - do a redactation for all secret aths
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
