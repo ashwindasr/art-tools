@@ -1,0 +1,10 @@
+Verify each finding against the current code and only fix it if needed.
+
+In `@pyartcd/pyartcd/pipelines/release_from_fbc.py` around lines 621 - 628, The
+dry-run fails because set_mr_approval_rules(mr_url, approvers_config) resolves
+the MR from mr_url before honoring dry_run; change the logic in the block that
+gets approvers_config (using _load_mr_approvers_from_group_config) to first
+check self.dry_run and, if true, skip calling self._gitlab.set_mr_approval_rules
+and instead log the approvers_config (or intended rule changes) for dry-run
+output; when not dry_run, call self._gitlab.set_mr_approval_rules(mr_url,
+approvers_config) inside the try/except as before to preserve error handling.
