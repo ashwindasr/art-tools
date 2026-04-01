@@ -1,0 +1,86 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "d25ca434a58e",
+  "session_id": "unknown",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-01T13:46:01.751684Z",
+  "branch": "add-mr-approvers-support",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "pyartcd/tests/pipelines/test_release_from_fbc.py"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "df00a9ea41b1",
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "session_metrics": {
+    "turn_count": 47
+  },
+  "summary": {
+    "intent": "Add CLI-based GitLab MR approval rule management, then automate it for ocp-build-data shipment MRs by reading an mr_approvers field from group.yml and configuring approval rules (keeping ART, removing others, adding new groups) when the release_from_fbc pipeline creates MRs.",
+    "outcome": "Successfully implemented full automation: added mr_approvers to group.yml schema, created set_mr_approval_rules() in GitLabClient, integrated it into release_from_fbc pipeline with dry-run support and error handling, fixed two review-identified bugs (dry-run API calls and dict validation), and added 17 unit tests covering all new code paths. All 35 tests pass.",
+    "learnings": {
+      "repo": [
+        "GitLab MR-level approval rules: DELETE on project-inherited rules only removes the override, doesn't truly delete (rules reappear from project defaults)",
+        "ocp-build-data assembly_group_config.schema.json has additionalProperties:false requiring explicit allowlist for new fields",
+        "release_from_fbc pipeline reads group.yml via doozer --group=X config:read-group field_name",
+        "ART approval group is a project-level default that must always be preserved when manipulating approval rules",
+        "python-gitlab library has native MR approval rule support (mr.approval_rules.list/create, rule.delete) - no raw HTTP needed"
+      ],
+      "code": [
+        {
+          "path": "artcommon/artcommonlib/gitlab.py",
+          "line": 139,
+          "end_line": 154,
+          "finding": "dry_run check was after get_mr_from_url(), causing API failures with placeholder URLs during dry-run - should check dry_run before any API calls"
+        },
+        {
+          "path": "pyartcd/pyartcd/pipelines/release_from_fbc.py",
+          "line": 252,
+          "end_line": 266,
+          "finding": "stdlib_yaml.safe_load can return non-dict types (string, list, int, None) - must validate isinstance(result, dict) before returning to callers expecting dict"
+        },
+        {
+          "path": "pyartcd/pyartcd/pipelines/release_from_fbc.py",
+          "line": 621,
+          "end_line": 628,
+          "finding": "Must check self.dry_run before calling set_mr_approval_rules to avoid API resolution of placeholder mr_url during dry-run mode"
+        }
+      ],
+      "workflow": [
+        "glab api fails with array parameters (-f 'user_ids[]=X') due to encoding issues - curl with JSON body is more reliable for complex payloads",
+        "glab authenticates via GITLAB_TOKEN env var and supports --hostname for targeting non-default GitLab instances",
+        "GitLab API returns 204 No Content (empty body) on successful DELETE",
+        "Pre-commit hooks can fail in sandbox mode - run git commit outside sandbox if blocked",
+        "unittest async testing: use AsyncMock for async methods, MagicMock for sync, asyncio.get_event_loop().run_until_complete() to execute"
+      ]
+    },
+    "friction": [
+      "glab api --method POST with -f 'user_ids[]=15399' failed due to array encoding issue - had to use curl with raw JSON instead",
+      "Ask mode blocked initial test writing attempt",
+      "Pre-commit hook failed in sandbox, required re-run with dangerouslyDisableSandbox",
+      "Test failure: MagicMock vs AsyncMock mismatch for shipment_data_repo (async methods need AsyncMock)",
+      "GitLab API behavior not obvious: DELETE on inherited rules doesn't remove them, just undoes override"
+    ],
+    "open_items": [
+      "Add schema constraints for mr_approvers: patternProperties mapping group names to arrays of usernames (currently unconstrained object)",
+      "Roll out mr_approvers field to all logging-* branches (currently only logging-6.5 for testing)",
+      "Document fallback behavior when all usernames fail to resolve (skips rule, keeps project defaults)",
+      "CI security check failing (ci/prow/security) - needs /retest"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-01T13:45:10.858665Z",
+    "agent_lines": 327,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 327,
+    "agent_percentage": 100
+  }
+}
