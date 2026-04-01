@@ -1,0 +1,39 @@
+Verify each finding against the current code and only fix it if needed.
+
+In `@doozer/doozerlib/cli/config.py` around lines 179 - 182, The code incorrectly
+derives owner and hard-codes the repo name from runtime.data_path; update the
+logic that sets owner and repo so it parses both owner and repository name
+reliably from runtime.data_path (handle trailing slashes and nonstandard URLs),
+e.g. extract the last two non-empty path segments to get owner and repo_name
+instead of using runtime.data_path.split('/')[-2] and
+get_repo(f"{owner}/ocp-build-data"); then call
+get_github_client_for_org(owner).get_repo(f"{owner}/{repo_name}") and use
+runtime.group_commitish as before when reading 'releases.yml'.
+
+---
+
+Verify each finding against the current code and only fix it if needed.
+
+In `@elliott/elliottlib/cli/pin_builds_cli.py` around lines 117 - 118, The calls
+to blocking GitHub helpers are being invoked directly in async contexts; wrap
+synchronous functions like get_github_client_for_org and get_pr_merge_commit in
+asyncio.to_thread to avoid blocking the event loop (e.g., replace direct calls
+in pin_builds_cli.get_pr_merge_commit invocation and in assembly_pin_builds_cli
+where get_github_client_for_org is used with await asyncio.to_thread(...)). Also
+change internal blocking PyGithub calls inside get_pr_merge_commit (lines
+143–151) to be run via asyncio.to_thread when invoked from async callers,
+ensuring callers await the to_thread result.
+
+---
+
+Verify each finding against the current code and only fix it if needed.
+
+In `@pyartcd/pyartcd/pipelines/build_microshift_bootc.py` at line 90, The class
+currently sets self.github_client = get_github_client_for_org("openshift-eng")
+eagerly in the constructor which forces auth and hardcodes the org; change this
+to lazy initialization: remove that eager call and add a method or a lazy
+property (e.g., get_github_client or github_client property) that is only
+invoked along the PR path, derive the GitHub owner from DOOZER_DATA_PATH (parse
+the repo owner from the data path/fork) and pass that owner into
+get_github_client_for_org when creating the client so auth only happens when
+needed and uses the correct installation for the repo owner.

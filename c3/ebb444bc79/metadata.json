@@ -1,0 +1,19 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "c3ebb444bc79",
+  "strategy": "manual-commit",
+  "branch": "upgrade-pygithub-2x-github-app-auth",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "doozer/doozerlib/cli/config.py",
+    "pyartcd/pyartcd/pipelines/build_microshift_bootc.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/c3/ebb444bc79/0/metadata.json",
+      "transcript": "/c3/ebb444bc79/0/full.jsonl",
+      "content_hash": "/c3/ebb444bc79/0/content_hash.txt",
+      "prompt": "/c3/ebb444bc79/0/prompt.txt"
+    }
+  ]
+}
