@@ -42,3 +42,5 @@
 {"role":"assistant","message":{"content":[{"type":"text","text":"All **44 tests pass** and formatting is clean. The `TestCliValidation` tests now use `CliRunner` to invoke the real `release_from_fbc` Click command with a mock `Runtime`, exercising the actual CLI parsing and validation rather than duplicating the logic inline."}]}}
 {"role":"user","message":{"content":[{"type":"text","text":"<user_query>\ncommit and push\n</user_query>"}]}}
 {"role":"user","message":{"content":[{"type":"text","text":"<user_query>\nrun witout --no-veirfy\n</user_query>"}]}}
+{"role":"assistant","message":{"content":[{"type":"text","text":"Pre-commit hooks passed. Now pushing."}]}}
+{"role":"assistant","message":{"content":[{"type":"text","text":"Done. Committed `eb5216d12` and pushed to `origin/extra-image-nvrs`:\n\n```\n[extra-image-nvrs eb5216d12] Improve tests: use CliRunner and pipeline.run() instead of duplicated logic\n 1 file changed, 56 insertions(+), 42 deletions(-)\n   91e0f1178..eb5216d12  extra-image-nvrs -> extra-image-nvrs\n```\n\nPre-commit hooks passed cleanly this time."}]}}
