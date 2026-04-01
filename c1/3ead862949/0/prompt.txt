@@ -1,15 +1,3 @@
-run format too
-
-Run make test
-uv run ruff check --output-format concise
-All checks passed!
-uv run ruff format --check
-Would reformat: pyartcd/tests/pipelines/test_release_from_fbc.py
-1 file would be reformatted, 460 files already formatted
-make: *** [Makefile:11: format-check] Error 1
-
----
-
 make test is failing
 
 FAILED pyartcd/tests/pipelines/test_release_from_fbc.py::TestLoadMrApproversFromGroupConfig::test_empty_output_returns_empty - RuntimeError: There is no current event loop in thread 'MainThread'.
