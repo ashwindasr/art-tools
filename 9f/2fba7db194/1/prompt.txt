@@ -1,0 +1,64 @@
+https://github.com/openshift-eng/art-tools/pull/2663  rebase this PR
+
+---
+
+push to origin
+
+---
+
+wha does force-with-lease do
+
+---
+
+okayelts go
+
+---
+
+Verify each finding against the current code and only fix it if needed.
+
+In `@pyartcd/pyartcd/pipelines/release_from_fbc.py` around lines 778 - 781, The
+merged image NVR list can contain duplicates because categorized_nvrs['image']
+may already include entries also passed via self.extra_image_nvrs and
+create_snapshot() writes the merged list verbatim; fix by deduplicating before
+snapshot creation: after extending categorized_nvrs['image'] with
+self.extra_image_nvrs (or instead of extending), produce a de-duplicated list
+that preserves order (e.g., use an order-preserving dedupe like
+list(dict.fromkeys(...)) or similar) and assign that back to
+categorized_nvrs['image'] so create_snapshot() receives a unique set of image
+NVRs.
+
+---
+
+Verify each finding against the current code and only fix it if needed.
+
+In `@pyartcd/pyartcd/pipelines/release_from_fbc.py` around lines 871 - 874, The
+code merges self.extra_image_nvrs into categorized_nvrs['image'] without
+validating they are not FBC builds; update the logic before the merge in the
+same block to check each NVR in self.extra_image_nvrs for an FBC component
+(e.g., component name ending with "-fbc" or using the same detection helper used
+elsewhere), and either raise a validation error or separate them into the FBC
+category instead of adding them to categorized_nvrs['image']; then perform the
+deduplicated merge into categorized_nvrs['image'] only with the validated
+non-FBC NVRs.
+
+---
+
+Verify each finding against the current code and only fix it if needed.
+
+In `@pyartcd/pyartcd/pipelines/release_from_fbc.py` around lines 871 - 874, The
+code merges self.extra_image_nvrs into categorized_nvrs['image'] without
+validating they are not FBC builds; update the logic before the merge in the
+same block to check each NVR in self.extra_image_nvrs for an FBC component
+(e.g., component name ending with "-fbc" or using the same detection helper used
+elsewhere), and either raise a validation error or separate them into the FBC
+category instead of adding them to categorized_nvrs['image']; then perform the
+deduplicated merge into categorized_nvrs['image'] only with the validated
+non-FBC NVRs.
+
+---
+
+commit and push
+
+---
+
+run make format there is an error

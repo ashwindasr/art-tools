@@ -3,7 +3,7 @@
   "checkpoint_id": "9f2fba7db194",
   "strategy": "manual-commit",
   "branch": "extra-image-nvrs",
-  "checkpoints_count": 0,
+  "checkpoints_count": 2,
   "files_touched": [
     "pyartcd/pyartcd/pipelines/release_from_fbc.py",
     "pyartcd/tests/pipelines/test_release_from_fbc.py"
@@ -14,6 +14,12 @@
       "transcript": "/9f/2fba7db194/0/full.jsonl",
       "content_hash": "/9f/2fba7db194/0/content_hash.txt",
       "prompt": ""
+    },
+    {
+      "metadata": "/9f/2fba7db194/1/metadata.json",
+      "transcript": "/9f/2fba7db194/1/full.jsonl",
+      "content_hash": "/9f/2fba7db194/1/content_hash.txt",
+      "prompt": "/9f/2fba7db194/1/prompt.txt"
     }
   ]
 }
