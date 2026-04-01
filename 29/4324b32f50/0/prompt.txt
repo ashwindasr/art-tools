@@ -1,0 +1,39 @@
+if i give you this MR https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/453  would you be able to update the approvals using a CLI tool - it has multiple approval groups - i want to remove all of them and create a new group "QE" and then add me as the member asdas1 is my username in gitlab
+
+---
+
+no - use a cli tool don't use MCP server
+
+---
+
+@update_mr_approval_rules_53b9dcb8.plan.md (15-16) for now lets just add the new QE approval group
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+okay remove the groups besides ART
+
+---
+
+keep QE remove everything besides QE and ART
+
+---
+
+for all the logging-* branches in ocp-build-data, create a field called mr_approvers: with a field called QE that will affect gitlab user names - lets start with just one logging group to test
+
+then in art-tools update release-from-fbc job to do this curl command after the MR is created to update the approval groups. i.e. it should keep ART, remove everything else and then add groups recuresively based on the field in group.yml
+
+---
+
+lets do logging 6.5 first
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
