@@ -1,0 +1,58 @@
+rebase https://github.com/openshift-eng/art-tools/pull/2587
+
+---
+
+okay try again - checkout to the correct branch in local
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+Verify each finding against the current code and only fix it if needed.
+
+In `@pyartcd/pyartcd/pipelines/build_microshift.py` at line 81, The constructor
+eagerly binds self.github_client to "openshift-eng" which breaks forked
+--data-path flows; change the constructor to not set a fixed github client
+(leave self.github_client = None or remove that assignment) and instead resolve
+a client lazily where GitHub access occurs (e.g., inside get_file_from_branch or
+the method that parses repo owner from data_path) by calling
+get_github_client_for_org(parsed_repo_owner). If you still need a client
+specifically for the canonical upstream, create a separate attribute (e.g.,
+self.upstream_github_client) and only initialize that with
+get_github_client_for_org("openshift-eng") at the point where you intentionally
+target the canonical repo.
+
+---
+
+Verify each finding against the current code and only fix it if needed.
+
+In `@artcommon/artcommonlib/github_auth.py` around lines 147 - 150,
+_extract_org_from_github_url currently misses SSH URLs like
+ssh://git@github.com/owner/repo.git, causing get_github_git_auth_env to skip
+GitHub auth; update the URL-matching logic in _extract_org_from_github_url to
+accept ssh:// variants (e.g., allow optional scheme "ssh://" and optional "git@"
+user, and both ":" and "/" as host/path separators, and optional .git suffix) so
+it returns the org for "ssh://git@github.com/owner/repo.git" forms; apply the
+same regex/logic patch to the other copy of the extraction code referenced
+around the 200-206 area to keep behavior consistent.
+
+---
+
+Verify each finding against the current code and only fix it if needed.
+
+In `@pyartcd/pyartcd/pipelines/update_golang.py` around lines 486 - 487, The async
+function update_golang_streams is calling blocking PyGithub methods (e.g.,
+get_github_client_for_org(...).get_repo(...), upstream_repo.get_contents(...),
+yaml.load(...), and any repo fork calls) directly and verify_golang_builder_repo
+is synchronous but invoked from async code; wrap each blocking call in
+asyncio.to_thread(...) at the call site (for example wrap
+get_github_client_for_org(...).get_repo(...),
+upstream_repo.get_contents(...).decoded_content, yaml.load(...), and any
+fork/repo API calls) so they run off the event loop, and either make
+verify_golang_builder_repo async or call it via asyncio.to_thread(...) where
+it’s used; update all occurrences in update_golang_streams and the
+verify_golang_builder_repo call site accordingly.
