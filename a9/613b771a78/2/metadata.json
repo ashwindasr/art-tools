@@ -1,0 +1,78 @@
+{
+  "cli_version": "0.5.1",
+  "checkpoint_id": "a9613b771a78",
+  "session_id": "d1e642e0-9fb2-49eb-b32b-56f6f693467f",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-01T17:56:55.268361Z",
+  "branch": "upgrade-pygithub-2x-github-app-auth",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "doozer/doozerlib/backend/build_repo.py",
+    "doozer/tests/backend/test_build_repo.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "c226ec8a8d01",
+  "session_metrics": {
+    "turn_count": 13,
+    "context_tokens": 186650,
+    "context_window_size": 200000
+  },
+  "summary": {
+    "intent": "Test PR #2587 (PyGithub 2.x upgrade + GitHub App authentication) by running minimal Jenkins jobs to verify all three auth code paths (M1: PyGithub REST client, M2: GIT_ASKPASS for git CLI, M3: URL normalization) work correctly without falling back to GITHUB_TOKEN.",
+    "outcome": "Successfully tested 3 Jenkins jobs (ocp4-scan-konflux passed, gen-assembly passed, build-fbc revealed 7 GITHUB_TOKEN fallbacks). Fixed build_repo.py by adding github_url parameter to _get_commit_hash, passing github_url in ensure_source, and using exectools.cmd_gather_async for local-only git commands. All 26 tests pass.",
+    "learnings": {
+      "repo": [
+        "PR #2587 introduces 3 auth mechanisms: M1 (get_github_client_for_org for PyGithub), M2 (get_github_git_auth_env for git CLI via GIT_ASKPASS), M3 (ensure_github_https_url for URL normalization)",
+        "GitHub App has 4 installations (operator-framework, openshift-priv, openshift, openshift-eng); get_github_git_auth_env() falls back to GITHUB_TOKEN when called without org/URL and multiple installations exist",
+        "GitHub App installation tokens use ghs_ prefix, distinguishing them from PATs",
+        "Jenkins jobs accept ART_TOOLS_COMMIT parameter (format: ghuser@commitish) to test PR branches"
+      ],
+      "code": [
+        {
+          "path": "doozer/doozerlib/backend/build_repo.py",
+          "line": 262,
+          "finding": "_get_commit_hash static method didn't accept github_url parameter, causing GITHUB_TOKEN fallback when calling gather_git_async"
+        },
+        {
+          "path": "doozer/doozerlib/backend/build_repo.py",
+          "line": 127,
+          "finding": "ensure_source branch check (rev-parse --abbrev-ref HEAD) wasn't passing github_url to gather_git_async"
+        },
+        {
+          "path": "doozer/doozerlib/backend/build_repo.py",
+          "line": 324,
+          "finding": "from_local_dir used gather_git_async for local-only git commands (git config --get, rev-parse), triggering unnecessary auth; should use exectools.cmd_gather_async directly"
+        }
+      ],
+      "workflow": [
+        "Minimal test coverage strategy: identify distinct code paths (M1, M2, M3) and find jobs exercising each rather than running all jobs",
+        "DRY_RUN=true is safer for testing than MOCK=true (which doesn't work for all jobs)",
+        "For local-only git commands that don't contact remotes, bypass gather_git_async (which injects auth) and use exectools.cmd_gather_async directly",
+        "Jenkins MCP server can programmatically trigger builds and fetch logs for verification"
+      ]
+    },
+    "friction": [
+      "Jenkins job paths use URL encoding (build%2Focp4-scan-konflux) which complicates MCP queries",
+      "ToolSearch for Jenkins MCP server tools didn't return expected results initially",
+      "Bash Read tool's startLine/endLine parameters didn't work as expected, returning wrong line ranges",
+      "GIT_PASSWORD tokens logged in plaintext (security concern, being addressed separately)",
+      "Required multiple iterations to trace root cause of GITHUB_TOKEN fallback through doozer code paths"
+    ],
+    "open_items": [
+      "Commit and push build_repo.py fixes to PR branch",
+      "Re-run build-fbc job after fix to confirm GITHUB_TOKEN is no longer used",
+      "Update GitHub PR comment with build-fbc test results after verification",
+      "GIT_PASSWORD plaintext logging being tracked in separate chat"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-01T17:56:15.000424Z",
+    "agent_lines": 101,
+    "human_added": 3203,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 3304,
+    "agent_percentage": 3.056900726392252
+  }
+}

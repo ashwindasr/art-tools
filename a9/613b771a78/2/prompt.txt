@@ -1,0 +1,51 @@
+im working on the redaction in a seperate chat - update the GH commetn that we posted about the new results
+
+---
+
+lets trigger FBC next give me the params you plan to run first
+
+---
+
+lets just test for one operator build
+
+---
+
+art tools commit needs my PR branch
+
+---
+
+no assemblyu should be test
+
+---
+
+yes
+
+---
+
+check the logs - and confirm that GITHUB_TOKEN was not used
+
+---
+
+the fall back to GITHUB_TOKEN shouldn happen check the code and see whats the cause
+
+---
+
+make a plan for 1 and 2 - and want to know more about the code for3
+
+---
+
+@fix_build_repo_auth_fallback_84b032f9.plan.md (26-27) we would need to remove GITHUB_TOKEN in the future - the auth will help with rate liminting. why are we calling the git command before we know the repo
+
+---
+
+for now, can we skil auth for that?
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+commit and push to the PR

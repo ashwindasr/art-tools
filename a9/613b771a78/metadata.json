@@ -3,7 +3,7 @@
   "checkpoint_id": "a9613b771a78",
   "strategy": "manual-commit",
   "branch": "upgrade-pygithub-2x-github-app-auth",
-  "checkpoints_count": 8,
+  "checkpoints_count": 10,
   "files_touched": [
     "doozer/doozerlib/backend/build_repo.py",
     "doozer/tests/backend/test_build_repo.py"
@@ -20,6 +20,12 @@
       "transcript": "/a9/613b771a78/1/full.jsonl",
       "content_hash": "/a9/613b771a78/1/content_hash.txt",
       "prompt": ""
+    },
+    {
+      "metadata": "/a9/613b771a78/2/metadata.json",
+      "transcript": "/a9/613b771a78/2/full.jsonl",
+      "content_hash": "/a9/613b771a78/2/content_hash.txt",
+      "prompt": "/a9/613b771a78/2/prompt.txt"
     }
   ]
 }
