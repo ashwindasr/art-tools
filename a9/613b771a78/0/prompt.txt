@@ -1,0 +1,34 @@
+im seeing this on the cluster - check whats whatmaximum supported OCP version for openshift-operators-redhat/elasticsearch-operator.v5.8.21 is 4.18
+maximum supported OCP version for openshift-logging/cluster-logging.v6.1.9 is 4.18
+
+use the kubenertes MCP server
+
+---
+
+first lets remove elastic search opreator - what do we need to do
+
+---
+
+i clicked uninstall on the UI - check to see if its being removed
+
+---
+
+elasticsearches.logging.openshift.io, kibanas.logging.openshift.io) since there are no instances of either -- but that's optional and can be done anytime. - make a plan
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+okay what are the other issues
+
+---
+
+how can i upgrade cluster logging
+
+---
+
+okay i upgraded check again now for blocker status
