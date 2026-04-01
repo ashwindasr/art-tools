@@ -1,38 +1,163 @@
-if i give you this MR https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/453  would you be able to update the approvals using a CLI tool - it has multiple approval groups - i want to remove all of them and create a new group "QE" and then add me as the member asdas1 is my username in gitlab
+<attached_files>
 
----
+<code_selection path="file:///Users/asdas/.cursor/plans/mr_approval_rules_automation_b6104d31.plan.md" lines="1-152">
+     1|---
+     2|name: MR Approval Rules Automation
+     3|overview: Add an `mr_approvers` field to ocp-build-data `group.yml` (starting with logging-6.6), update the JSON schema validator, and modify `release_from_fbc.py` to configure MR approval rules after creating shipment MRs.
+     4|todos:
+     5|  - id: schema-update
+     6|    content: Add mr_approvers to assembly_group_config.schema.json properties
+     7|    status: pending
+     8|  - id: gitlab-client-method
+     9|    content: Add set_mr_approval_rules method to GitLabClient in artcommon/artcommonlib/gitlab.py
+    10|    status: pending
+    11|  - id: pipeline-load-approvers
+    12|    content: Add _load_mr_approvers_from_group_config method to release_from_fbc.py
+    13|    status: pending
+    14|  - id: pipeline-hook
+    15|    content: Hook approval rule setup after MR creation in create_shipment_mr
+    16|    status: pending
+    17|  - id: ocp-build-data
+    18|    content: Add mr_approvers field to logging-6.5 group.yml in ocp-build-data
+    19|    status: pending
+    20|  - id: tests
+    21|    content: Run unit tests for the changed files
+    22|    status: pending
+    23|isProject: false
+    24|---
+    25|
+    26|# MR Approval Rules Automation
+    27|
+    28|## Changes Across Repositories
+    29|
+    30|### 1. ocp-build-data -- Add `mr_approvers` to `group.yml` (logging-6.5 only, to test)
+    31|
+    32|**Branch:** `prod/logging-6.5`
+    33|
+    34|Add the following to [group.yml](ocp-build-data/group.yml) (top-level field, e.g. after `operator_image_ref_mode`):
+    35|
+    36|```yaml
+    37|mr_approvers:
+    38|  QE:
+    39|    - asdas1
+    40|    - rjohnson
+    41|    - fbladilo
+    42|```
+    43|
+    44|Each key is an approval group name; the value is a list of GitLab usernames. The pipeline will create one approval rule per key, resolve usernames to user IDs, and set `approvals_required: 1`.
+    45|
+    46|### 2. art-tools -- Update JSON Schema to allow `mr_approvers`
+    47|
+    48|**File:** [ocp-build-data-validator/validator/json_schemas/assembly_group_config.schema.json](ocp-build-data-validator/validator/json_schemas/assembly_group_config.schema.json)
+    49|
+    50|The root object has `"additionalProperties": false`, so `mr_approvers` must be added to the `properties` block (around line 561, before the closing brace):
+    51|
+    52|```json
+    53|"mr_approvers": {"type": "object"}
+    54|```
+    55|
+    56|This allows arbitrary keys (group names) with array values (usernames). Keeping it as `"type": "object"` is consistent with how other freeform fields like `"vars"` and `"compliance"` are defined in this schema.
+    57|
+    58|### 3. art-tools -- Add approval rule management to `GitLabClient`
+    59|
+    60|**File:** [artcommon/artcommonlib/gitlab.py](artcommon/artcommonlib/gitlab.py)
+    61|
+    62|Add a new method `set_mr_approval_rules(mr_url, approvers_config)` that:
+    63|
+    64|1. Parses the MR URL and gets the MR object (reusing `get_mr_from_url`)
+    65|2. Lists existing MR-level approval rules via `mr.approval_rules.list()`
+    66|3. Deletes all rules **except** those named "ART"
+    67|4. For each key in `approvers_config` (e.g. `{"QE": ["asdas1"]}`):
+    68|  - Resolves each username to a GitLab user ID via `self._client.users.list(username=name)`
+    69|  - Creates the approval rule via `mr.approval_rules.create({"name": key, "approvals_required": 1, "user_ids": [resolved_ids]})`
+    70|5. Respects `self.dry_run` -- logs but skips writes when dry-running
+    71|
+    72|The python-gitlab library (already a dependency) supports MR-level approval rules natively -- no raw curl/HTTP needed.
+    73|
+    74|### 4. art-tools -- Read `mr_approvers` from group config in the pipeline
+    75|
+    76|**File:** [pyartcd/pyartcd/pipelines/release_from_fbc.py](pyartcd/pyartcd/pipelines/release_from_fbc.py)
+    77|
+    78|Add a new method `_load_mr_approvers_from_group_config()` following the same pattern as `_load_product_from_group_config()` (line 221):
+    79|
+    80|```python
+    81|async def _load_mr_approvers_from_group_config(self) -> dict:
+    82|    """Load mr_approvers from group.yml via doozer."""
+    83|    try:
+    84|        cmd = ['doozer', f'--group={self.group}', 'config:read-group', 'mr_approvers']
+    85|        _, output, _ = await exectools.cmd_gather_async(cmd)
+    86|        output = output.strip()
+    87|        if output and output not in ('None', 'null'):
+    88|            import yaml
+    89|            return yaml.safe_load(output)
+    90|    except Exception as e:
+    91|        self.logger.warning(f"Failed to load mr_approvers: {e}")
+    92|    return {}
+    93|```
+    94|
+    95|### 5. art-tools -- Hook approval rule setup after MR creation
+    96|
+    97|**File:** [pyartcd/pyartcd/pipelines/release_from_fbc.py](pyartcd/pyartcd/pipelines/release_from_fbc.py)
+    98|
+    99|After the MR is created in `create_shipment_mr` (line 603), call the new method:
+   100|
+   101|```python
+   102|mr_url = mr.web_url
+   103|self.logger.info("Created Merge Request: %s", mr_url)
+   104|
+   105|# Configure approval rules from group.yml
+   106|approvers_config = await self._load_mr_approvers_from_group_config()
+   107|if approvers_config:
+   108|    await self._gitlab.set_mr_approval_rules(mr_url, approvers_config)
+   109|```
+   110|
+   111|This keeps ART as the default approval group (inherited from project settings), removes any other inherited groups (ERT, Docs, All Members), and adds the groups defined in `mr_approvers`.
+   112|
+   113|## Data Flow
+   114|
+   115|```mermaid
+   116|flowchart LR
+   117|    GroupYml["group.yml\n(mr_approvers)"] -->|"doozer config:read-group"| Pipeline["release_from_fbc.py"]
+   118|    Pipeline -->|"create MR"| MR["GitLab MR"]
+   119|    Pipeline -->|"set_mr_approval_rules()"| GitLabAPI["GitLab API\n(approval_rules)"]
+   120|    GitLabAPI -->|"delete non-ART rules\ncreate new rules"| MR
+   121|```
+   122|
+   123|
+   124|
+   125|## Git Workflow
+   126|
+   127|For both **art-tools** and **ocp-build-data**:
+   128|
+   129|1. `git fetch prod`
+   130|2. Create a topic branch from the appropriate prod branch
+   131|3. Make changes and commit
+   132|4. Push to `origin` (personal fork)
+   133|5. Raise a PR targeting `prod`
+   134|
+   135|**art-tools:**
+   136|
+   137|- Base: `prod/main`
+   138|- Branch: e.g. `add-mr-approvers-support`
+   139|- PR target: `prod/main`
+   140|
+   141|**ocp-build-data:**
+   142|
+   143|- Base: `prod/logging-6.5`
+   144|- Branch: e.g. `add-mr-approvers-logging-6.5`
+   145|- PR target: `prod/logging-6.5`
+   146|
+   147|## Testing
+   148|
+   149|- Start with **logging-6.5 only** in ocp-build-data to validate
+   150|- The pipeline change is generic -- any group with `mr_approvers` in group.yml will get custom approval rules; groups without it are unaffected
+   151|
+   152|
+</code_selection>
 
-no - use a cli tool don't use MCP server
+</attached_files>
 
----
-
-@update_mr_approval_rules_53b9dcb8.plan.md (15-16) for now lets just add the new QE approval group
-
----
-
-Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
-
-To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
-
----
-
-okay remove the groups besides ART
-
----
-
-keep QE remove everything besides QE and ART
-
----
-
-for all the logging-* branches in ocp-build-data, create a field called mr_approvers: with a field called QE that will affect gitlab user names - lets start with just one logging group to test
-
-then in art-tools update release-from-fbc job to do this curl command after the MR is created to update the approval groups. i.e. it should keep ART, remove everything else and then add groups recuresively based on the field in group.yml
-
----
-
-lets do logging 6.5 first
-
----
+MR Approval Rules Automation
 
 Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
 
