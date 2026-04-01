@@ -3,7 +3,7 @@
   "checkpoint_id": "d8832137af58",
   "strategy": "manual-commit",
   "branch": "redact-secrets-in-exectools-logging",
-  "checkpoints_count": 0,
+  "checkpoints_count": 8,
   "files_touched": [
     "artcommon/artcommonlib/exectools.py",
     "artcommon/tests/test_exectools.py"
@@ -20,6 +20,12 @@
       "transcript": "/d8/832137af58/1/full.jsonl",
       "content_hash": "/d8/832137af58/1/content_hash.txt",
       "prompt": "/d8/832137af58/1/prompt.txt"
+    },
+    {
+      "metadata": "/d8/832137af58/2/metadata.json",
+      "transcript": "/d8/832137af58/2/full.jsonl",
+      "content_hash": "/d8/832137af58/2/content_hash.txt",
+      "prompt": "/d8/832137af58/2/prompt.txt"
     }
   ]
 }

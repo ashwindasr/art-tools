@@ -1,0 +1,25 @@
+im working on the redaction in a seperate chat - update the GH commetn that we posted about the new results
+
+---
+
+lets trigger FBC next give me the params you plan to run first
+
+---
+
+lets just test for one operator build
+
+---
+
+art tools commit needs my PR branch
+
+---
+
+no assemblyu should be test
+
+---
+
+yes
+
+---
+
+check the logs - and confirm that GITHUB_TOKEN was not used
