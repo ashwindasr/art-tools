@@ -1,0 +1,167 @@
+make test is failing in art-tools
+
+E           AttributeError: <module 'pyartcd.pipelines.build_microshift' from '/Users/asdas/JetBrains/PycharmProjects/art-tools/pyartcd/pyartcd/pipelines/build_microshift.py'> does not have the attribute 'Github'
+
+---
+
+https://art-jenkins.apps.prod-stable-spoke1-dc-iad2.itup.redhat.com/job/aos-cd-builds/job/build%252Fpromote-assembly/1071/console  this job is failing now 
+
+dev@sha256:18c130d72eeb5ae2ce85eda4893c409a1a45b1742f9f15feeafa758c1be9983b --key awskms:///arn:aws:kms:us-east-1:076845653318:key/a0daa075-f46f-42ac-af8c-ba167ba93fdc --rekor-url=**** quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:18c130d72eeb5ae2ce85eda4893c409a1a45b1742f9f15feeafa758c1be9983b
+14:52:30  2026-04-02 18:52:30,414 pyartcd      WARNING Skipping microshift build because microshift advisory not found. If you need to build, first define microshift advisory in assembly config
+14:52:30  2026-04-02 18:52:30,752 pyartcd      INFO Sending a notification to QE and multi-arch QE...
+14:52:30  2026-04-02 18:52:30,754 pyartcd.mail INFO Saved email to /mnt/jenkins-workspace/_builds_build_promote-assembly_2/artcd_working/email/email-20260402-185230-multi_arch_zstream_testing@redhat.com_aos_qe@redhat.com-OCP_4.12.87_advisories_and_nightlies.eml
+14:52:30  2026-04-02 18:52:30,755 pyartcd.mail INFO Sending email to multi-arch-zstream-testing@redhat.com, aos-qe@redhat.com: OCP 4.12.87 advisories and nightlies - This is the current set of advisories for 4.12.87:
+14:52:30  - rhcos: https://errata.devel.redhat.com/advisory/165379
+14:52:30  - rpm: https://errata.devel.redhat.com/advisory/165378
+14:52:30  
+14:52:30  The nightlies used as reference for this release can be found in openshift-eng/ocp-build-data releases.yml file (in the corresponding release branch)
+14:52:30  Its definition is provided by the assembly found under key '4.12.87' in https://github.com/openshift-eng/ocp-build-data/blob/openshift-4.12/releases.yml
+14:52:30  
+14:52:30  JIRA ticket: https://redhat.atlassian.net/browse/ART-14833
+14:52:30  
+14:52:30  Advisory dashboard: https://art-dash.engineering.redhat.com/dashboard/release/openshift-4.12 
+14:52:30  
+14:52:30  Thanks.
+14:52:30  
+14:52:32  2026-04-02 18:52:32,232 pyartcd.mail INFO Sent email to multi-arch-zstream-testing@redhat.com, aos-qe@redhat.com: OCP 4.12.87 advisories and nightlies - This is the current set of advisories for 4.12.87:
+14:52:32  - rhcos: https://errata.devel.redhat.com/advisory/165379
+14:52:32  - rpm: https://errata.devel.redhat.com/advisory/165378
+14:52:32  
+14:52:32  The nightlies used as reference for this release can be found in openshift-eng/ocp-build-data releases.yml file (in the corresponding release branch)
+14:52:32  Its definition is provided by the assembly found under key '4.12.87' in https://github.com/openshift-eng/ocp-build-data/blob/openshift-4.12/releases.yml
+14:52:32  
+14:52:32  JIRA ticket: https://redhat.atlassian.net/browse/ART-14833
+14:52:32  
+14:52:32  Advisory dashboard: https://art-dash.engineering.redhat.com/dashboard/release/openshift-4.12 
+14:52:32  
+14:52:32  Thanks.
+14:52:32  
+14:52:32  2026-04-02 18:52:32,232 pyartcd      INFO Update QE's release tests repo...
+14:52:32  2026-04-02 18:52:32,232 artcommonlib.github_auth INFO Using GitHub App auth for org 'openshift'
+14:52:32  2026-04-02 18:52:32,352 artcommonlib.github_auth INFO Built installation map for orgs: ['operator-framework', 'openshift-priv', 'openshift', 'openshift-eng']
+14:52:32  2026-04-02 18:52:32,353 artcommonlib.github_auth INFO Auto-detected installation for org 'openshift'
+14:52:32  2026-04-02 18:52:32,354 artcommonlib.github_auth INFO Created cached Github client for org 'openshift'
+14:52:33  2026-04-02 18:52:32,781 artcommonlib.github_auth INFO Using GitHub App auth for org 'openshift-bot'
+14:52:42  2026-04-02 18:52:42,781 artcommonlib.github_auth INFO Using GitHub App auth for org 'openshift'
+14:52:42  2026-04-02 18:52:42,781 artcommonlib.github_auth INFO Auto-detected installation for org 'openshift'
+14:52:43  2026-04-02 18:52:42,951 artcommonlib.github_auth INFO Using GitHub App auth for org 'openshift-bot'
+14:52:53  2026-04-02 18:52:52,951 artcommonlib.github_auth INFO Using GitHub App auth for org 'openshift'
+14:52:53  2026-04-02 18:52:52,951 artcommonlib.github_auth INFO Auto-detected installation for org 'openshift'
+14:52:53  2026-04-02 18:52:53,120 artcommonlib.github_auth INFO Using GitHub App auth for org 'openshift-bot'
+14:52:53  2026-04-02 18:52:53,120 pyartcd      ERROR No GitHub App installation found for org 'openshift-bot'. Available orgs: ['operator-framework', 'openshift-priv', 'openshift', 'openshift-eng']. Set GITHUB_APP_INSTALLATION_ID_OPENSHIFT_BOT or GITHUB_APP_INSTALLATION_ID to specify one explicitly.
+14:52:53  Traceback (most recent call last):
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/pyartcd/pyartcd/pipelines/promote.py", line 444, in run
+14:52:53      self.handle_qe_notification(release_jira, release_name, impetus_advisories)
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/pyartcd/pyartcd/pipelines/promote.py", line 2034, in handle_qe_notification
+14:52:53      self._update_qe_repo(release_name, release_jira, impetus_advisories)
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 336, in wrapped_f
+14:52:53      return copy(f, *args, **kw)
+14:52:53             ^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 475, in __call__
+14:52:53      do = self.iter(retry_state=retry_state)
+14:52:53           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 376, in iter
+14:52:53      result = action(retry_state)
+14:52:53               ^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 418, in exc_check
+14:52:53      raise retry_exc.reraise()
+14:52:53            ^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 185, in reraise
+14:52:53      raise self.last_attempt.result()
+14:52:53            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/usr/lib64/python3.11/concurrent/futures/_base.py", line 449, in result
+14:52:53      return self.__get_result()
+14:52:53             ^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/usr/lib64/python3.11/concurrent/futures/_base.py", line 401, in __get_result
+14:52:53      raise self._exception
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 478, in __call__
+14:52:53      result = fn(*args, **kwargs)
+14:52:53               ^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/pyartcd/pyartcd/pipelines/promote.py", line 2039, in _update_qe_repo
+14:52:53      fork_repo = get_github_client_for_org("openshift-bot").get_repo("openshift-bot/release-tests")
+14:52:53                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/artcommon/artcommonlib/github_auth.py", line 259, in get_github_client_for_org
+14:52:53      installation_id = _resolve_installation_id(org, app_id, private_key)
+14:52:53                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/artcommon/artcommonlib/github_auth.py", line 290, in _resolve_installation_id
+14:52:53      raise ValueError(
+14:52:53  ValueError: No GitHub App installation found for org 'openshift-bot'. Available orgs: ['operator-framework', 'openshift-priv', 'openshift', 'openshift-eng']. Set GITHUB_APP_INSTALLATION_ID_OPENSHIFT_BOT or GITHUB_APP_INSTALLATION_ID to specify one explicitly.
+14:52:53  Traceback (most recent call last):
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/bin/artcd", line 10, in <module>
+14:52:53      sys.exit(main())
+14:52:53               ^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/pyartcd/pyartcd/__main__.py", line 115, in main
+14:52:53      cli()
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/click/core.py", line 1161, in __call__
+14:52:53      return self.main(*args, **kwargs)
+14:52:53             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/click/core.py", line 1082, in main
+14:52:53      rv = self.invoke(ctx)
+14:52:53           ^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/click/core.py", line 1697, in invoke
+14:52:53      return _process_result(sub_ctx.command.invoke(sub_ctx))
+14:52:53                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/click/core.py", line 1443, in invoke
+14:52:53      return ctx.invoke(self.callback, **ctx.params)
+14:52:53             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/click/core.py", line 788, in invoke
+14:52:53      return __callback(*args, **kwargs)
+14:52:53             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/click/decorators.py", line 92, in new_func
+14:52:53      return ctx.invoke(f, obj, *args, **kwargs)
+14:52:53             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/click/core.py", line 788, in invoke
+14:52:53      return __callback(*args, **kwargs)
+14:52:53             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/pyartcd/pyartcd/cli.py", line 26, in wrapper
+14:52:53      return loop.run_until_complete(f(*args, **kwargs))
+14:52:53             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/usr/lib64/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+14:52:53      return future.result()
+14:52:53             ^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/pyartcd/pyartcd/pipelines/promote.py", line 2600, in promote
+14:52:53      await pipeline.run()
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/pyartcd/pyartcd/pipelines/promote.py", line 444, in run
+14:52:53      self.handle_qe_notification(release_jira, release_name, impetus_advisories)
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/pyartcd/pyartcd/pipelines/promote.py", line 2034, in handle_qe_notification
+14:52:53      self._update_qe_repo(release_name, release_jira, impetus_advisories)
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 336, in wrapped_f
+14:52:53      return copy(f, *args, **kw)
+14:52:53             ^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 475, in __call__
+14:52:53      do = self.iter(retry_state=retry_state)
+14:52:53           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 376, in iter
+14:52:53      result = action(retry_state)
+14:52:53               ^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 418, in exc_check
+14:52:53      raise retry_exc.reraise()
+14:52:53            ^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 185, in reraise
+14:52:53      raise self.last_attempt.result()
+14:52:53            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/usr/lib64/python3.11/concurrent/futures/_base.py", line 449, in result
+14:52:53      return self.__get_result()
+14:52:53             ^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/usr/lib64/python3.11/concurrent/futures/_base.py", line 401, in __get_result
+14:52:53      raise self._exception
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-venv/lib64/python3.11/site-packages/tenacity/__init__.py", line 478, in __call__
+14:52:53      result = fn(*args, **kwargs)
+14:52:53               ^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/pyartcd/pyartcd/pipelines/promote.py", line 2039, in _update_qe_repo
+14:52:53      fork_repo = get_github_client_for_org("openshift-bot").get_repo("openshift-bot/release-tests")
+14:52:53                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/artcommon/artcommonlib/github_auth.py", line 259, in get_github_client_for_org
+14:52:53      installation_id = _resolve_installation_id(org, app_id, private_key)
+14:52:53                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14:52:53    File "/mnt/jenkins-workspace/_builds_build_promote-assembly_2/art-tools/artcommon/artcommonlib/github_auth.py", line 290, in _resolve_installation_id
+14:52:53      raise ValueError(
+14:52:53  ValueError: No GitHub App installation found for org 'openshift-bot'. Available orgs: ['operator-framework', 'openshift-priv', 'openshift', 'openshift-eng']. Set GITHUB_APP_INSTALLATION_ID_OPENSHIFT_BOT or GITHUB_APP_INSTALLATION_ID to specify one explicitly.
+
+---
+
+https://github.com/openshift/release-tests/blob/z-stream/_releases/4.21/4.21.z.yaml  is the repo
+
+---
+
+https://github.com/openshift/release-tests/pull/970  this is the PR that works - the account has changed from openshift-bot to openshift-art-build-bot - understand the code

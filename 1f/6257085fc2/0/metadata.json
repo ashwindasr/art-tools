@@ -1,0 +1,75 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "1f6257085fc2",
+  "session_id": "a425866d-890f-4338-bd34-3183fe2f3dad",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-02T19:17:49.729047Z",
+  "branch": "upgrade-pygithub-2x-github-app-auth",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "pyartcd/tests/pipelines/test_build_microshift.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "0942ad29b184",
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "summary": {
+    "intent": "Fix failing tests in art-tools after PyGithub 2.x upgrade with GitHub App authentication, then diagnose a production job failure in the promote-assembly pipeline.",
+    "outcome": "Fixed test_build_microshift.py by removing obsolete mock patches. Identified that production failure is caused by attempting GitHub App auth with 'openshift-bot' user account instead of 'openshift-art-build-bot', and mapped the scope of required changes.",
+    "learnings": {
+      "repo": [
+        "Codebase is migrating from direct Github(token) to get_github_client_for_org() with GitHub App authentication",
+        "GitHub App is installed on orgs: 'operator-framework', 'openshift-priv', 'openshift', 'openshift-eng' only",
+        "Bot account changed from 'openshift-bot' (user account) to 'openshift-art-build-bot' which has the necessary repo forks",
+        "openshift-bot is a GitHub user account, not an org, so GitHub App cannot authenticate as it"
+      ],
+      "code": [
+        {
+          "path": "pyartcd/pipelines/build_microshift.py",
+          "line": 15,
+          "finding": "Changed from 'from github import Github' to 'from artcommonlib.github_auth import get_github_client_for_org'"
+        },
+        {
+          "path": "pyartcd/tests/pipelines/test_build_microshift.py",
+          "finding": "Had @patch decorators for 'pyartcd.pipelines.build_microshift.Github' that no longer exists in module namespace"
+        },
+        {
+          "path": "pyartcd/pipelines/promote.py",
+          "line": 2039,
+          "finding": "Calls get_github_client_for_org('openshift-bot') which fails because GitHub App not installed on that user account"
+        },
+        {
+          "path": "artcommonlib/github_auth.py",
+          "line": 259,
+          "finding": "_resolve_installation_id() validates org has GitHub App installed and raises ValueError if not found"
+        }
+      ],
+      "workflow": [
+        "When refactoring authentication code, test mocks can become stale and need cleanup even if tests don't exercise the mocked code paths",
+        "GitHub App authentication is org-scoped, not compatible with user accounts used for forking workflows"
+      ]
+    },
+    "friction": [
+      "Test suite had obsolete mocks that weren't caught during the GitHub App auth migration",
+      "Production job failure wasn't prevented by existing tests",
+      "Bot account name is hardcoded in multiple locations instead of centralized as a constant"
+    ],
+    "open_items": [
+      "Replace all 'openshift-bot' references with 'openshift-art-build-bot' in promote.py (lines 2039, 2040, 2041, 2052, 2062)",
+      "Verify images_streams.py references to 'openshift-bot' are cosmetic (help text/CLI defaults) vs functional",
+      "Consider centralizing bot account name as a configuration constant to prevent future hardcoding issues",
+      "Deploy fix to resolve production promote-assembly job failures"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-02T19:17:21.485859Z",
+    "agent_lines": 0,
+    "human_added": 0,
+    "human_modified": 8,
+    "human_removed": 7,
+    "total_committed": 0,
+    "agent_percentage": 0
+  }
+}
