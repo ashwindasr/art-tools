@@ -1,0 +1,9 @@
+@art-tools/pyartcd/pyartcd/pipelines/olm_bundle_konflux.py where in this file are we triggering fbc builds for layered operators
+
+---
+
+create a new branch commit and push to origin and raise a PR to prod - its so that build-fbcs don't start at the same time creating timestamp collisions
+
+---
+
+we don't need it for openshift, since it only triggers one fbc job
