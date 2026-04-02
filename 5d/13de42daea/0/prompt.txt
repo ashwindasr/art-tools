@@ -1,0 +1,29 @@
+we are deprecating the @release-artist handle in our codebase to @release-tooling-triage 
+
+look at all the repos in this cursoer workspace and change them
+
+---
+
+we are deprecating the @release-artist handle in our codebase to @automated-tooling-triage 
+
+look at all the repos in this cursoer workspace and change them
+
+---
+
+we can skip konflux-reelase-data
+
+---
+
+what about art-bot/
+
+---
+
+for all of them, create a new branch from prod/main or prod/master if main does not exist, create a new branch commit and raisea PR to prod
+
+---
+
+lets go
+
+---
+
+just say deprecate release aritss in all the PR titles
