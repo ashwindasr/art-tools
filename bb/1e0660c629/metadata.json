@@ -1,0 +1,18 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "bb1e0660c629",
+  "strategy": "manual-commit",
+  "branch": "fbc-build-sleep",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "pyartcd/pyartcd/pipelines/olm_bundle_konflux.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/bb/1e0660c629/0/metadata.json",
+      "transcript": "/bb/1e0660c629/0/full.jsonl",
+      "content_hash": "/bb/1e0660c629/0/content_hash.txt",
+      "prompt": "/bb/1e0660c629/0/prompt.txt"
+    }
+  ]
+}
