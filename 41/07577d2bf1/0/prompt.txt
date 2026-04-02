@@ -1,5 +1,1 @@
-rebase this PR https://github.com/openshift-eng/art-tools/pull/2587
-
----
-
-https://art-jenkins.apps.prod-stable-spoke1-dc-iad2.itup.redhat.com/job/aos-cd-builds/job/build%252Fgen-assembly/1102/parameters/  - look at this log console using the MCP server - i see GITHUB_TOKEN being used
+yes - add it as a new commit and push to the branch
