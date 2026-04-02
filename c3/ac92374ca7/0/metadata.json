@@ -1,0 +1,56 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "c3ac92374ca7",
+  "session_id": "14763c40-bea3-4203-990f-9d57d6fb1e56",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-02T18:19:27.111962Z",
+  "branch": "deprecate-release-artists-handle",
+  "checkpoints_count": 5,
+  "files_touched": [],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "128e6d3e7e13",
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "summary": {
+    "intent": "Replace the deprecated @release-artist Slack handle with @automated-tooling-triage across multiple repos in the workspace, with different replacement strategies for Slack handles versus generic team references.",
+    "outcome": "Identified all occurrences across 5 repos (excluding konflux-release-data and art-bot), created feature branches from prod/main or prod/master for each repo, and began making the file edits. Transcript ends mid-execution.",
+    "learnings": {
+      "repo": [
+        "art-ai-helpers uses GitLab while other repos (art-tools, aos-cd-jobs, art-docs, art-dashboard-ui) use GitHub",
+        "Default branches vary by repo: art-tools and art-ai-helpers use main, others use master",
+        "art-bot repo exists at /Users/asdas/JetBrains/PycharmProjects/art-bot but contained no occurrences",
+        "konflux-release-data was explicitly excluded from the migration"
+      ],
+      "code": [
+        {
+          "path": "art-tools/pyartcd/pyartcd/pipelines/art_notify.py",
+          "line": 21,
+          "finding": "RELEASE_ARTIST_HANDLE constant stores 'release-artists' and is referenced across multiple pipeline files"
+        },
+        {
+          "path": "art-tools/doozer/doozerlib/cli/images_streams.py",
+          "line": 969,
+          "end_line": 1622,
+          "finding": "Multiple @release-artists references in GitHub PR text generation"
+        }
+      ],
+      "workflow": [
+        "User clarified to replace Slack handles (@release-artists) with @automated-tooling-triage and generic team references with 'ART Team'",
+        "Standard workflow: fetch from prod remote, create branch, make edits, commit, push to origin fork, create PR to prod",
+        "Untracked files like create_f2f_tickets.sh should be skipped from changes"
+      ]
+    },
+    "friction": [
+      "art-bot was not in Cursor workspace; user had to provide explicit path",
+      "Assistant started in Plan mode which blocked non-markdown edits; required manual switch to Agent mode",
+      "Had to individually verify default branch (main vs master) for each repo's prod remote"
+    ],
+    "open_items": [
+      "File edits were in progress when transcript ended - completion status unknown",
+      "PRs still need to be created after commits are pushed",
+      "Untracked file art-tools/create_f2f_tickets.sh contains occurrences but was skipped"
+    ]
+  }
+}
