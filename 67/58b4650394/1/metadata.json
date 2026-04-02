@@ -1,0 +1,83 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "6758b4650394",
+  "session_id": "83beff62-7744-4e94-86b3-bfc4b0ff2e38",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-02T20:06:57.730016Z",
+  "branch": "fix-fbc-nvr-ocp-version",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "doozer/doozerlib/backend/konflux_fbc.py",
+    "doozer/tests/backend/test_konflux_fbc.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "6ce8e54f651c",
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "summary": {
+    "intent": "Fix a bug where FBC builds for layered operators targeting different OCP versions (4.16, 4.18) were generating identical NVRs, causing collisions. The solution was to include the target OCP version in the NVR release field.",
+    "outcome": "Created and implemented a fix by modifying KonfluxFbcRebaser.rebase() to append .ocp{major}.{minor} to the release string for non-OpenShift groups, resulting in unique NVRs like oadp-operator-fbc-1.4.9-20260319154431.ocp4.16. Updated corresponding tests to match the new format.",
+    "learnings": {
+      "repo": [
+        "For layered operators (non-OpenShift groups), the version field contains the operator's version, not the OCP version, causing NVR collisions across OCP targets",
+        "For native OpenShift operators (openshift-* groups), the version field is already the OCP version, so no collision occurs",
+        "FBC NVR format: {distgit_key}-fbc-{version}-{release}",
+        "Branch naming already includes OCP version for non-OpenShift groups but NVR did not",
+        "OCP version is determined from runtime.get_minor_version() and runtime.assembly_basis_event().X_version"
+      ],
+      "code": [
+        {
+          "path": "doozer/doozerlib/backend/konflux_fbc.py",
+          "line": 1022,
+          "end_line": 1023,
+          "finding": "NVR construction happens before OCP version determination, requiring refactoring to move OCP version logic earlier"
+        },
+        {
+          "path": "doozer/doozerlib/backend/konflux_fbc.py",
+          "line": 1038,
+          "end_line": 1041,
+          "finding": "OCP version is determined here but only used for branch naming, not for NVR construction"
+        },
+        {
+          "path": "doozer/doozerlib/backend/konflux_fbc.py",
+          "line": 1390,
+          "end_line": 1390,
+          "finding": "_update_catalog_dockerfile() receives release as parameter, so modified release value flows through naturally"
+        },
+        {
+          "path": "doozer/tests/backend/test_konflux_fbc.py",
+          "line": 299,
+          "end_line": 389,
+          "finding": "Tests use group='test-group' (non-OpenShift), so expected NVRs need OCP suffix after the fix"
+        }
+      ],
+      "workflow": [
+        "When fixing NVR collisions, append version info to release field rather than modifying version field to maintain RPM conventions",
+        "Move contextual data determination (like OCP version) before constructing composite values (like NVR) that depend on it",
+        "Test mocks need to reflect the actual output format changes, including return values and assertions"
+      ]
+    },
+    "friction": [
+      "OCP version was determined after NVR construction, requiring refactoring to reorder logic",
+      "Had to trace through multiple pipeline files (olm_bundle_konflux.py → build_fbc.py → konflux_fbc.py) to understand full data flow",
+      "Multiple code locations reference NVR format (rebase method, _update_catalog_dockerfile, tests), requiring careful tracking of propagation"
+    ],
+    "open_items": [
+      "Run tests to verify the fix passes (task 'run-tests')",
+      "Commit changes with descriptive message (task 'commit-push')",
+      "Push branch to origin remote (task 'commit-push')",
+      "Raise PR targeting prod/main (task 'raise-pr')"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-02T20:06:24.593968Z",
+    "agent_lines": 0,
+    "human_added": 9,
+    "human_modified": 13,
+    "human_removed": 0,
+    "total_committed": 9,
+    "agent_percentage": 0
+  }
+}

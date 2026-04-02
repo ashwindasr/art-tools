@@ -1,0 +1,23 @@
+In art-tools checkout a new branch from prod/main
+
+Extracting FBC NVR from FBC pullspec: quay.io/redhat-user-workloads/ocp-art-tenant/art-fbc:v4.18__operator_nvr__oadp-operator-container-1.4.9-202603191502.p2.g0ca34fb.assembly.stream.el9
+06:05:32  2026-03-30 22:05:32,241 art_tools.artcommonlib.exectools INFO $0: ['oc', 'image', 'info', 'quay.io/redhat-user-workloads/ocp-art-tenant/art-fbc:v4.18__operator_nvr__oadp-operator-container-1.4.9-202603191502.p2.g0ca34fb.assembly.stream.el9', '--filter-by-os', 'amd64', '-o', 'json', '--registry-config', ****] - [cwd=None]: Executing:cmd_gather: oc image info quay.io/redhat-user-workloads/ocp-art-tenant/art-fbc:v4.18__operator_nvr__oadp-operator-container-1.4.9-202603191502.p2.g0ca34fb.assembly.stream.el9 --filter-by-os amd64 -o json --registry-config ****
+06:05:33  2026-03-30 22:05:33,027 pyartcd.pipelines.release_from_fbc INFO ✓ Extracted FBC NVR: oadp-operator-fbc-1.4.9-20260319154431
+
+Extracting FBC NVR from FBC pullspec: quay.io/redhat-user-workloads/ocp-art-tenant/art-fbc:v4.16__operator_nvr__oadp-operator-container-1.4.9-202603191502.p2.g0ca34fb.assembly.stream.el9
+06:05:34  2026-03-30 22:05:33,832 art_tools.artcommonlib.exectools INFO $2: ['oc', 'image', 'info', 'quay.io/redhat-user-workloads/ocp-art-tenant/art-fbc:v4.16__operator_nvr__oadp-operator-container-1.4.9-202603191502.p2.g0ca34fb.assembly.stream.el9', '--filter-by-os', 'amd64', '-o', 'json', '--registry-config', ****] - [cwd=None]: Executing:cmd_gather: oc image info quay.io/redhat-user-workloads/ocp-art-tenant/art-fbc:v4.16__operator_nvr__oadp-operator-container-1.4.9-202603191502.p2.g0ca34fb.assembly.stream.el9 --filter-by-os amd64 -o json --registry-config ****
+06:05:35  2026-03-30 22:05:34,697 pyartcd.pipelines.release_from_fbc INFO ✓ Extracted FBC NVR: oadp-operator-fbc-1.4.9-20260319154431
+
+two fbc build ended up having the same release NVR - even though the target versions are different
+
+for layered operator builds, add the target ocp version to the NVR
+
+---
+
+add to the plan - checkout to a new branch commit push to origin and raise a PR to prod
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
