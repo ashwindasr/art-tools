@@ -1,0 +1,56 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "6758b4650394",
+  "session_id": "577429d2-612d-4045-a3b9-3be7c61d6f7e",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-02T20:06:24.128894Z",
+  "branch": "fix-fbc-nvr-ocp-version",
+  "checkpoints_count": 1,
+  "files_touched": [],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "5971e64c4f5f",
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "summary": {
+    "intent": "Migrate Pipelines-as-Code authentication from GitHub PAT to GitHub App credentials on an OpenShift/Konflux cluster. The pipelines-as-code-secret (kubernetes.io/basic-auth) is used by manually-triggered PipelineRuns for git-clone operations.",
+    "outcome": "Researched architecture and identified that PAC's secret-auto-create only works for webhook-triggered runs, not manual runs. Proposed two approaches: art-tools patching the secret before each run, or a CronJob periodically refreshing it. User rejected Option A due to concurrent build race conditions and wants to explore the CronJob approach.",
+    "learnings": {
+      "repo": [
+        "ART uses manually-triggered PipelineRuns via konflux_client.py, not PAC webhooks",
+        "PAC is explicitly disabled for ART components via build.appstudio.openshift.io/status annotation",
+        "The pipelines-as-code-secret is mounted as git-auth workspace into git-clone-oci-ta and prefetch-dependencies-oci-ta tasks",
+        "artcd-task.yaml already mounts github-app-credentials secret with GITHUB_APP_ID and GITHUB_APP_PRIVATE_KEY_PATH",
+        "github_auth.py in artcommon already has GitHub App installation token generation logic with PAT fallback",
+        "Two distinct secrets named pipelines-as-code-secret exist: one in PAC controller namespace, one in build namespaces"
+      ],
+      "code": [
+        {
+          "path": "doozer/doozerlib/backend/konflux_client.py",
+          "line": 497,
+          "end_line": 500,
+          "finding": "PAC is explicitly disabled via annotation: build.appstudio.openshift.io/status with pac.state=disabled"
+        }
+      ],
+      "workflow": [
+        "PAC's secret-auto-create feature only triggers for webhook-generated PipelineRuns, not manually created ones",
+        "GitHub App installation tokens expire after 1 hour, requiring continuous refresh unlike static PATs",
+        "Tekton git-clone-oci-ta task requires kubernetes.io/basic-auth format with username/password fields, cannot use App credentials directly",
+        "KonfluxClient already has CoreV1Api imported for Kubernetes secret operations"
+      ]
+    },
+    "friction": [
+      "Multiple concurrent builds would race to patch the same secret if refreshed at build time",
+      "PAC's native GitHub App support doesn't work for manually-triggered PipelineRuns",
+      "1-hour token expiration requires active refresh mechanism vs. static PAT approach"
+    ],
+    "open_items": [
+      "Design and implement CronJob-based secret refresh mechanism on the cluster",
+      "Determine optimal CronJob frequency (30-45 min suggested to avoid 60min expiration)",
+      "Configure RBAC permissions for CronJob to patch secrets in build namespace",
+      "Mount GitHub App credentials (app-id and private-key) into CronJob pod",
+      "Handle token refresh timing window to prevent expiration gaps between CronJob runs"
+    ]
+  }
+}

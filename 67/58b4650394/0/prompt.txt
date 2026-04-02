@@ -1,0 +1,12 @@
+there is a secret pipelines-as-code-secret
+kubernetes.io/basic-auth on the cluster - do not read it
+
+we are migrating from GH PAT token to GH App creds. how to make it work on an openshift cluser
+
+---
+
+https://github.com/openshift-priv/art-konflux-template/blob/main/.tekton/art-konflux-template-push.yaml
+
+---
+
+no - i want to add something on the cluster and have it automatically pull when a PipelineRun starts
