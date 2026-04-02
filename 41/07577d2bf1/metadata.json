@@ -1,0 +1,18 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "4107577d2bf1",
+  "strategy": "manual-commit",
+  "branch": "upgrade-pygithub-2x-github-app-auth",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "pyartcd/pyartcd/git.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/41/07577d2bf1/0/metadata.json",
+      "transcript": "/41/07577d2bf1/0/full.jsonl",
+      "content_hash": "/41/07577d2bf1/0/content_hash.txt",
+      "prompt": "/41/07577d2bf1/0/prompt.txt"
+    }
+  ]
+}

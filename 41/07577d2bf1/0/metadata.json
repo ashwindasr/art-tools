@@ -1,0 +1,73 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "4107577d2bf1",
+  "session_id": "ebb6344a-0d17-4fb3-98ec-a619c23c160e",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-02T13:46:48.774429Z",
+  "branch": "upgrade-pygithub-2x-github-app-auth",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "pyartcd/pyartcd/git.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "3aad5bff8ec2",
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "summary": {
+    "intent": "Rebase PR #2587 (GitHub App authentication support) onto the latest main branch to resolve merge conflicts and update the PR.",
+    "outcome": "Successfully rebased the PR, resolved conflicts in build_fbc.py and build_microshift.py, then discovered and fixed a bug where local git operations were falling back to GITHUB_TOKEN instead of using GitHub App auth due to calling get_github_git_auth_env() without a URL.",
+    "learnings": {
+      "repo": [
+        "art-tools uses GitHub App authentication with 4 installations across orgs: operator-framework, openshift-priv, openshift, openshift-eng",
+        "get_github_client_for_org(org) is the primary authenticated client factory; get_github_git_auth_env(url) needs a URL to determine which installation to use",
+        "When multiple installations exist and no URL is provided, the auth helper refuses to auto-pick and falls back to GITHUB_TOKEN (PAT)",
+        "Jenkins CI jobs consume GitHub App credentials from Jenkins secrets and reveal runtime auth behavior in console logs"
+      ],
+      "code": [
+        {
+          "path": "pyartcd/pyartcd/git.py",
+          "line": 87,
+          "end_line": 89,
+          "finding": "add_all() was calling _git_env() without a URL, triggering GitHub App installation ambiguity and falling back to GITHUB_TOKEN for a purely local 'git add' operation that doesn't need any auth"
+        },
+        {
+          "path": "pyartcd/pyartcd/git.py",
+          "line": 141,
+          "finding": "commit_push() calls add_all() which creates its own auth env; local operations (add, status, commit) don't need GitHub auth, only git push does"
+        },
+        {
+          "path": "pyartcd/pyartcd/git.py",
+          "finding": "Fix pattern: added _local_env() returning only GIT_NO_PROMPTS for local-only operations; use _git_env_for_remote(remote) for operations contacting remotes like fetch/push"
+        }
+      ],
+      "workflow": [
+        "Jenkins MCP server tools enable searching build console logs for specific patterns to diagnose runtime auth behavior",
+        "Rebase conflict resolution requires understanding both what main added (e.g., slack channel routing in build_fbc.py) and what the PR removed (GITHUB_TOKEN checks)",
+        "Production Jenkins logs reveal issues that unit tests miss - runtime auth fallback behavior only visible in CI console output"
+      ]
+    },
+    "friction": [
+      "Merge conflicts in build_fbc.py and build_microshift.py required careful manual resolution to preserve slack channel routing from main while keeping PR's auth changes",
+      "GITHUB_TOKEN fallback issue wasn't caught by tests - only discovered by manually inspecting Jenkins console logs after the fact",
+      "Ambiguous installation error message ('GitHub App has 4 installations') could be clearer about requiring explicit org or URL",
+      "Had to trace through multiple layers (Jenkins log → GitRepository → get_github_git_auth_env → _git_env) to find root cause of auth fallback"
+    ],
+    "open_items": [
+      "GIT_PASSWORD (GitHub App token) logging in plaintext tracked in separate PR #2694",
+      "CodeRabbit review comments about async/await patterns for PyGithub blocking calls still unaddressed",
+      "ci/prow/security test failure mentioned in PR - may need separate investigation",
+      "Multiple CodeRabbit suggestions around offloading PyGithub calls to asyncio.to_thread in various pipeline files"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-02T13:46:09.16748Z",
+    "agent_lines": 19,
+    "human_added": 40,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 59,
+    "agent_percentage": 32.20338983050847
+  }
+}
