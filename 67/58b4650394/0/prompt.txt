@@ -10,3 +10,7 @@ https://github.com/openshift-priv/art-konflux-template/blob/main/.tekton/art-kon
 ---
 
 no - i want to add something on the cluster and have it automatically pull when a PipelineRun starts
+
+---
+
+we will have multiple builds running each one would patch the secret that is not ideal - talk to me about the cron job
