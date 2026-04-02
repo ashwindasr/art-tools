@@ -1,0 +1,74 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "5d13de42daea",
+  "session_id": "unknown",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-02T18:30:28.885644Z",
+  "branch": "deprecate-release-artists-handle",
+  "checkpoints_count": 21,
+  "files_touched": [
+    "pyartcd/pyartcd/pipelines/prepare_release_konflux.py"
+  ],
+  "agent": "Claude Code",
+  "turn_id": "5fb277d8cfe7",
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "session_metrics": {
+    "turn_count": 23
+  },
+  "summary": {
+    "intent": "Deprecate the @release-artist Slack handle across all workspace repos, replacing it with @automated-tooling-triage for handle references and 'ART team' for generic team mentions.",
+    "outcome": "Successfully updated 5 repositories (art-tools, aos-cd-jobs, art-ai-helpers, art-docs, art-dashboard-ui) with 21+ file changes total. Created 4 GitHub PRs; 1 GitLab MR requires manual creation due to auth issues.",
+    "learnings": {
+      "repo": [
+        "Repos have different default branches: art-tools and art-ai-helpers use main, aos-cd-jobs/art-docs/art-dashboard-ui use master",
+        "Repos are split across GitHub (openshift-eng org) and GitLab (hybrid-platforms/art)",
+        "art-bot repository contains no references to release-artist handle",
+        "art-tools has prod remote pointing to openshift-eng/art-tools, not a dev remote as CLAUDE.md suggested"
+      ],
+      "code": [
+        {
+          "path": "art-tools/pyartcd/pyartcd/pipelines/art_notify.py",
+          "line": 21,
+          "finding": "RELEASE_ARTIST_HANDLE constant renamed to ART_TRIAGE_HANDLE, value changed from 'release-artists' to 'automated-tooling-triage', affecting multiple pipeline files that import this constant"
+        },
+        {
+          "path": "art-tools/doozer/doozerlib/cli/images_streams.py",
+          "line": 969,
+          "end_line": 1622,
+          "finding": "Multiple GitHub PR template strings contain @release-artists handle that needed updating to @automated-tooling-triage"
+        }
+      ],
+      "workflow": [
+        "Need to distinguish between Slack handle references (@-prefixed) vs generic team name references in comments/docs",
+        "Pre-commit hooks can fail in sandbox mode, requiring dangerouslyDisableSandbox: true for git commits",
+        "PR titles can be bulk-updated after creation using gh pr edit --title",
+        "GitLab MCP tokens can expire; fallback options are glab CLI or manual MR creation"
+      ]
+    },
+    "friction": [
+      "Started in Plan mode when user wanted execution, required explicit mode switch",
+      "art-tools pre-commit hook failed due to sandbox permissions on first commit attempt",
+      "GitLab MCP token expired for gitlab.cee.redhat.com",
+      "glab CLI not authenticated for gitlab.cee.redhat.com, preventing automated MR creation"
+    ],
+    "open_items": [
+      "art-ai-helpers GitLab MR needs manual creation at https://gitlab.cee.redhat.com/asdas1/art-ai-helpers/-/merge_requests/new with target hybrid-platforms/art/art-ai-helpers:main",
+      "create_f2f_tickets.sh in art-tools is untracked and was intentionally skipped from changes"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-02T18:30:01.990173Z",
+    "agent_lines": 31,
+    "human_added": 2833,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 2864,
+    "agent_percentage": 1.0824022346368716
+  }
+}
