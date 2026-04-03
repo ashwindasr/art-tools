@@ -1,0 +1,16 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "646defcf14d1",
+  "strategy": "manual-commit",
+  "branch": "layered-products-test-banner",
+  "checkpoints_count": 2,
+  "files_touched": null,
+  "sessions": [
+    {
+      "metadata": "/64/6defcf14d1/0/metadata.json",
+      "transcript": "/64/6defcf14d1/0/full.jsonl",
+      "content_hash": "/64/6defcf14d1/0/content_hash.txt",
+      "prompt": "/64/6defcf14d1/0/prompt.txt"
+    }
+  ]
+}
