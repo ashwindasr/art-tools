@@ -1,0 +1,22 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "d9a6259db540",
+  "strategy": "manual-commit",
+  "branch": "github-app-transient-git-auth-secret",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "doozer/doozerlib/backend/konflux_client.py",
+    "doozer/doozerlib/cli/fbc.py",
+    "doozer/doozerlib/cli/images_konflux.py",
+    "doozer/tests/backend/test_konflux_client_git_auth.py",
+    "doozer/tests/cli/test_images_konflux.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/d9/a6259db540/0/metadata.json",
+      "transcript": "/d9/a6259db540/0/full.jsonl",
+      "content_hash": "/d9/a6259db540/0/content_hash.txt",
+      "prompt": "/d9/a6259db540/0/prompt.txt"
+    }
+  ]
+}

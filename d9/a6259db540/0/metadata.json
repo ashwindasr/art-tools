@@ -1,0 +1,95 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "d9a6259db540",
+  "session_id": "577429d2-612d-4045-a3b9-3be7c61d6f7e",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-03T23:53:16.118703Z",
+  "branch": "github-app-transient-git-auth-secret",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "doozer/doozerlib/backend/konflux_client.py",
+    "doozer/doozerlib/cli/fbc.py",
+    "doozer/doozerlib/cli/images_konflux.py",
+    "doozer/tests/backend/test_konflux_client_git_auth.py",
+    "doozer/tests/cli/test_images_konflux.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "92d1e2623928",
+  "session_metrics": {
+    "turn_count": 12
+  },
+  "summary": {
+    "intent": "Migrate Pipelines-as-Code authentication from GitHub Personal Access Tokens (PAT) to GitHub App credentials on OpenShift cluster. The challenge was that GitHub App tokens expire after 1 hour while Tekton git-clone tasks expect basic-auth credentials.",
+    "outcome": "Implemented solution where doozer mints a fresh GitHub App installation token per build invocation, creates a uniquely-named transient Kubernetes secret (art-transient-pipeline-auth-\u003cepoch\u003e), passes it to all PipelineRuns in the batch, deletes it after completion, and cleans up stale secrets from previous runs after 24 hours. All changes confined to doozer codebase with no PipelineRun template modifications needed.",
+    "learnings": {
+      "repo": [
+        "Tekton's git-clone-oci-ta task only needs credentials during initial clone-repository and prefetch-dependencies tasks (first few minutes), not during long-running build phases",
+        "The PipelineRun template already parameterized git auth secret via {{ git_auth_secret }}, making integration straightforward",
+        "artcd-task.yaml already injects GITHUB_APP_ID and private key PEM into build pods",
+        "github_auth.py already had token generation logic with 50-minute caching and multi-org support",
+        "Doozer uses asyncio.gather for concurrent PipelineRun submission (200+ builds)",
+        "Codebase uses time.time_ns() for unique identifiers (doozer-watch-id) to avoid second-level epoch collisions"
+      ],
+      "code": [
+        {
+          "path": "doozer/doozerlib/backend/konflux_client.py",
+          "line": 946,
+          "end_line": 960,
+          "finding": "V1Secret.data requires base64-encoded values; used time.time_ns() for nanosecond-precision timestamps to avoid collisions when multiple invocations start simultaneously"
+        },
+        {
+          "path": "artcommonlib/github_auth.py",
+          "line": 93,
+          "end_line": 93,
+          "finding": "get_github_app_token_from_env() raises ValueError when app has multiple installations (4 orgs: operator-framework, openshift-priv, openshift, openshift-eng) without GITHUB_APP_INSTALLATION_ID set"
+        },
+        {
+          "path": "doozer/doozerlib/backend/konflux_client.py",
+          "line": 315,
+          "end_line": 320,
+          "finding": "cleanup_stale_git_auth_secrets only deletes secrets older than max_age_hours; needed separate delete_git_auth_secret() for current run's own secret"
+        },
+        {
+          "path": ".tekton/art-konflux-template-push.yaml",
+          "line": 497,
+          "end_line": 500,
+          "finding": "PAC is explicitly disabled via build.appstudio.openshift.io/status annotation for ART components"
+        }
+      ],
+      "workflow": [
+        "PAC's secret-auto-create feature only works for webhook-triggered PipelineRuns, not manually created ones",
+        "GitHub App private keys must be exchanged via GitHub API for installation tokens before git can use them as credentials",
+        "Concurrent secret patching causes race conditions; creating unique secrets per invocation eliminates contention",
+        "Cleanup operations should handle 404 errors gracefully for idempotency across concurrent invocations",
+        "Using finally blocks ensures cleanup runs even if builds fail or raise exceptions",
+        "pytest with asyncio requires asyncio.run() instead of deprecated get_event_loop()"
+      ]
+    },
+    "friction": [
+      "PAC secret-auto-create doesn't work for manually triggered PipelineRuns, requiring custom token management",
+      "Initial approach of patching shared secret would cause contention with 200+ concurrent builds",
+      "Plan mode restrictions prevented code execution until explicitly switching modes",
+      "Pre-commit hooks initially failed requiring sandbox escape flag",
+      "Initial cleanup logic didn't delete current run's own secret, only stale ones from previous runs (\u003e24h)",
+      "Test mocks needed updating to AsyncMock for new async secret management methods",
+      "macOS /var vs /private/var symlink issues caused 5 unrelated test failures in test_util.py"
+    ],
+    "open_items": [
+      "GITHUB_APP_INSTALLATION_ID environment variable needs to be set in artcd-task/Jenkins to avoid auto-detection failures with multiple installations",
+      "RBAC permissions for secret creation/deletion need to be documented for doozer ServiceAccount",
+      "GitHub App installation needed for migtools org (currently falls back to GITHUB_TOKEN with warnings)",
+      "Consider adding monitoring/alerting for secret cleanup failures",
+      "Pre-existing test_util.py macOS path failures remain unfixed (not blocking, environment-specific)"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-03T23:52:27.311194Z",
+    "agent_lines": 101,
+    "human_added": 8,
+    "human_modified": 3,
+    "human_removed": 0,
+    "total_committed": 112,
+    "agent_percentage": 90.17857142857143
+  }
+}
