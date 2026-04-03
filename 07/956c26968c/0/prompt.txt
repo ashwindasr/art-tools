@@ -1,0 +1,102 @@
+there is a secret pipelines-as-code-secret
+kubernetes.io/basic-auth on the cluster - do not read it
+
+we are migrating from GH PAT token to GH App creds. how to make it work on an openshift cluser
+
+---
+
+https://github.com/openshift-priv/art-konflux-template/blob/main/.tekton/art-konflux-template-push.yaml
+
+---
+
+no - i want to add something on the cluster and have it automatically pull when a PipelineRun starts
+
+---
+
+we will have multiple builds running each one would patch the secret that is not ideal - talk to me about the cron job
+
+---
+
+what about this
+
+pyartcd can mint an installation token itself and wire it into the PLR the same way PAC code would.
+
+Something like this in pyartcd before wiring the token into the PLR:
+from github import GithubIntegration
+
+APP_ID = "YOUR_APP_ID"
+INSTALLATION_ID = "YOUR_INSTALLATION_ID"
+
+with open("private-key.pem", "r") as f:
+    private_key = f.read()
+
+gi = GithubIntegration(APP_ID, private_key)
+
+access_token = gi.get_access_token(INSTALLATION_ID).token
+
+---
+
+what about this
+
+pyartcd can mint an installation token itself and wire it into the PLR the same way PAC code would.
+
+Something like this in pyartcd before wiring the token into the PLR:
+from github import GithubIntegration
+
+APP_ID = "YOUR_APP_ID"
+INSTALLATION_ID = "YOUR_INSTALLATION_ID"
+
+with open("private-key.pem", "r") as f:
+    private_key = f.read()
+
+gi = GithubIntegration(APP_ID, private_key)
+
+access_token = gi.get_access_token(INSTALLATION_ID).token
+
+---
+
+if the build takes longer than 1 hr what will we do? is the only part that needs the secret the clone task?
+
+---
+
+if the build takes longer than 1 hr what will we do? is the only part that needs the secret the clone task?
+
+---
+
+look at art-tools and create a plan - we should name the secret with a timestamp so that we can prune them at the end of the job. not just the one that we created, but also others that are more than 1 day old
+
+---
+
+@pac_github_app_migration_18d22858.plan.md (46-48) name it something like art-transient-pipeline-auth-
+
+---
+
+@pac_github_app_migration_18d22858.plan.md (46-48) name it something like art-transient-pipeline-auth-
+
+---
+
+what if two tasks try to delete the same secret
+
+---
+
+what if two tasks try to delete the same secret
+
+---
+
+add inline comments wherever necessary - lets execute
+
+---
+
+lets go
+
+---
+
+lets go
+
+---
+
+create a branch commit push to origin and raise a PR to prod
+
+---
+
+create a branch commit push to origin and raise a PR to prod
