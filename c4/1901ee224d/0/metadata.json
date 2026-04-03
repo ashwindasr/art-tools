@@ -1,0 +1,48 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "c41901ee224d",
+  "session_id": "feec8c2e-18fd-403c-b9aa-378b82dc44a2",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-03T01:32:21.642021Z",
+  "branch": "re-land-github-app-auth",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "doozer/doozerlib/source_resolver.py",
+    "doozer/tests/test_source_resolver.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-4-5@20250929",
+  "turn_id": "16d32574207b",
+  "token_usage": {
+    "input_tokens": 20,
+    "cache_creation_tokens": 12424,
+    "cache_read_tokens": 28927,
+    "output_tokens": 683,
+    "api_call_count": 2
+  },
+  "summary": {
+    "intent": "Research what the ART (Automated Release Tooling) team does for OpenShift.",
+    "outcome": "Used OpenShift helpdesk research tool and modified source resolver files in the doozer codebase, though the transcript doesn't show the research findings.",
+    "learnings": {
+      "repo": [
+        "The codebase includes doozer, which appears to be related to OpenShift ART team tooling",
+        "Source resolution logic exists in doozerlib/source_resolver.py with corresponding tests"
+      ],
+      "code": [],
+      "workflow": [
+        "OpenShift-specific research can be conducted using mcp__ai-openshift-helpdesk__research tool"
+      ]
+    },
+    "friction": [],
+    "open_items": []
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-03T01:32:10.758386Z",
+    "agent_lines": 65,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 65,
+    "agent_percentage": 100
+  }
+}
