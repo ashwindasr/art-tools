@@ -1,0 +1,1325 @@
+i had removed the app id so that we can possibly go back to not being rate limited - but it think the pr that was merged removed local auth from git clone - i
+
+---
+
+i had removed the app id so that we can possibly go back to not being rate limited - but it think the pr that was merged removed local auth from git clone - i
+
+---
+
+https://github.com/openshift-eng/art-tools/pull/2587/changes/3e3153e21322c756dc09c1cda732c5a9b07dc386
+
+---
+
+https://github.com/openshift-eng/art-tools/pull/2587/changes/3e3153e21322c756dc09c1cda732c5a9b07dc386
+
+---
+
+Skip to content
+
+Jenkins
+build
+build/ocp4-scan-konflux
+#43823
+Search
+Manage Jenkins
+
+asdas@redhat.com
+Status
+Changes
+Console Output
+Edit Build Information
+Parameters
+Timings
+Rebuild
+
+Splunk
+
+Open Blue Ocean
+Thread Dump
+Pause/resume
+Replay
+Pipeline Steps
+Workspaces
+Previous Build
+Next Build
+Timestamps
+View as plain text
+System clock time
+
+Use browser timezone
+Elapsed time
+None
+Console
+Download
+
+Copy
+View as plain text
+Started by user asdas@redhat.com
+Rebuilds build #43822
+ > git rev-parse --resolve-git-dir /mnt/jenkins-home/caches/git-91ebd7aa1111b08803bb9dd509fdb8cd/.git # timeout=10
+Setting origin to git@github.com:openshift/aos-cd-jobs.git
+ > git config remote.origin.url git@github.com:openshift/aos-cd-jobs.git # timeout=10
+Fetching origin...
+Fetching upstream changes from origin
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.5'
+ > git config --get remote.origin.url # timeout=10
+ > git fetch --no-tags --force --progress -- origin +refs/heads/*:refs/remotes/origin/* # timeout=10
+Seen branch in repository origin/build/accept-release
+Seen branch in repository origin/build/aws-iso-marketplace-quay-image-builder
+Seen branch in repository origin/build/base-image-release
+Seen branch in repository origin/build/build-fbc
+Seen branch in repository origin/build/build-merged-fbc
+Seen branch in repository origin/build/build-microshift
+Seen branch in repository origin/build/build-microshift-bootc
+Seen branch in repository origin/build/build-plashets
+Seen branch in repository origin/build/build-sync
+Seen branch in repository origin/build/build-sync-konflux
+Seen branch in repository origin/build/build-sync-multi
+Seen branch in repository origin/build/butane_sync
+Seen branch in repository origin/build/camel-k_sync
+Seen branch in repository origin/build/check-bugs
+Seen branch in repository origin/build/cincinnati-prs
+Seen branch in repository origin/build/client_sync
+Seen branch in repository origin/build/coreos-installer_sync
+Seen branch in repository origin/build/drop_advisories
+Seen branch in repository origin/build/enforce-firewall
+Seen branch in repository origin/build/fbc-import-from-index
+Seen branch in repository origin/build/functional-tests
+Seen branch in repository origin/build/gen-assembly
+Seen branch in repository origin/build/golang-builder
+Seen branch in repository origin/build/layered-products
+Seen branch in repository origin/build/layered-products-scan
+Seen branch in repository origin/build/microshift_sync
+Seen branch in repository origin/build/nag-upstream
+Seen branch in repository origin/build/oc_sync
+Seen branch in repository origin/build/ocp3
+Seen branch in repository origin/build/ocp4
+Seen branch in repository origin/build/ocp4-konflux
+Seen branch in repository origin/build/ocp4-scan-konflux
+Seen branch in repository origin/build/ocp4_scan
+Seen branch in repository origin/build/okd
+Seen branch in repository origin/build/okd-scan
+Seen branch in repository origin/build/olm_bundle
+Seen branch in repository origin/build/olm_bundle_konflux
+Seen branch in repository origin/build/operator-sdk_sync
+Seen branch in repository origin/build/prepare-release-konflux
+Seen branch in repository origin/build/promote-assembly
+Seen branch in repository origin/build/publish-rpms
+Seen branch in repository origin/build/publish_azure_marketplace
+Seen branch in repository origin/build/rebuild
+Seen branch in repository origin/build/rebuild-golang-rpms
+Seen branch in repository origin/build/release-from-fbc
+Seen branch in repository origin/build/review-cvp
+Seen branch in repository origin/build/rhcos
+Seen branch in repository origin/build/rhcos_sync
+Seen branch in repository origin/build/scan-for-kernel-bugs
+Seen branch in repository origin/build/scan-operator
+Seen branch in repository origin/build/scan-osh
+Seen branch in repository origin/build/seed-lockfile
+Seen branch in repository origin/build/send-umb-messages
+Seen branch in repository origin/build/set_client_latest
+Seen branch in repository origin/build/sync-for-ci
+Seen branch in repository origin/build/sync-rhcos-specialized
+Seen branch in repository origin/build/tag-rpms
+Seen branch in repository origin/maintenance/check-disk-usage-on-buildvm
+Seen branch in repository origin/maintenance/cleanup-locks
+Seen branch in repository origin/master
+Seen branch in repository origin/scanning/images-health
+Seen branch in repository origin/scanning/okd-images-health
+Seen branch in repository origin/scanning/plashet-rpms
+Seen branch in repository origin/signing/sign-artifacts
+Seen branch in repository origin/signing/sign-rhacs
+Seen 65 remote branches
+Obtained Jenkinsfile from d92675ee65adcd5865e01b9fe23b51ad3226968b
+Resume disabled by user, switching to high-performance, low-durability mode.
+[Pipeline] Start of Pipeline
+[Pipeline] timeout
+Timeout set to expire after 1 hr 0 min without activity
+[Pipeline] {
+[Pipeline] node
+Running on Jenkins in /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux
+[Pipeline] {
+[Pipeline] timestamps
+[Pipeline] {
+[Pipeline] checkout
+20:54:40  The recommended git tool is: git
+20:54:40  No credentials specified
+20:54:40  Cloning the remote Git repository
+20:54:40  Cloning with configured refspecs honoured and without tags
+20:54:40  Cloning repository git@github.com:openshift/aos-cd-jobs.git
+20:54:40   > git init /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux # timeout=10
+20:54:40  Fetching upstream changes from git@github.com:openshift/aos-cd-jobs.git
+20:54:40   > git --version # timeout=10
+20:54:41   > git --version # 'git version 2.43.5'
+20:54:41   > git fetch --no-tags --force --progress -- git@github.com:openshift/aos-cd-jobs.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+20:58:03   > git config remote.origin.url git@github.com:openshift/aos-cd-jobs.git # timeout=10
+20:58:03   > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+20:58:03  Avoid second fetch
+20:58:03  Checking out Revision d92675ee65adcd5865e01b9fe23b51ad3226968b (build/ocp4-scan-konflux)
+20:58:03   > git config core.sparsecheckout # timeout=10
+20:58:03   > git checkout -f d92675ee65adcd5865e01b9fe23b51ad3226968b # timeout=10
+20:58:03  Commit message: "Auto-generated commit from bb59031"
+20:58:03   > git rev-list --no-walk e970e69a570083e9b0d0c48f4a16c9337ac08970 # timeout=10
+[Pipeline] load
+[Pipeline] { (pipeline-scripts/buildlib.groovy)
+[Pipeline] load
+[Pipeline] { (pipeline-scripts/commonlib.groovy)
+[Pipeline] load
+[Pipeline] { (pipeline-scripts/slacklib.groovy)
+Did you forget the `def` keyword? Script3 seems to be setting a field named email_to_slack_map (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // load
+Did you forget the `def` keyword? Script2 seems to be setting a field named slacklib (to a value of type Script3) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named ocp3Versions (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named ocp4Versions (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named ocp5Versions (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named okdVersions (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named nonOCPGroups (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named ocpVersions (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named brewArches (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named brewArchSuffixes (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named goArches (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named goArchSuffixes (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named ocpMajorVersions (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named emailIndex (to a value of type Integer) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named shellCounter (to a value of type AtomicInteger) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // load
+Did you forget the `def` keyword? Script1 seems to be setting a field named commonlib (to a value of type Script2) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script1 seems to be setting a field named slacklib (to a value of type Script3) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script1 seems to be setting a field named GITHUB_URLS (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script1 seems to be setting a field named GITHUB_BASE_PATHS (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script1 seems to be setting a field named GITHUB_BASE (to a value of type String) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script1 seems to be setting a field named WORKDIR_COUNTER (to a value of type Integer) which could lead to memory leaks or other issues.
+[Pipeline] sh
+[Pipeline] echo
+20:58:04  Running shell script via commonlib.shell:
+20:58:04  rm -rf art-tools;  git clone -b main https://github.com/openshift-eng/art-tools.git
+[Pipeline] sh
+20:58:04  Cloning into 'art-tools'...
+[Pipeline] readFile
+[Pipeline] readFile
+[Pipeline] readFile
+Did you forget the `def` keyword? Script2 seems to be setting a field named results (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+[Pipeline] withEnv
+[Pipeline] {
+Did you forget the `def` keyword? Script1 seems to be setting a field named VIRTUAL_ENV (to a value of type GStringImpl) which could lead to memory leaks or other issues.
+[Pipeline] sh
+[Pipeline] echo
+20:58:06  Running shell script via commonlib.shell:
+20:58:06  
+20:58:06              rm -rf /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-venv
+20:58:06              uv venv --python 3.11 --system-site-packages /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-venv
+20:58:06              source /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-venv/bin/activate
+20:58:06              cd art-tools
+20:58:06              ./install.sh
+20:58:06              echo "Installed art-tools:"
+20:58:06              uv pip list | grep 'art-tools'
+20:58:06          
+[Pipeline] sh
+20:58:07  Using CPython 3.11.9 interpreter at: /usr/bin/python3.11
+20:58:07  Creating virtual environment at: art-venv
+20:58:07  Activate with: source art-venv/bin/activate
+20:58:07  Resolved 161 packages in 0.99ms
+20:58:07     Building rh-art-tools @ file:///mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-tools
+20:58:07        Built rh-art-tools @ file:///mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-tools
+20:58:07  Prepared 1 package in 572ms
+20:58:07  Installed 159 packages in 296ms
+20:58:07   + aiodns==3.6.1
+20:58:07   + aiofiles==25.1.0
+20:58:07   + aiohappyeyeballs==2.6.1
+20:58:07   + aiohttp==3.13.2
+20:58:07   + aiohttp-retry==2.9.1
+20:58:07   + aioredis==1.3.1
+20:58:07   + aioredlock==0.7.3
+20:58:07   + aiosignal==1.4.0
+20:58:07   + annotated-types==0.7.0
+20:58:07   + anyio==4.12.0
+20:58:07   + astroid==4.0.2
+20:58:07   + async-lru==2.0.5
+20:58:07   + async-timeout==5.0.1
+20:58:07   + asyncstdlib==3.13.1
+20:58:07   + attrs==25.4.0
+20:58:07   + awscli==1.44.2
+20:58:07   + backports-zstd==1.2.0
+20:58:07   + bashlex==0.18
+20:58:07   + botocore==1.42.12
+20:58:07   + brotli==1.2.0
+20:58:07   + build==1.3.0
+20:58:07   + cachetools==6.2.4
+20:58:07   + certifi==2025.11.12
+20:58:07   + cffi==2.0.0
+20:58:07   + chardet==5.2.0
+20:58:07   + charset-normalizer==3.4.4
+20:58:07   + click==8.1.8
+20:58:07   + colorama==0.4.6
+20:58:07   + coverage==7.13.0
+20:58:07   + cryptography==46.0.3
+20:58:07   + decorator==5.2.1
+20:58:07   + defusedxml==0.7.1
+20:58:07   + dill==0.4.0
+20:58:07   + distlib==0.4.0
+20:58:07   + dockerfile-parse==2.0.1
+20:58:07   + docopt==0.6.2
+20:58:07   + docutils==0.19
+20:58:07   + errata-tool==1.31.0
+20:58:07   + filelock==3.20.1
+20:58:07   + flexmock==0.12.2
+20:58:07   + frozenlist==1.8.0
+20:58:07   + future==1.0.0
+20:58:07   + google-api-core==2.28.1
+20:58:07   + google-auth==2.45.0
+20:58:07   + google-cloud-bigquery==3.39.0
+20:58:07   + google-cloud-core==2.5.0
+20:58:07   + google-crc32c==1.8.0
+20:58:07   + google-resumable-media==2.8.0
+20:58:07   + googleapis-common-protos==1.72.0
+20:58:07   + greenlet==3.3.0
+20:58:07   + grpcio==1.76.0
+20:58:07   + grpcio-status==1.76.0
+20:58:07   + gssapi==1.10.1
+20:58:07   + h11==0.16.0
+20:58:07   + hiredis==3.3.0
+20:58:07   + httpcore==1.0.9
+20:58:07   + httpx==0.28.1
+20:58:07   + idna==3.11
+20:58:07   + importlib-metadata==8.7.0
+20:58:07   + importlib-resources==6.5.2
+20:58:07   + iniconfig==2.3.0
+20:58:07   + isort==7.0.0
+20:58:07   + jenkinsapi==0.3.17
+20:58:07   + jinja2==3.1.6
+20:58:07   + jira==3.10.5
+20:58:07   + jmespath==1.0.1
+20:58:07   + jsonpath-rw==1.4.0
+20:58:07   + jsonschema==4.0.1
+20:58:07   + koji==1.35.3
+20:58:07   + krb5==0.9.0
+20:58:07   + kubernetes==28.1.0
+20:58:07   + librt==0.7.4
+20:58:07   + markupsafe==3.0.3
+20:58:07   + mccabe==0.7.0
+20:58:07   + mock==5.2.0
+20:58:07   + multidict==6.7.0
+20:58:07   + mypy==1.19.1
+20:58:07   + mypy-extensions==1.1.0
+20:58:07   + mysql-connector-python==9.5.0
+20:58:07   + nest-asyncio==1.6.0
+20:58:07   + oauthlib==3.3.1
+20:58:07   + openshift==0.13.2
+20:58:07   + openshift-client==2.0.5
+20:58:07   + opentelemetry-api==1.39.1
+20:58:07   + opentelemetry-exporter-otlp-proto-common==1.39.1
+20:58:07   + opentelemetry-exporter-otlp-proto-grpc==1.39.1
+20:58:07   + opentelemetry-proto==1.39.1
+20:58:07   + opentelemetry-sdk==1.39.1
+20:58:07   + opentelemetry-semantic-conventions==0.60b1
+20:58:07   + packageurl-python==0.17.6
+20:58:07   + packaging==25.0
+20:58:07   + parameterized==0.9.0
+20:58:07   + pathspec==0.12.1
+20:58:07   + pip==25.3
+20:58:07   + pip-system-certs==5.3
+20:58:07   + platformdirs==4.5.1
+20:58:07   + pluggy==1.6.0
+20:58:07   + ply==3.11
+20:58:07   + prettytable==3.17.0
+20:58:07   + propcache==0.4.1
+20:58:07   + proto-plus==1.27.0
+20:58:07   + protobuf==6.33.2
+20:58:07   + pyasn1==0.6.1
+20:58:07   + pyasn1-modules==0.4.2
+20:58:07   + pycares==4.11.0
+20:58:07   + pycparser==2.23
+20:58:07   + pydantic==2.12.5
+20:58:07   + pydantic-core==2.41.5
+20:58:07   + pygit2==1.19.0
+20:58:07   + pygithub==2.8.1
+20:58:07   + pyjwt==2.10.1
+20:58:07   + pylint==4.0.4
+20:58:07   + pynacl==1.6.1
+20:58:07   + pyproject-api==1.10.0
+20:58:07   + pyproject-hooks==1.2.0
+20:58:07   + pyrsistent==0.20.0
+20:58:07   + pyspnego==0.12.0
+20:58:07   + pytest==8.0.2
+20:58:07   + pytest-mock==3.15.1
+20:58:07   + python-bugzilla==3.3.0
+20:58:07   + python-dateutil==2.9.0.post0
+20:58:07   + python-gitlab==7.0.0
+20:58:07   + python-string-utils==1.0.0
+20:58:07   + pytz==2025.2
+20:58:07   + pyyaml==6.0.3
+20:58:07   + redis==7.1.0
+20:58:07   + requests==2.32.5
+20:58:07   + requests-gssapi==1.2.3
+20:58:07   + requests-kerberos==0.15.0
+20:58:07   + requests-oauthlib==2.0.0
+20:58:07   + requests-toolbelt==1.0.0
+20:58:07   + rh-art-tools==2.2.1.dev4346+g8379dbd68 (from file:///mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-tools)
+20:58:07   + rpm==0.4.0
+20:58:07   + rsa==4.7.2
+20:58:07   + ruamel-yaml==0.18.16
+20:58:07   + ruamel-yaml-clib==0.2.15
+20:58:07   + ruff==0.14.9
+20:58:07   + s3transfer==0.16.0
+20:58:07   + schema==0.7.8
+20:58:07   + semver==3.0.4
+20:58:07   + six==1.17.0
+20:58:07   + slack-bolt==1.27.0
+20:58:07   + slack-sdk==3.39.0
+20:58:07   + specfile==0.37.1
+20:58:07   + sqlalchemy==2.0.45
+20:58:07   + stomp-py==8.1.2
+20:58:07   + tenacity==8.5.0
+20:58:07   + tomli==2.0.2
+20:58:07   + tomlkit==0.13.3
+20:58:07   + tox==4.32.0
+20:58:07   + truststore==0.10.4
+20:58:07   + typing-extensions==4.15.0
+20:58:07   + typing-inspection==0.4.2
+20:58:07   + urllib3==1.26.20
+20:58:07   + virtualenv==20.35.4
+20:58:07   + wcwidth==0.2.14
+20:58:07   + websocket-client==1.9.0
+20:58:07   + yarl==1.22.0
+20:58:07   + zipp==3.23.0
+20:58:07  Installed art-tools:
+20:58:07  Using Python 3.11.9 environment at: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-venv
+20:58:07  rh-art-tools                             2.2.1.dev4346+g8379dbd68 /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-tools
+[Pipeline] readFile
+[Pipeline] readFile
+[Pipeline] readFile
+Did you forget the `def` keyword? Script2 seems to be setting a field named results (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] echo
+20:58:07  Adding git managed script directories to PATH
+Did you forget the `def` keyword? Script1 seems to be setting a field named GOPATH (to a value of type GStringImpl) which could lead to memory leaks or other issues.
+[Pipeline] sh
+20:58:08  + mkdir -p /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/go/empty_to_overwrite
+[Pipeline] sh
+20:58:08  + rsync -a --delete /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/go/empty_to_overwrite/ /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/go/
+[Pipeline] echo
+20:58:08  Initialized env.GOPATH: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/go
+[Pipeline] sh
+20:58:08  ++ which oc
+20:58:08  + ls -l /usr/bin/oc
+20:58:08  lrwxrwxrwx. 1 root root 13 Apr  2 23:21 /usr/bin/oc -> oc-03-03-2026
+[Pipeline] sh
+20:58:08  + oc version --client
+20:58:08  Client Version: 4.22.0-202603032355.p2.gdcdd636.assembly.stream-dcdd636
+20:58:08  Kustomize Version: v5.7.1
+[Pipeline] withCredentials
+20:58:08  Masking supported pattern matches of $DOOZER_DB_USER or $DOOZER_DB_PASSWORD
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[Pipeline] echo
+20:58:09  Running shell script via commonlib.shell:
+20:58:09  doozer --assembly=stream --version
+[Pipeline] sh
+20:58:15  Doozer v2.2.1.dev4346+g8379dbd68
+20:58:15  Python v3.11.9 (main, Dec  9 2024, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-2)]
+20:58:15  
+20:58:15  The Doozers don't mind their buildings being eaten;
+20:58:15  if the Fraggles didn't eat the constructions,
+20:58:15  the Doozers would run out of building space,
+20:58:15  and if they ran out of building space,
+20:58:15  they would have to move away from Fraggle Rock
+20:58:15  or else they would die.
+20:58:15  
+[Pipeline] readFile
+[Pipeline] readFile
+[Pipeline] readFile
+Did you forget the `def` keyword? Script2 seems to be setting a field named results (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] sh
+[Pipeline] echo
+20:58:16  Running shell script via commonlib.shell:
+20:58:16  elliott --version
+[Pipeline] sh
+20:58:18  Elliott v2.2.1.dev4346+g8379dbd68
+20:58:18  Python v3.11.9 (main, Dec  9 2024, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-2)]
+[Pipeline] readFile
+[Pipeline] readFile
+[Pipeline] readFile
+Did you forget the `def` keyword? Script2 seems to be setting a field named results (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+[Pipeline] echo
+20:58:18  Initializing ocp-build kerberos credentials
+[Pipeline] withCredentials
+20:58:18  Masking supported pattern matches of $DISTGIT_KEYTAB_FILE or $DISTGIT_KEYTAB_USER
+[Pipeline] {
+[Pipeline] retry
+[Pipeline] {
+[Pipeline] sh
+20:58:18  + kinit -f -k -t **** ****
+[Pipeline] }
+[Pipeline] // retry
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] properties
+[Pipeline] retry
+[Pipeline] {
+[Pipeline] withCredentials
+20:58:23  Masking supported pattern matches of $DEV_USER or $DEV_PASSWORD
+[Pipeline] {
+[Pipeline] sh
+20:58:23  + oc registry login --registry=quay.io/openshift-release-dev --auth-basic=****:****
+20:58:23  Saved credentials for quay.io/openshift-release-dev into /run/user/984/containers/auth.json
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // retry
+[Pipeline] stage
+[Pipeline] { (Initialize)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Scan)
+[Pipeline] sshagent
+20:58:23  [ssh-agent] Using credentials openshift-bot (openshift-bot private ssh key)
+20:58:23  $ ssh-agent
+20:58:23  SSH_AUTH_SOCK=/tmp/ssh-XXXXXX2Ax43Y/agent.3219434
+20:58:23  SSH_AGENT_PID=3219439
+20:58:23  Running ssh-add (command line suppressed)
+20:58:23  Identity added: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux@tmp/private_key_2173398990098894892.key (/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux@tmp/private_key_2173398990098894892.key)
+20:58:23  [ssh-agent] Started.
+[Pipeline] {
+[Pipeline] sh
+20:58:23  + '[' -d ./artcd_working ']'
+20:58:23  + mkdir -p ./artcd_working
+[Pipeline] withCredentials
+20:58:23  Masking supported pattern matches of $KUBECONFIG
+[Pipeline] {
+[Pipeline] withCredentials
+20:58:23  Masking supported pattern matches of $JENKINS_SERVICE_ACCOUNT or $JENKINS_SERVICE_ACCOUNT_TOKEN or $REDIS_SERVER_PASSWORD or $GITHUB_TOKEN or $SLACK_BOT_TOKEN or $KONFLUX_ART_IMAGES_AUTH_FILE or $GOOGLE_APPLICATION_CREDENTIALS or $KONFLUX_OPERATOR_INDEX_AUTH_FILE
+[Pipeline] {
+[Pipeline] wrap
+[Pipeline] {
+Did you forget the `def` keyword? WorkflowScript seems to be setting a field named builderEmail (to a value of type String) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // wrap
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] echo
+20:58:23  Will run artcd -v --working-dir=./artcd_working --config=./config/artcd.toml beta:konflux:ocp4-scan --version=4.21 --assembly=stream --data-path=https://github.com/openshift-eng/ocp-build-data
+[Pipeline] timeout
+20:58:23  Timeout set to expire after 1 hr 0 min without activity
+[Pipeline] {
+[Pipeline] sh
+20:58:24  + artcd -v --working-dir=./artcd_working --config=./config/artcd.toml beta:konflux:ocp4-scan --version=4.21 --assembly=stream --data-path=https://github.com/openshift-eng/ocp-build-data
+20:58:26  2026-04-03 00:58:26,385 pyartcd.jenkins INFO Initializing Jenkins client..
+20:58:26  2026-04-03 00:58:26,385 pyartcd.jenkins INFO Connected to Jenkins server https://art-jenkins.apps.prod-stable-spoke1-dc-iad2.itup.redhat.com
+20:58:26  2026-04-03 00:58:26,450 pyartcd      INFO Trying to acquire lock lock:scan-konflux:4.21
+20:58:26  2026-04-03 00:58:26,453 pyartcd      INFO Acquired lock lock:scan-konflux:4.21
+20:58:26  2026-04-03 00:58:26,494 pyartcd      INFO Trying to acquire lock lock:build-konflux:4.21
+20:58:26  2026-04-03 00:58:26,496 pyartcd      INFO Acquired lock lock:build-konflux:4.21
+20:58:26  2026-04-03 00:58:26,496 pyartcd.pipelines.ocp4_scan_konflux INFO Scanning version 4.21, assembly stream, data path https://github.com/openshift-eng/ocp-build-data
+20:58:26  2026-04-03 00:58:26,496 art_tools.artcommonlib.exectools INFO Executing:cmd_gather_async: doozer --working-dir=artcd_working/doozer_working --data-path=https://github.com/openshift-eng/ocp-build-data --group=openshift-4.21 --assembly=stream --build-system=konflux beta:config:konflux:scan-sources --yaml --ci-kubeconfig=**** --rebase-priv
+20:58:29  2026-04-03 00:58:28,626 artcommonlib INFO Konflux DB initialized 
+20:58:29  2026-04-03 00:58:28,626 artcommonlib INFO Environment variables required for db operation missing. Doozer will be runningin no DB use mode.
+20:58:29  2026-04-03 00:58:28,627 artcommonlib INFO Initial execution (cwd) directory: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux
+20:58:29  2026-04-03 00:58:28,627 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:58:29  2026-04-03 00:58:28,628 artcommonlib INFO Cloning config data from https://github.com/openshift-eng/ocp-build-data
+20:58:29  2026-04-03 00:58:28,640 art_tools.artcommonlib.exectools INFO $0: ['git', 'clone', '--no-single-branch', 'https://github.com/openshift-eng/ocp-build-data', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data'] - [cwd=None] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone --no-single-branch https://github.com/openshift-eng/ocp-build-data /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data
+20:58:31  2026-04-03 00:58:30,980 art_tools.artcommonlib.exectools INFO $1: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data', 'checkout', 'openshift-4.21'] - [cwd=None] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data checkout openshift-4.21
+20:58:31  2026-04-03 00:58:31,011 art_tools.artcommonlib.exectools INFO $2: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data', 'remote', 'get-url', 'origin'] - [cwd=None]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data remote get-url origin
+20:58:31  2026-04-03 00:58:31,017 art_tools.artcommonlib.exectools INFO $3: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data', 'rev-parse', 'HEAD'] - [cwd=None]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data rev-parse HEAD
+20:58:31  2026-04-03 00:58:31,022 art_tools.artcommonlib.exectools INFO $4: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=None]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data rev-parse --abbrev-ref HEAD
+20:58:31  2026-04-03 00:58:31,026 artcommonlib INFO On commit: 13b2d8a4827eee1807df9360d5be9364c64567a1 (openshift-4.21)
+20:58:31  2026-04-03 00:58:31,267 artcommonlib INFO Basis brew event is not set. Using the latest event....
+20:58:31  2026-04-03 00:58:31,267 artcommonlib INFO Authenticating to Brew...
+20:58:31  2026-04-03 00:58:31,365 artcommonlib INFO Getting the latest event....
+20:58:31  2026-04-03 00:58:31,373 artcommonlib INFO Using new-style repo configurations from all_repos
+20:58:31  2026-04-03 00:58:31,373 artcommonlib INFO Loaded 27 repos from all_repos
+20:58:31  2026-04-03 00:58:31,375 artcommonlib INFO Using branch from group.yml: rhaos-4.21-rhel-9
+20:58:32  2026-04-03 00:58:32,676 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,690 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,718 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,738 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,745 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,748 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,769 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,795 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,815 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,873 doozerlib.source_resolver INFO Checking if target branch release-4.21 exists in git@github.com:openshift-priv/kubernetes.git
+20:58:32  2026-04-03 00:58:32,877 art_tools.artcommonlib.exectools INFO $5: ['git', 'ls-remote', '--heads', 'git@github.com:openshift-priv/kubernetes.git', 'refs/heads/release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift-priv/kubernetes.git refs/heads/release-4.21
+20:58:33  2026-04-03 00:58:33,789 doozerlib.source_resolver INFO Branch protection confirmed for openshift/kubernetes branch release-4.21
+20:58:33  2026-04-03 00:58:33,790 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift-priv/kubernetes.git' branch release-4.21 in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes
+20:58:33  2026-04-03 00:58:33,791 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:58:33  2026-04-03 00:58:33,791 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes
+20:58:33  2026-04-03 00:58:33,798 art_tools.artcommonlib.exectools INFO $6: ['git', 'clone', 'https://github.com/openshift-priv/kubernetes', '--branch', 'release-4.21', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift-priv/kubernetes --branch release-4.21 --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes
+20:59:41  2026-04-03 00:59:30,340 art_tools.artcommonlib.exectools INFO $7: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes', 'remote'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes remote
+20:59:41  2026-04-03 00:59:30,348 art_tools.artcommonlib.exectools INFO $8: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes', 'remote', 'add', '--', 'public_upstream', 'https://github.com/openshift/kubernetes'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes remote add -- public_upstream https://github.com/openshift/kubernetes
+20:59:41  2026-04-03 00:59:30,356 art_tools.artcommonlib.exectools INFO $9: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes', 'fetch', '--', 'public_upstream', 'release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0'}]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes fetch -- public_upstream release-4.21
+20:59:41  2026-04-03 00:59:30,481 doozerlib.source_resolver INFO Registering source alias rpms_openshift_kubernetes: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes
+20:59:41  2026-04-03 00:59:30,485 art_tools.artcommonlib.exectools INFO $10: ['git', 'config', '--get', 'remote.origin.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git config --get remote.origin.url
+20:59:41  2026-04-03 00:59:30,491 art_tools.artcommonlib.exectools INFO $11: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git rev-parse --abbrev-ref HEAD
+20:59:41  2026-04-03 00:59:30,498 art_tools.artcommonlib.exectools INFO $12: ['git', 'config', '--get', 'remote.pull.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git config --get remote.pull.url
+20:59:41  2026-04-03 00:59:30,504 art_tools.artcommonlib.exectools INFO $13: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:30,511 art_tools.artcommonlib.exectools INFO $14: ['git', 'log', '-1', '--format=%ct'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git log -1 --format=%ct
+20:59:41  2026-04-03 00:59:30,518 art_tools.artcommonlib.exectools INFO $15: ['git', 'describe', '--always', '--tags', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git describe --always --tags HEAD
+20:59:41  2026-04-03 00:59:30,992 art_tools.artcommonlib.exectools INFO $16: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:30,999 art_tools.artcommonlib.exectools INFO $17: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:31,007 art_tools.artcommonlib.exectools INFO $18: ['git', 'ls-remote', 'https://github.com/kubernetes/kubernetes', 'v1.34.6'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git ls-remote https://github.com/kubernetes/kubernetes v1.34.6
+20:59:41  2026-04-03 00:59:31,411 doozerlib.source_resolver INFO Checking if target branch main exists in git@github.com:openshift/c2s-install.git
+20:59:41  2026-04-03 00:59:31,415 art_tools.artcommonlib.exectools INFO $19: ['git', 'ls-remote', '--heads', 'git@github.com:openshift/c2s-install.git', 'refs/heads/main'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift/c2s-install.git refs/heads/main
+20:59:41  2026-04-03 00:59:33,307 doozerlib.source_resolver INFO Branch protection confirmed for openshift/c2s-install branch main
+20:59:41  2026-04-03 00:59:33,309 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift/c2s-install.git' branch main in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install
+20:59:41  2026-04-03 00:59:33,309 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:59:41  2026-04-03 00:59:33,309 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install
+20:59:41  2026-04-03 00:59:33,313 art_tools.artcommonlib.exectools INFO $20: ['git', 'clone', 'https://github.com/openshift/c2s-install', '--branch', 'main', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift/c2s-install --branch main --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install
+20:59:41  2026-04-03 00:59:33,542 doozerlib.source_resolver INFO Registering source alias rpms_openshift4-aws-iso_c2s-install: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install
+20:59:41  2026-04-03 00:59:33,546 art_tools.artcommonlib.exectools INFO $21: ['git', 'config', '--get', 'remote.origin.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git config --get remote.origin.url
+20:59:41  2026-04-03 00:59:33,553 art_tools.artcommonlib.exectools INFO $22: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git rev-parse --abbrev-ref HEAD
+20:59:41  2026-04-03 00:59:33,559 art_tools.artcommonlib.exectools INFO $23: ['git', 'config', '--get', 'remote.pull.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git config --get remote.pull.url
+20:59:41  2026-04-03 00:59:33,565 art_tools.artcommonlib.exectools INFO $24: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:33,572 art_tools.artcommonlib.exectools INFO $25: ['git', 'log', '-1', '--format=%ct'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git log -1 --format=%ct
+20:59:41  2026-04-03 00:59:33,580 art_tools.artcommonlib.exectools INFO $26: ['git', 'describe', '--always', '--tags', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git describe --always --tags HEAD
+20:59:41  2026-04-03 00:59:33,587 art_tools.artcommonlib.exectools INFO $27: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:33,592 art_tools.artcommonlib.exectools INFO $28: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:33,595 doozerlib.source_resolver INFO Checking if target branch release-4.21 exists in git@github.com:openshift-priv/cloud-provider-gcp.git
+20:59:41  2026-04-03 00:59:33,599 art_tools.artcommonlib.exectools INFO $29: ['git', 'ls-remote', '--heads', 'git@github.com:openshift-priv/cloud-provider-gcp.git', 'refs/heads/release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift-priv/cloud-provider-gcp.git refs/heads/release-4.21
+20:59:41  2026-04-03 00:59:34,539 doozerlib.source_resolver INFO Branch protection confirmed for openshift/cloud-provider-gcp branch release-4.21
+20:59:41  2026-04-03 00:59:34,540 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift-priv/cloud-provider-gcp.git' branch release-4.21 in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp
+20:59:41  2026-04-03 00:59:34,541 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:59:41  2026-04-03 00:59:34,541 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp
+20:59:41  2026-04-03 00:59:34,544 art_tools.artcommonlib.exectools INFO $30: ['git', 'clone', 'https://github.com/openshift-priv/cloud-provider-gcp', '--branch', 'release-4.21', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift-priv/cloud-provider-gcp --branch release-4.21 --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp
+20:59:43  2026-04-03 00:59:43,261 art_tools.artcommonlib.exectools INFO $31: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp', 'remote'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp remote
+20:59:43  2026-04-03 00:59:43,268 art_tools.artcommonlib.exectools INFO $32: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp', 'remote', 'add', '--', 'public_upstream', 'https://github.com/openshift/cloud-provider-gcp'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp remote add -- public_upstream https://github.com/openshift/cloud-provider-gcp
+20:59:43  2026-04-03 00:59:43,301 art_tools.artcommonlib.exectools INFO $33: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp', 'fetch', '--', 'public_upstream', 'release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0'}]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp fetch -- public_upstream release-4.21
+20:59:43  2026-04-03 00:59:43,695 doozerlib.source_resolver INFO Registering source alias rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp
+20:59:43  2026-04-03 00:59:43,699 art_tools.artcommonlib.exectools INFO $34: ['git', 'config', '--get', 'remote.origin.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git config --get remote.origin.url
+20:59:43  2026-04-03 00:59:43,706 art_tools.artcommonlib.exectools INFO $35: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git rev-parse --abbrev-ref HEAD
+20:59:43  2026-04-03 00:59:43,714 art_tools.artcommonlib.exectools INFO $36: ['git', 'config', '--get', 'remote.pull.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git config --get remote.pull.url
+20:59:43  2026-04-03 00:59:43,721 art_tools.artcommonlib.exectools INFO $37: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git rev-parse HEAD
+20:59:43  2026-04-03 00:59:43,728 art_tools.artcommonlib.exectools INFO $38: ['git', 'log', '-1', '--format=%ct'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git log -1 --format=%ct
+20:59:43  2026-04-03 00:59:43,735 art_tools.artcommonlib.exectools INFO $39: ['git', 'describe', '--always', '--tags', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git describe --always --tags HEAD
+20:59:43  2026-04-03 00:59:43,753 art_tools.artcommonlib.exectools INFO $40: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git rev-parse HEAD
+20:59:43  2026-04-03 00:59:43,759 art_tools.artcommonlib.exectools INFO $41: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git rev-parse HEAD
+20:59:43  2026-04-03 00:59:43,764 doozerlib.source_resolver INFO Checking if target branch release-4.21 exists in git@github.com:openshift-priv/cloud-provider-aws.git
+20:59:43  2026-04-03 00:59:43,767 art_tools.artcommonlib.exectools INFO $42: ['git', 'ls-remote', '--heads', 'git@github.com:openshift-priv/cloud-provider-aws.git', 'refs/heads/release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift-priv/cloud-provider-aws.git refs/heads/release-4.21
+20:59:45  2026-04-03 00:59:44,877 doozerlib.source_resolver INFO Branch protection confirmed for openshift/cloud-provider-aws branch release-4.21
+20:59:45  2026-04-03 00:59:44,879 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift-priv/cloud-provider-aws.git' branch release-4.21 in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws
+20:59:45  2026-04-03 00:59:44,879 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:59:45  2026-04-03 00:59:44,879 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws
+20:59:45  2026-04-03 00:59:44,883 art_tools.artcommonlib.exectools INFO $43: ['git', 'clone', 'https://github.com/openshift-priv/cloud-provider-aws', '--branch', 'release-4.21', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift-priv/cloud-provider-aws --branch release-4.21 --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws
+20:59:50  2026-04-03 00:59:50,083 art_tools.artcommonlib.exectools INFO $44: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws', 'remote'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws remote
+20:59:50  2026-04-03 00:59:50,090 art_tools.artcommonlib.exectools INFO $45: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws', 'remote', 'add', '--', 'public_upstream', 'https://github.com/openshift/cloud-provider-aws'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws remote add -- public_upstream https://github.com/openshift/cloud-provider-aws
+20:59:50  2026-04-03 00:59:50,098 art_tools.artcommonlib.exectools INFO $46: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws', 'fetch', '--', 'public_upstream', 'release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0'}]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws fetch -- public_upstream release-4.21
+20:59:50  2026-04-03 00:59:50,197 doozerlib.source_resolver INFO Registering source alias rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws
+20:59:50  2026-04-03 00:59:50,201 art_tools.artcommonlib.exectools INFO $47: ['git', 'config', '--get', 'remote.origin.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git config --get remote.origin.url
+20:59:50  2026-04-03 00:59:50,207 art_tools.artcommonlib.exectools INFO $48: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git rev-parse --abbrev-ref HEAD
+20:59:50  2026-04-03 00:59:50,215 art_tools.artcommonlib.exectools INFO $49: ['git', 'config', '--get', 'remote.pull.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git config --get remote.pull.url
+20:59:50  2026-04-03 00:59:50,223 art_tools.artcommonlib.exectools INFO $50: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git rev-parse HEAD
+20:59:50  2026-04-03 00:59:50,232 art_tools.artcommonlib.exectools INFO $51: ['git', 'log', '-1', '--format=%ct'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git log -1 --format=%ct
+20:59:50  2026-04-03 00:59:50,239 art_tools.artcommonlib.exectools INFO $52: ['git', 'describe', '--always', '--tags', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git describe --always --tags HEAD
+20:59:50  2026-04-03 00:59:50,256 art_tools.artcommonlib.exectools INFO $53: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git rev-parse HEAD
+20:59:50  2026-04-03 00:59:50,262 art_tools.artcommonlib.exectools INFO $54: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git rev-parse HEAD
+20:59:50  2026-04-03 00:59:50,265 doozerlib.source_resolver INFO Checking if target branch release-4.21 exists in git@github.com:openshift-priv/crio-credential-provider.git
+20:59:50  2026-04-03 00:59:50,268 art_tools.artcommonlib.exectools INFO $55: ['git', 'ls-remote', '--heads', 'git@github.com:openshift-priv/crio-credential-provider.git', 'refs/heads/release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift-priv/crio-credential-provider.git refs/heads/release-4.21
+20:59:52  2026-04-03 00:59:52,363 doozerlib.source_resolver INFO Branch protection confirmed for openshift/crio-credential-provider branch release-4.21
+20:59:52  2026-04-03 00:59:52,364 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift-priv/crio-credential-provider.git' branch release-4.21 in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider
+20:59:52  2026-04-03 00:59:52,365 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:59:52  2026-04-03 00:59:52,365 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider
+20:59:52  2026-04-03 00:59:52,368 art_tools.artcommonlib.exectools INFO $56: ['git', 'clone', 'https://github.com/openshift-priv/crio-credential-provider', '--branch', 'release-4.21', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift-priv/crio-credential-provider --branch release-4.21 --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider
+20:59:53  2026-04-03 00:59:53,520 art_tools.artcommonlib.exectools INFO $57: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider', 'remote'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider remote
+20:59:53  2026-04-03 00:59:53,526 art_tools.artcommonlib.exectools INFO $58: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider', 'remote', 'add', '--', 'public_upstream', 'https://github.com/openshift/crio-credential-provider'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider remote add -- public_upstream https://github.com/openshift/crio-credential-provider
+20:59:53  2026-04-03 00:59:53,536 art_tools.artcommonlib.exectools INFO $59: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider', 'fetch', '--', 'public_upstream', 'release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0'}]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider fetch -- public_upstream release-4.21
+20:59:53  2026-04-03 00:59:53,605 doozerlib.source_resolver INFO Registering source alias rpms_ose-crio-credential-provider_crio-credential-provider: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider
+20:59:53  2026-04-03 00:59:53,608 art_tools.artcommonlib.exectools INFO $60: ['git', 'config', '--get', 'remote.origin.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git config --get remote.origin.url
+20:59:53  2026-04-03 00:59:53,615 art_tools.artcommonlib.exectools INFO $61: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git rev-parse --abbrev-ref HEAD
+20:59:53  2026-04-03 00:59:53,621 art_tools.artcommonlib.exectools INFO $62: ['git', 'config', '--get', 'remote.pull.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git config --get remote.pull.url
+20:59:53  2026-04-03 00:59:53,627 art_tools.artcommonlib.exectools INFO $63: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git rev-parse HEAD
+20:59:53  2026-04-03 00:59:53,634 art_tools.artcommonlib.exectools INFO $64: ['git', 'log', '-1', '--format=%ct'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git log -1 --format=%ct
+20:59:53  2026-04-03 00:59:53,641 art_tools.artcommonlib.exectools INFO $65: ['git', 'describe', '--always', '--tags', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git describe --always --tags HEAD
+20:59:53  2026-04-03 00:59:53,650 art_tools.artcommonlib.exectools INFO $66: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git rev-parse HEAD
+20:59:53  2026-04-03 00:59:53,655 art_tools.artcommonlib.exectools INFO $67: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git rev-parse HEAD
+20:59:53  2026-04-03 00:59:53,659 doozerlib.source_resolver INFO Checking if target branch release-4.21 exists in git@github.com:openshift-priv/cloud-provider-azure.git
+20:59:53  2026-04-03 00:59:53,663 art_tools.artcommonlib.exectools INFO $68: ['git', 'ls-remote', '--heads', 'git@github.com:openshift-priv/cloud-provider-azure.git', 'refs/heads/release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift-priv/cloud-provider-azure.git refs/heads/release-4.21
+20:59:55  2026-04-03 00:59:54,891 doozerlib.source_resolver INFO Branch protection confirmed for openshift/cloud-provider-azure branch release-4.21
+20:59:55  2026-04-03 00:59:54,892 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift-priv/cloud-provider-azure.git' branch release-4.21 in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-azure-acr-image-credential-provider_cloud-provider-azure
+20:59:55  2026-04-03 00:59:54,892 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:59:55  2026-04-03 00:59:54,892 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-azure-acr-image-credential-provider_cloud-provider-azure
+20:59:55  2026-04-03 00:59:54,896 art_tools.artcommonlib.exectools INFO $69: ['git', 'clone', 'https://github.com/openshift-priv/cloud-provider-azure', '--branch', 'release-4.21', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-azure-acr-image-credential-provider_cloud-provider-azure'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift-priv/cloud-provider-azure --branch release-4.21 --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-azure-acr-image-credential-provider_cloud-provider-azure
+Jenkins 2.541.2
+
+we are being rate limited even with the GITHUB_TOKEN - check this commit https://github.com/openshift-eng/art-tools/pull/2587/changes/3e3153e21322c756dc09c1cda732c5a9b07dc386
+
+---
+
+Skip to content
+
+Jenkins
+build
+build/ocp4-scan-konflux
+#43823
+Search
+Manage Jenkins
+
+asdas@redhat.com
+Status
+Changes
+Console Output
+Edit Build Information
+Parameters
+Timings
+Rebuild
+
+Splunk
+
+Open Blue Ocean
+Thread Dump
+Pause/resume
+Replay
+Pipeline Steps
+Workspaces
+Previous Build
+Next Build
+Timestamps
+View as plain text
+System clock time
+
+Use browser timezone
+Elapsed time
+None
+Console
+Download
+
+Copy
+View as plain text
+Started by user asdas@redhat.com
+Rebuilds build #43822
+ > git rev-parse --resolve-git-dir /mnt/jenkins-home/caches/git-91ebd7aa1111b08803bb9dd509fdb8cd/.git # timeout=10
+Setting origin to git@github.com:openshift/aos-cd-jobs.git
+ > git config remote.origin.url git@github.com:openshift/aos-cd-jobs.git # timeout=10
+Fetching origin...
+Fetching upstream changes from origin
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.5'
+ > git config --get remote.origin.url # timeout=10
+ > git fetch --no-tags --force --progress -- origin +refs/heads/*:refs/remotes/origin/* # timeout=10
+Seen branch in repository origin/build/accept-release
+Seen branch in repository origin/build/aws-iso-marketplace-quay-image-builder
+Seen branch in repository origin/build/base-image-release
+Seen branch in repository origin/build/build-fbc
+Seen branch in repository origin/build/build-merged-fbc
+Seen branch in repository origin/build/build-microshift
+Seen branch in repository origin/build/build-microshift-bootc
+Seen branch in repository origin/build/build-plashets
+Seen branch in repository origin/build/build-sync
+Seen branch in repository origin/build/build-sync-konflux
+Seen branch in repository origin/build/build-sync-multi
+Seen branch in repository origin/build/butane_sync
+Seen branch in repository origin/build/camel-k_sync
+Seen branch in repository origin/build/check-bugs
+Seen branch in repository origin/build/cincinnati-prs
+Seen branch in repository origin/build/client_sync
+Seen branch in repository origin/build/coreos-installer_sync
+Seen branch in repository origin/build/drop_advisories
+Seen branch in repository origin/build/enforce-firewall
+Seen branch in repository origin/build/fbc-import-from-index
+Seen branch in repository origin/build/functional-tests
+Seen branch in repository origin/build/gen-assembly
+Seen branch in repository origin/build/golang-builder
+Seen branch in repository origin/build/layered-products
+Seen branch in repository origin/build/layered-products-scan
+Seen branch in repository origin/build/microshift_sync
+Seen branch in repository origin/build/nag-upstream
+Seen branch in repository origin/build/oc_sync
+Seen branch in repository origin/build/ocp3
+Seen branch in repository origin/build/ocp4
+Seen branch in repository origin/build/ocp4-konflux
+Seen branch in repository origin/build/ocp4-scan-konflux
+Seen branch in repository origin/build/ocp4_scan
+Seen branch in repository origin/build/okd
+Seen branch in repository origin/build/okd-scan
+Seen branch in repository origin/build/olm_bundle
+Seen branch in repository origin/build/olm_bundle_konflux
+Seen branch in repository origin/build/operator-sdk_sync
+Seen branch in repository origin/build/prepare-release-konflux
+Seen branch in repository origin/build/promote-assembly
+Seen branch in repository origin/build/publish-rpms
+Seen branch in repository origin/build/publish_azure_marketplace
+Seen branch in repository origin/build/rebuild
+Seen branch in repository origin/build/rebuild-golang-rpms
+Seen branch in repository origin/build/release-from-fbc
+Seen branch in repository origin/build/review-cvp
+Seen branch in repository origin/build/rhcos
+Seen branch in repository origin/build/rhcos_sync
+Seen branch in repository origin/build/scan-for-kernel-bugs
+Seen branch in repository origin/build/scan-operator
+Seen branch in repository origin/build/scan-osh
+Seen branch in repository origin/build/seed-lockfile
+Seen branch in repository origin/build/send-umb-messages
+Seen branch in repository origin/build/set_client_latest
+Seen branch in repository origin/build/sync-for-ci
+Seen branch in repository origin/build/sync-rhcos-specialized
+Seen branch in repository origin/build/tag-rpms
+Seen branch in repository origin/maintenance/check-disk-usage-on-buildvm
+Seen branch in repository origin/maintenance/cleanup-locks
+Seen branch in repository origin/master
+Seen branch in repository origin/scanning/images-health
+Seen branch in repository origin/scanning/okd-images-health
+Seen branch in repository origin/scanning/plashet-rpms
+Seen branch in repository origin/signing/sign-artifacts
+Seen branch in repository origin/signing/sign-rhacs
+Seen 65 remote branches
+Obtained Jenkinsfile from d92675ee65adcd5865e01b9fe23b51ad3226968b
+Resume disabled by user, switching to high-performance, low-durability mode.
+[Pipeline] Start of Pipeline
+[Pipeline] timeout
+Timeout set to expire after 1 hr 0 min without activity
+[Pipeline] {
+[Pipeline] node
+Running on Jenkins in /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux
+[Pipeline] {
+[Pipeline] timestamps
+[Pipeline] {
+[Pipeline] checkout
+20:54:40  The recommended git tool is: git
+20:54:40  No credentials specified
+20:54:40  Cloning the remote Git repository
+20:54:40  Cloning with configured refspecs honoured and without tags
+20:54:40  Cloning repository git@github.com:openshift/aos-cd-jobs.git
+20:54:40   > git init /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux # timeout=10
+20:54:40  Fetching upstream changes from git@github.com:openshift/aos-cd-jobs.git
+20:54:40   > git --version # timeout=10
+20:54:41   > git --version # 'git version 2.43.5'
+20:54:41   > git fetch --no-tags --force --progress -- git@github.com:openshift/aos-cd-jobs.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+20:58:03   > git config remote.origin.url git@github.com:openshift/aos-cd-jobs.git # timeout=10
+20:58:03   > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+20:58:03  Avoid second fetch
+20:58:03  Checking out Revision d92675ee65adcd5865e01b9fe23b51ad3226968b (build/ocp4-scan-konflux)
+20:58:03   > git config core.sparsecheckout # timeout=10
+20:58:03   > git checkout -f d92675ee65adcd5865e01b9fe23b51ad3226968b # timeout=10
+20:58:03  Commit message: "Auto-generated commit from bb59031"
+20:58:03   > git rev-list --no-walk e970e69a570083e9b0d0c48f4a16c9337ac08970 # timeout=10
+[Pipeline] load
+[Pipeline] { (pipeline-scripts/buildlib.groovy)
+[Pipeline] load
+[Pipeline] { (pipeline-scripts/commonlib.groovy)
+[Pipeline] load
+[Pipeline] { (pipeline-scripts/slacklib.groovy)
+Did you forget the `def` keyword? Script3 seems to be setting a field named email_to_slack_map (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // load
+Did you forget the `def` keyword? Script2 seems to be setting a field named slacklib (to a value of type Script3) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named ocp3Versions (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named ocp4Versions (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named ocp5Versions (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named okdVersions (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named nonOCPGroups (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named ocpVersions (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named brewArches (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named brewArchSuffixes (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named goArches (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named goArchSuffixes (to a value of type ArrayList) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named ocpMajorVersions (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named emailIndex (to a value of type Integer) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script2 seems to be setting a field named shellCounter (to a value of type AtomicInteger) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // load
+Did you forget the `def` keyword? Script1 seems to be setting a field named commonlib (to a value of type Script2) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script1 seems to be setting a field named slacklib (to a value of type Script3) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script1 seems to be setting a field named GITHUB_URLS (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script1 seems to be setting a field named GITHUB_BASE_PATHS (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script1 seems to be setting a field named GITHUB_BASE (to a value of type String) which could lead to memory leaks or other issues.
+Did you forget the `def` keyword? Script1 seems to be setting a field named WORKDIR_COUNTER (to a value of type Integer) which could lead to memory leaks or other issues.
+[Pipeline] sh
+[Pipeline] echo
+20:58:04  Running shell script via commonlib.shell:
+20:58:04  rm -rf art-tools;  git clone -b main https://github.com/openshift-eng/art-tools.git
+[Pipeline] sh
+20:58:04  Cloning into 'art-tools'...
+[Pipeline] readFile
+[Pipeline] readFile
+[Pipeline] readFile
+Did you forget the `def` keyword? Script2 seems to be setting a field named results (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+[Pipeline] withEnv
+[Pipeline] {
+Did you forget the `def` keyword? Script1 seems to be setting a field named VIRTUAL_ENV (to a value of type GStringImpl) which could lead to memory leaks or other issues.
+[Pipeline] sh
+[Pipeline] echo
+20:58:06  Running shell script via commonlib.shell:
+20:58:06  
+20:58:06              rm -rf /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-venv
+20:58:06              uv venv --python 3.11 --system-site-packages /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-venv
+20:58:06              source /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-venv/bin/activate
+20:58:06              cd art-tools
+20:58:06              ./install.sh
+20:58:06              echo "Installed art-tools:"
+20:58:06              uv pip list | grep 'art-tools'
+20:58:06          
+[Pipeline] sh
+20:58:07  Using CPython 3.11.9 interpreter at: /usr/bin/python3.11
+20:58:07  Creating virtual environment at: art-venv
+20:58:07  Activate with: source art-venv/bin/activate
+20:58:07  Resolved 161 packages in 0.99ms
+20:58:07     Building rh-art-tools @ file:///mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-tools
+20:58:07        Built rh-art-tools @ file:///mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-tools
+20:58:07  Prepared 1 package in 572ms
+20:58:07  Installed 159 packages in 296ms
+20:58:07   + aiodns==3.6.1
+20:58:07   + aiofiles==25.1.0
+20:58:07   + aiohappyeyeballs==2.6.1
+20:58:07   + aiohttp==3.13.2
+20:58:07   + aiohttp-retry==2.9.1
+20:58:07   + aioredis==1.3.1
+20:58:07   + aioredlock==0.7.3
+20:58:07   + aiosignal==1.4.0
+20:58:07   + annotated-types==0.7.0
+20:58:07   + anyio==4.12.0
+20:58:07   + astroid==4.0.2
+20:58:07   + async-lru==2.0.5
+20:58:07   + async-timeout==5.0.1
+20:58:07   + asyncstdlib==3.13.1
+20:58:07   + attrs==25.4.0
+20:58:07   + awscli==1.44.2
+20:58:07   + backports-zstd==1.2.0
+20:58:07   + bashlex==0.18
+20:58:07   + botocore==1.42.12
+20:58:07   + brotli==1.2.0
+20:58:07   + build==1.3.0
+20:58:07   + cachetools==6.2.4
+20:58:07   + certifi==2025.11.12
+20:58:07   + cffi==2.0.0
+20:58:07   + chardet==5.2.0
+20:58:07   + charset-normalizer==3.4.4
+20:58:07   + click==8.1.8
+20:58:07   + colorama==0.4.6
+20:58:07   + coverage==7.13.0
+20:58:07   + cryptography==46.0.3
+20:58:07   + decorator==5.2.1
+20:58:07   + defusedxml==0.7.1
+20:58:07   + dill==0.4.0
+20:58:07   + distlib==0.4.0
+20:58:07   + dockerfile-parse==2.0.1
+20:58:07   + docopt==0.6.2
+20:58:07   + docutils==0.19
+20:58:07   + errata-tool==1.31.0
+20:58:07   + filelock==3.20.1
+20:58:07   + flexmock==0.12.2
+20:58:07   + frozenlist==1.8.0
+20:58:07   + future==1.0.0
+20:58:07   + google-api-core==2.28.1
+20:58:07   + google-auth==2.45.0
+20:58:07   + google-cloud-bigquery==3.39.0
+20:58:07   + google-cloud-core==2.5.0
+20:58:07   + google-crc32c==1.8.0
+20:58:07   + google-resumable-media==2.8.0
+20:58:07   + googleapis-common-protos==1.72.0
+20:58:07   + greenlet==3.3.0
+20:58:07   + grpcio==1.76.0
+20:58:07   + grpcio-status==1.76.0
+20:58:07   + gssapi==1.10.1
+20:58:07   + h11==0.16.0
+20:58:07   + hiredis==3.3.0
+20:58:07   + httpcore==1.0.9
+20:58:07   + httpx==0.28.1
+20:58:07   + idna==3.11
+20:58:07   + importlib-metadata==8.7.0
+20:58:07   + importlib-resources==6.5.2
+20:58:07   + iniconfig==2.3.0
+20:58:07   + isort==7.0.0
+20:58:07   + jenkinsapi==0.3.17
+20:58:07   + jinja2==3.1.6
+20:58:07   + jira==3.10.5
+20:58:07   + jmespath==1.0.1
+20:58:07   + jsonpath-rw==1.4.0
+20:58:07   + jsonschema==4.0.1
+20:58:07   + koji==1.35.3
+20:58:07   + krb5==0.9.0
+20:58:07   + kubernetes==28.1.0
+20:58:07   + librt==0.7.4
+20:58:07   + markupsafe==3.0.3
+20:58:07   + mccabe==0.7.0
+20:58:07   + mock==5.2.0
+20:58:07   + multidict==6.7.0
+20:58:07   + mypy==1.19.1
+20:58:07   + mypy-extensions==1.1.0
+20:58:07   + mysql-connector-python==9.5.0
+20:58:07   + nest-asyncio==1.6.0
+20:58:07   + oauthlib==3.3.1
+20:58:07   + openshift==0.13.2
+20:58:07   + openshift-client==2.0.5
+20:58:07   + opentelemetry-api==1.39.1
+20:58:07   + opentelemetry-exporter-otlp-proto-common==1.39.1
+20:58:07   + opentelemetry-exporter-otlp-proto-grpc==1.39.1
+20:58:07   + opentelemetry-proto==1.39.1
+20:58:07   + opentelemetry-sdk==1.39.1
+20:58:07   + opentelemetry-semantic-conventions==0.60b1
+20:58:07   + packageurl-python==0.17.6
+20:58:07   + packaging==25.0
+20:58:07   + parameterized==0.9.0
+20:58:07   + pathspec==0.12.1
+20:58:07   + pip==25.3
+20:58:07   + pip-system-certs==5.3
+20:58:07   + platformdirs==4.5.1
+20:58:07   + pluggy==1.6.0
+20:58:07   + ply==3.11
+20:58:07   + prettytable==3.17.0
+20:58:07   + propcache==0.4.1
+20:58:07   + proto-plus==1.27.0
+20:58:07   + protobuf==6.33.2
+20:58:07   + pyasn1==0.6.1
+20:58:07   + pyasn1-modules==0.4.2
+20:58:07   + pycares==4.11.0
+20:58:07   + pycparser==2.23
+20:58:07   + pydantic==2.12.5
+20:58:07   + pydantic-core==2.41.5
+20:58:07   + pygit2==1.19.0
+20:58:07   + pygithub==2.8.1
+20:58:07   + pyjwt==2.10.1
+20:58:07   + pylint==4.0.4
+20:58:07   + pynacl==1.6.1
+20:58:07   + pyproject-api==1.10.0
+20:58:07   + pyproject-hooks==1.2.0
+20:58:07   + pyrsistent==0.20.0
+20:58:07   + pyspnego==0.12.0
+20:58:07   + pytest==8.0.2
+20:58:07   + pytest-mock==3.15.1
+20:58:07   + python-bugzilla==3.3.0
+20:58:07   + python-dateutil==2.9.0.post0
+20:58:07   + python-gitlab==7.0.0
+20:58:07   + python-string-utils==1.0.0
+20:58:07   + pytz==2025.2
+20:58:07   + pyyaml==6.0.3
+20:58:07   + redis==7.1.0
+20:58:07   + requests==2.32.5
+20:58:07   + requests-gssapi==1.2.3
+20:58:07   + requests-kerberos==0.15.0
+20:58:07   + requests-oauthlib==2.0.0
+20:58:07   + requests-toolbelt==1.0.0
+20:58:07   + rh-art-tools==2.2.1.dev4346+g8379dbd68 (from file:///mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-tools)
+20:58:07   + rpm==0.4.0
+20:58:07   + rsa==4.7.2
+20:58:07   + ruamel-yaml==0.18.16
+20:58:07   + ruamel-yaml-clib==0.2.15
+20:58:07   + ruff==0.14.9
+20:58:07   + s3transfer==0.16.0
+20:58:07   + schema==0.7.8
+20:58:07   + semver==3.0.4
+20:58:07   + six==1.17.0
+20:58:07   + slack-bolt==1.27.0
+20:58:07   + slack-sdk==3.39.0
+20:58:07   + specfile==0.37.1
+20:58:07   + sqlalchemy==2.0.45
+20:58:07   + stomp-py==8.1.2
+20:58:07   + tenacity==8.5.0
+20:58:07   + tomli==2.0.2
+20:58:07   + tomlkit==0.13.3
+20:58:07   + tox==4.32.0
+20:58:07   + truststore==0.10.4
+20:58:07   + typing-extensions==4.15.0
+20:58:07   + typing-inspection==0.4.2
+20:58:07   + urllib3==1.26.20
+20:58:07   + virtualenv==20.35.4
+20:58:07   + wcwidth==0.2.14
+20:58:07   + websocket-client==1.9.0
+20:58:07   + yarl==1.22.0
+20:58:07   + zipp==3.23.0
+20:58:07  Installed art-tools:
+20:58:07  Using Python 3.11.9 environment at: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-venv
+20:58:07  rh-art-tools                             2.2.1.dev4346+g8379dbd68 /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/art-tools
+[Pipeline] readFile
+[Pipeline] readFile
+[Pipeline] readFile
+Did you forget the `def` keyword? Script2 seems to be setting a field named results (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] echo
+20:58:07  Adding git managed script directories to PATH
+Did you forget the `def` keyword? Script1 seems to be setting a field named GOPATH (to a value of type GStringImpl) which could lead to memory leaks or other issues.
+[Pipeline] sh
+20:58:08  + mkdir -p /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/go/empty_to_overwrite
+[Pipeline] sh
+20:58:08  + rsync -a --delete /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/go/empty_to_overwrite/ /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/go/
+[Pipeline] echo
+20:58:08  Initialized env.GOPATH: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/go
+[Pipeline] sh
+20:58:08  ++ which oc
+20:58:08  + ls -l /usr/bin/oc
+20:58:08  lrwxrwxrwx. 1 root root 13 Apr  2 23:21 /usr/bin/oc -> oc-03-03-2026
+[Pipeline] sh
+20:58:08  + oc version --client
+20:58:08  Client Version: 4.22.0-202603032355.p2.gdcdd636.assembly.stream-dcdd636
+20:58:08  Kustomize Version: v5.7.1
+[Pipeline] withCredentials
+20:58:08  Masking supported pattern matches of $DOOZER_DB_USER or $DOOZER_DB_PASSWORD
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+[Pipeline] echo
+20:58:09  Running shell script via commonlib.shell:
+20:58:09  doozer --assembly=stream --version
+[Pipeline] sh
+20:58:15  Doozer v2.2.1.dev4346+g8379dbd68
+20:58:15  Python v3.11.9 (main, Dec  9 2024, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-2)]
+20:58:15  
+20:58:15  The Doozers don't mind their buildings being eaten;
+20:58:15  if the Fraggles didn't eat the constructions,
+20:58:15  the Doozers would run out of building space,
+20:58:15  and if they ran out of building space,
+20:58:15  they would have to move away from Fraggle Rock
+20:58:15  or else they would die.
+20:58:15  
+[Pipeline] readFile
+[Pipeline] readFile
+[Pipeline] readFile
+Did you forget the `def` keyword? Script2 seems to be setting a field named results (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] sh
+[Pipeline] echo
+20:58:16  Running shell script via commonlib.shell:
+20:58:16  elliott --version
+[Pipeline] sh
+20:58:18  Elliott v2.2.1.dev4346+g8379dbd68
+20:58:18  Python v3.11.9 (main, Dec  9 2024, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-2)]
+[Pipeline] readFile
+[Pipeline] readFile
+[Pipeline] readFile
+Did you forget the `def` keyword? Script2 seems to be setting a field named results (to a value of type LinkedHashMap) which could lead to memory leaks or other issues.
+[Pipeline] echo
+20:58:18  Initializing ocp-build kerberos credentials
+[Pipeline] withCredentials
+20:58:18  Masking supported pattern matches of $DISTGIT_KEYTAB_FILE or $DISTGIT_KEYTAB_USER
+[Pipeline] {
+[Pipeline] retry
+[Pipeline] {
+[Pipeline] sh
+20:58:18  + kinit -f -k -t **** ****
+[Pipeline] }
+[Pipeline] // retry
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // load
+[Pipeline] properties
+[Pipeline] retry
+[Pipeline] {
+[Pipeline] withCredentials
+20:58:23  Masking supported pattern matches of $DEV_USER or $DEV_PASSWORD
+[Pipeline] {
+[Pipeline] sh
+20:58:23  + oc registry login --registry=quay.io/openshift-release-dev --auth-basic=****:****
+20:58:23  Saved credentials for quay.io/openshift-release-dev into /run/user/984/containers/auth.json
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // retry
+[Pipeline] stage
+[Pipeline] { (Initialize)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Scan)
+[Pipeline] sshagent
+20:58:23  [ssh-agent] Using credentials openshift-bot (openshift-bot private ssh key)
+20:58:23  $ ssh-agent
+20:58:23  SSH_AUTH_SOCK=/tmp/ssh-XXXXXX2Ax43Y/agent.3219434
+20:58:23  SSH_AGENT_PID=3219439
+20:58:23  Running ssh-add (command line suppressed)
+20:58:23  Identity added: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux@tmp/private_key_2173398990098894892.key (/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux@tmp/private_key_2173398990098894892.key)
+20:58:23  [ssh-agent] Started.
+[Pipeline] {
+[Pipeline] sh
+20:58:23  + '[' -d ./artcd_working ']'
+20:58:23  + mkdir -p ./artcd_working
+[Pipeline] withCredentials
+20:58:23  Masking supported pattern matches of $KUBECONFIG
+[Pipeline] {
+[Pipeline] withCredentials
+20:58:23  Masking supported pattern matches of $JENKINS_SERVICE_ACCOUNT or $JENKINS_SERVICE_ACCOUNT_TOKEN or $REDIS_SERVER_PASSWORD or $GITHUB_TOKEN or $SLACK_BOT_TOKEN or $KONFLUX_ART_IMAGES_AUTH_FILE or $GOOGLE_APPLICATION_CREDENTIALS or $KONFLUX_OPERATOR_INDEX_AUTH_FILE
+[Pipeline] {
+[Pipeline] wrap
+[Pipeline] {
+Did you forget the `def` keyword? WorkflowScript seems to be setting a field named builderEmail (to a value of type String) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // wrap
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] echo
+20:58:23  Will run artcd -v --working-dir=./artcd_working --config=./config/artcd.toml beta:konflux:ocp4-scan --version=4.21 --assembly=stream --data-path=https://github.com/openshift-eng/ocp-build-data
+[Pipeline] timeout
+20:58:23  Timeout set to expire after 1 hr 0 min without activity
+[Pipeline] {
+[Pipeline] sh
+20:58:24  + artcd -v --working-dir=./artcd_working --config=./config/artcd.toml beta:konflux:ocp4-scan --version=4.21 --assembly=stream --data-path=https://github.com/openshift-eng/ocp-build-data
+20:58:26  2026-04-03 00:58:26,385 pyartcd.jenkins INFO Initializing Jenkins client..
+20:58:26  2026-04-03 00:58:26,385 pyartcd.jenkins INFO Connected to Jenkins server https://art-jenkins.apps.prod-stable-spoke1-dc-iad2.itup.redhat.com
+20:58:26  2026-04-03 00:58:26,450 pyartcd      INFO Trying to acquire lock lock:scan-konflux:4.21
+20:58:26  2026-04-03 00:58:26,453 pyartcd      INFO Acquired lock lock:scan-konflux:4.21
+20:58:26  2026-04-03 00:58:26,494 pyartcd      INFO Trying to acquire lock lock:build-konflux:4.21
+20:58:26  2026-04-03 00:58:26,496 pyartcd      INFO Acquired lock lock:build-konflux:4.21
+20:58:26  2026-04-03 00:58:26,496 pyartcd.pipelines.ocp4_scan_konflux INFO Scanning version 4.21, assembly stream, data path https://github.com/openshift-eng/ocp-build-data
+20:58:26  2026-04-03 00:58:26,496 art_tools.artcommonlib.exectools INFO Executing:cmd_gather_async: doozer --working-dir=artcd_working/doozer_working --data-path=https://github.com/openshift-eng/ocp-build-data --group=openshift-4.21 --assembly=stream --build-system=konflux beta:config:konflux:scan-sources --yaml --ci-kubeconfig=**** --rebase-priv
+20:58:29  2026-04-03 00:58:28,626 artcommonlib INFO Konflux DB initialized 
+20:58:29  2026-04-03 00:58:28,626 artcommonlib INFO Environment variables required for db operation missing. Doozer will be runningin no DB use mode.
+20:58:29  2026-04-03 00:58:28,627 artcommonlib INFO Initial execution (cwd) directory: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux
+20:58:29  2026-04-03 00:58:28,627 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:58:29  2026-04-03 00:58:28,628 artcommonlib INFO Cloning config data from https://github.com/openshift-eng/ocp-build-data
+20:58:29  2026-04-03 00:58:28,640 art_tools.artcommonlib.exectools INFO $0: ['git', 'clone', '--no-single-branch', 'https://github.com/openshift-eng/ocp-build-data', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data'] - [cwd=None] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone --no-single-branch https://github.com/openshift-eng/ocp-build-data /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data
+20:58:31  2026-04-03 00:58:30,980 art_tools.artcommonlib.exectools INFO $1: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data', 'checkout', 'openshift-4.21'] - [cwd=None] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data checkout openshift-4.21
+20:58:31  2026-04-03 00:58:31,011 art_tools.artcommonlib.exectools INFO $2: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data', 'remote', 'get-url', 'origin'] - [cwd=None]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data remote get-url origin
+20:58:31  2026-04-03 00:58:31,017 art_tools.artcommonlib.exectools INFO $3: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data', 'rev-parse', 'HEAD'] - [cwd=None]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data rev-parse HEAD
+20:58:31  2026-04-03 00:58:31,022 art_tools.artcommonlib.exectools INFO $4: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=None]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data rev-parse --abbrev-ref HEAD
+20:58:31  2026-04-03 00:58:31,026 artcommonlib INFO On commit: 13b2d8a4827eee1807df9360d5be9364c64567a1 (openshift-4.21)
+20:58:31  2026-04-03 00:58:31,267 artcommonlib INFO Basis brew event is not set. Using the latest event....
+20:58:31  2026-04-03 00:58:31,267 artcommonlib INFO Authenticating to Brew...
+20:58:31  2026-04-03 00:58:31,365 artcommonlib INFO Getting the latest event....
+20:58:31  2026-04-03 00:58:31,373 artcommonlib INFO Using new-style repo configurations from all_repos
+20:58:31  2026-04-03 00:58:31,373 artcommonlib INFO Loaded 27 repos from all_repos
+20:58:31  2026-04-03 00:58:31,375 artcommonlib INFO Using branch from group.yml: rhaos-4.21-rhel-9
+20:58:32  2026-04-03 00:58:32,676 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,690 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,718 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,738 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,745 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,748 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,769 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,795 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,815 artcommonlib WARNING Image dpu-operator will not be loaded because it has mode disabled
+20:58:32  2026-04-03 00:58:32,873 doozerlib.source_resolver INFO Checking if target branch release-4.21 exists in git@github.com:openshift-priv/kubernetes.git
+20:58:32  2026-04-03 00:58:32,877 art_tools.artcommonlib.exectools INFO $5: ['git', 'ls-remote', '--heads', 'git@github.com:openshift-priv/kubernetes.git', 'refs/heads/release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift-priv/kubernetes.git refs/heads/release-4.21
+20:58:33  2026-04-03 00:58:33,789 doozerlib.source_resolver INFO Branch protection confirmed for openshift/kubernetes branch release-4.21
+20:58:33  2026-04-03 00:58:33,790 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift-priv/kubernetes.git' branch release-4.21 in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes
+20:58:33  2026-04-03 00:58:33,791 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:58:33  2026-04-03 00:58:33,791 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes
+20:58:33  2026-04-03 00:58:33,798 art_tools.artcommonlib.exectools INFO $6: ['git', 'clone', 'https://github.com/openshift-priv/kubernetes', '--branch', 'release-4.21', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift-priv/kubernetes --branch release-4.21 --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes
+20:59:41  2026-04-03 00:59:30,340 art_tools.artcommonlib.exectools INFO $7: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes', 'remote'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes remote
+20:59:41  2026-04-03 00:59:30,348 art_tools.artcommonlib.exectools INFO $8: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes', 'remote', 'add', '--', 'public_upstream', 'https://github.com/openshift/kubernetes'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes remote add -- public_upstream https://github.com/openshift/kubernetes
+20:59:41  2026-04-03 00:59:30,356 art_tools.artcommonlib.exectools INFO $9: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes', 'fetch', '--', 'public_upstream', 'release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0'}]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes fetch -- public_upstream release-4.21
+20:59:41  2026-04-03 00:59:30,481 doozerlib.source_resolver INFO Registering source alias rpms_openshift_kubernetes: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes
+20:59:41  2026-04-03 00:59:30,485 art_tools.artcommonlib.exectools INFO $10: ['git', 'config', '--get', 'remote.origin.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git config --get remote.origin.url
+20:59:41  2026-04-03 00:59:30,491 art_tools.artcommonlib.exectools INFO $11: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git rev-parse --abbrev-ref HEAD
+20:59:41  2026-04-03 00:59:30,498 art_tools.artcommonlib.exectools INFO $12: ['git', 'config', '--get', 'remote.pull.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git config --get remote.pull.url
+20:59:41  2026-04-03 00:59:30,504 art_tools.artcommonlib.exectools INFO $13: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:30,511 art_tools.artcommonlib.exectools INFO $14: ['git', 'log', '-1', '--format=%ct'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git log -1 --format=%ct
+20:59:41  2026-04-03 00:59:30,518 art_tools.artcommonlib.exectools INFO $15: ['git', 'describe', '--always', '--tags', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git describe --always --tags HEAD
+20:59:41  2026-04-03 00:59:30,992 art_tools.artcommonlib.exectools INFO $16: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:30,999 art_tools.artcommonlib.exectools INFO $17: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:31,007 art_tools.artcommonlib.exectools INFO $18: ['git', 'ls-remote', 'https://github.com/kubernetes/kubernetes', 'v1.34.6'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift_kubernetes]: Executing:cmd_gather: git ls-remote https://github.com/kubernetes/kubernetes v1.34.6
+20:59:41  2026-04-03 00:59:31,411 doozerlib.source_resolver INFO Checking if target branch main exists in git@github.com:openshift/c2s-install.git
+20:59:41  2026-04-03 00:59:31,415 art_tools.artcommonlib.exectools INFO $19: ['git', 'ls-remote', '--heads', 'git@github.com:openshift/c2s-install.git', 'refs/heads/main'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift/c2s-install.git refs/heads/main
+20:59:41  2026-04-03 00:59:33,307 doozerlib.source_resolver INFO Branch protection confirmed for openshift/c2s-install branch main
+20:59:41  2026-04-03 00:59:33,309 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift/c2s-install.git' branch main in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install
+20:59:41  2026-04-03 00:59:33,309 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:59:41  2026-04-03 00:59:33,309 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install
+20:59:41  2026-04-03 00:59:33,313 art_tools.artcommonlib.exectools INFO $20: ['git', 'clone', 'https://github.com/openshift/c2s-install', '--branch', 'main', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift/c2s-install --branch main --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install
+20:59:41  2026-04-03 00:59:33,542 doozerlib.source_resolver INFO Registering source alias rpms_openshift4-aws-iso_c2s-install: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install
+20:59:41  2026-04-03 00:59:33,546 art_tools.artcommonlib.exectools INFO $21: ['git', 'config', '--get', 'remote.origin.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git config --get remote.origin.url
+20:59:41  2026-04-03 00:59:33,553 art_tools.artcommonlib.exectools INFO $22: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git rev-parse --abbrev-ref HEAD
+20:59:41  2026-04-03 00:59:33,559 art_tools.artcommonlib.exectools INFO $23: ['git', 'config', '--get', 'remote.pull.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git config --get remote.pull.url
+20:59:41  2026-04-03 00:59:33,565 art_tools.artcommonlib.exectools INFO $24: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:33,572 art_tools.artcommonlib.exectools INFO $25: ['git', 'log', '-1', '--format=%ct'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git log -1 --format=%ct
+20:59:41  2026-04-03 00:59:33,580 art_tools.artcommonlib.exectools INFO $26: ['git', 'describe', '--always', '--tags', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git describe --always --tags HEAD
+20:59:41  2026-04-03 00:59:33,587 art_tools.artcommonlib.exectools INFO $27: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:33,592 art_tools.artcommonlib.exectools INFO $28: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_openshift4-aws-iso_c2s-install]: Executing:cmd_gather: git rev-parse HEAD
+20:59:41  2026-04-03 00:59:33,595 doozerlib.source_resolver INFO Checking if target branch release-4.21 exists in git@github.com:openshift-priv/cloud-provider-gcp.git
+20:59:41  2026-04-03 00:59:33,599 art_tools.artcommonlib.exectools INFO $29: ['git', 'ls-remote', '--heads', 'git@github.com:openshift-priv/cloud-provider-gcp.git', 'refs/heads/release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift-priv/cloud-provider-gcp.git refs/heads/release-4.21
+20:59:41  2026-04-03 00:59:34,539 doozerlib.source_resolver INFO Branch protection confirmed for openshift/cloud-provider-gcp branch release-4.21
+20:59:41  2026-04-03 00:59:34,540 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift-priv/cloud-provider-gcp.git' branch release-4.21 in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp
+20:59:41  2026-04-03 00:59:34,541 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:59:41  2026-04-03 00:59:34,541 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp
+20:59:41  2026-04-03 00:59:34,544 art_tools.artcommonlib.exectools INFO $30: ['git', 'clone', 'https://github.com/openshift-priv/cloud-provider-gcp', '--branch', 'release-4.21', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift-priv/cloud-provider-gcp --branch release-4.21 --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp
+20:59:43  2026-04-03 00:59:43,261 art_tools.artcommonlib.exectools INFO $31: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp', 'remote'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp remote
+20:59:43  2026-04-03 00:59:43,268 art_tools.artcommonlib.exectools INFO $32: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp', 'remote', 'add', '--', 'public_upstream', 'https://github.com/openshift/cloud-provider-gcp'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp remote add -- public_upstream https://github.com/openshift/cloud-provider-gcp
+20:59:43  2026-04-03 00:59:43,301 art_tools.artcommonlib.exectools INFO $33: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp', 'fetch', '--', 'public_upstream', 'release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0'}]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp fetch -- public_upstream release-4.21
+20:59:43  2026-04-03 00:59:43,695 doozerlib.source_resolver INFO Registering source alias rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp
+20:59:43  2026-04-03 00:59:43,699 art_tools.artcommonlib.exectools INFO $34: ['git', 'config', '--get', 'remote.origin.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git config --get remote.origin.url
+20:59:43  2026-04-03 00:59:43,706 art_tools.artcommonlib.exectools INFO $35: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git rev-parse --abbrev-ref HEAD
+20:59:43  2026-04-03 00:59:43,714 art_tools.artcommonlib.exectools INFO $36: ['git', 'config', '--get', 'remote.pull.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git config --get remote.pull.url
+20:59:43  2026-04-03 00:59:43,721 art_tools.artcommonlib.exectools INFO $37: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git rev-parse HEAD
+20:59:43  2026-04-03 00:59:43,728 art_tools.artcommonlib.exectools INFO $38: ['git', 'log', '-1', '--format=%ct'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git log -1 --format=%ct
+20:59:43  2026-04-03 00:59:43,735 art_tools.artcommonlib.exectools INFO $39: ['git', 'describe', '--always', '--tags', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git describe --always --tags HEAD
+20:59:43  2026-04-03 00:59:43,753 art_tools.artcommonlib.exectools INFO $40: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git rev-parse HEAD
+20:59:43  2026-04-03 00:59:43,759 art_tools.artcommonlib.exectools INFO $41: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-gcp-gcr-image-credential-provider_cloud-provider-gcp]: Executing:cmd_gather: git rev-parse HEAD
+20:59:43  2026-04-03 00:59:43,764 doozerlib.source_resolver INFO Checking if target branch release-4.21 exists in git@github.com:openshift-priv/cloud-provider-aws.git
+20:59:43  2026-04-03 00:59:43,767 art_tools.artcommonlib.exectools INFO $42: ['git', 'ls-remote', '--heads', 'git@github.com:openshift-priv/cloud-provider-aws.git', 'refs/heads/release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift-priv/cloud-provider-aws.git refs/heads/release-4.21
+20:59:45  2026-04-03 00:59:44,877 doozerlib.source_resolver INFO Branch protection confirmed for openshift/cloud-provider-aws branch release-4.21
+20:59:45  2026-04-03 00:59:44,879 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift-priv/cloud-provider-aws.git' branch release-4.21 in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws
+20:59:45  2026-04-03 00:59:44,879 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:59:45  2026-04-03 00:59:44,879 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws
+20:59:45  2026-04-03 00:59:44,883 art_tools.artcommonlib.exectools INFO $43: ['git', 'clone', 'https://github.com/openshift-priv/cloud-provider-aws', '--branch', 'release-4.21', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift-priv/cloud-provider-aws --branch release-4.21 --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws
+20:59:50  2026-04-03 00:59:50,083 art_tools.artcommonlib.exectools INFO $44: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws', 'remote'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws remote
+20:59:50  2026-04-03 00:59:50,090 art_tools.artcommonlib.exectools INFO $45: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws', 'remote', 'add', '--', 'public_upstream', 'https://github.com/openshift/cloud-provider-aws'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws remote add -- public_upstream https://github.com/openshift/cloud-provider-aws
+20:59:50  2026-04-03 00:59:50,098 art_tools.artcommonlib.exectools INFO $46: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws', 'fetch', '--', 'public_upstream', 'release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0'}]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws fetch -- public_upstream release-4.21
+20:59:50  2026-04-03 00:59:50,197 doozerlib.source_resolver INFO Registering source alias rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws
+20:59:50  2026-04-03 00:59:50,201 art_tools.artcommonlib.exectools INFO $47: ['git', 'config', '--get', 'remote.origin.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git config --get remote.origin.url
+20:59:50  2026-04-03 00:59:50,207 art_tools.artcommonlib.exectools INFO $48: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git rev-parse --abbrev-ref HEAD
+20:59:50  2026-04-03 00:59:50,215 art_tools.artcommonlib.exectools INFO $49: ['git', 'config', '--get', 'remote.pull.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git config --get remote.pull.url
+20:59:50  2026-04-03 00:59:50,223 art_tools.artcommonlib.exectools INFO $50: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git rev-parse HEAD
+20:59:50  2026-04-03 00:59:50,232 art_tools.artcommonlib.exectools INFO $51: ['git', 'log', '-1', '--format=%ct'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git log -1 --format=%ct
+20:59:50  2026-04-03 00:59:50,239 art_tools.artcommonlib.exectools INFO $52: ['git', 'describe', '--always', '--tags', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git describe --always --tags HEAD
+20:59:50  2026-04-03 00:59:50,256 art_tools.artcommonlib.exectools INFO $53: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git rev-parse HEAD
+20:59:50  2026-04-03 00:59:50,262 art_tools.artcommonlib.exectools INFO $54: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-aws-ecr-image-credential-provider_cloud-provider-aws]: Executing:cmd_gather: git rev-parse HEAD
+20:59:50  2026-04-03 00:59:50,265 doozerlib.source_resolver INFO Checking if target branch release-4.21 exists in git@github.com:openshift-priv/crio-credential-provider.git
+20:59:50  2026-04-03 00:59:50,268 art_tools.artcommonlib.exectools INFO $55: ['git', 'ls-remote', '--heads', 'git@github.com:openshift-priv/crio-credential-provider.git', 'refs/heads/release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift-priv/crio-credential-provider.git refs/heads/release-4.21
+20:59:52  2026-04-03 00:59:52,363 doozerlib.source_resolver INFO Branch protection confirmed for openshift/crio-credential-provider branch release-4.21
+20:59:52  2026-04-03 00:59:52,364 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift-priv/crio-credential-provider.git' branch release-4.21 in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider
+20:59:52  2026-04-03 00:59:52,365 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:59:52  2026-04-03 00:59:52,365 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider
+20:59:52  2026-04-03 00:59:52,368 art_tools.artcommonlib.exectools INFO $56: ['git', 'clone', 'https://github.com/openshift-priv/crio-credential-provider', '--branch', 'release-4.21', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift-priv/crio-credential-provider --branch release-4.21 --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider
+20:59:53  2026-04-03 00:59:53,520 art_tools.artcommonlib.exectools INFO $57: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider', 'remote'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider remote
+20:59:53  2026-04-03 00:59:53,526 art_tools.artcommonlib.exectools INFO $58: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider', 'remote', 'add', '--', 'public_upstream', 'https://github.com/openshift/crio-credential-provider'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider remote add -- public_upstream https://github.com/openshift/crio-credential-provider
+20:59:53  2026-04-03 00:59:53,536 art_tools.artcommonlib.exectools INFO $59: ['git', '-C', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider', 'fetch', '--', 'public_upstream', 'release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0'}]: Executing:cmd_gather: git -C /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider fetch -- public_upstream release-4.21
+20:59:53  2026-04-03 00:59:53,605 doozerlib.source_resolver INFO Registering source alias rpms_ose-crio-credential-provider_crio-credential-provider: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider
+20:59:53  2026-04-03 00:59:53,608 art_tools.artcommonlib.exectools INFO $60: ['git', 'config', '--get', 'remote.origin.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git config --get remote.origin.url
+20:59:53  2026-04-03 00:59:53,615 art_tools.artcommonlib.exectools INFO $61: ['git', 'rev-parse', '--abbrev-ref', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git rev-parse --abbrev-ref HEAD
+20:59:53  2026-04-03 00:59:53,621 art_tools.artcommonlib.exectools INFO $62: ['git', 'config', '--get', 'remote.pull.url'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git config --get remote.pull.url
+20:59:53  2026-04-03 00:59:53,627 art_tools.artcommonlib.exectools INFO $63: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git rev-parse HEAD
+20:59:53  2026-04-03 00:59:53,634 art_tools.artcommonlib.exectools INFO $64: ['git', 'log', '-1', '--format=%ct'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git log -1 --format=%ct
+20:59:53  2026-04-03 00:59:53,641 art_tools.artcommonlib.exectools INFO $65: ['git', 'describe', '--always', '--tags', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git describe --always --tags HEAD
+20:59:53  2026-04-03 00:59:53,650 art_tools.artcommonlib.exectools INFO $66: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git rev-parse HEAD
+20:59:53  2026-04-03 00:59:53,655 art_tools.artcommonlib.exectools INFO $67: ['git', 'rev-parse', 'HEAD'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-crio-credential-provider_crio-credential-provider]: Executing:cmd_gather: git rev-parse HEAD
+20:59:53  2026-04-03 00:59:53,659 doozerlib.source_resolver INFO Checking if target branch release-4.21 exists in git@github.com:openshift-priv/cloud-provider-azure.git
+20:59:53  2026-04-03 00:59:53,663 art_tools.artcommonlib.exectools INFO $68: ['git', 'ls-remote', '--heads', 'git@github.com:openshift-priv/cloud-provider-azure.git', 'refs/heads/release-4.21'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data]: Executing:cmd_gather: git ls-remote --heads git@github.com:openshift-priv/cloud-provider-azure.git refs/heads/release-4.21
+20:59:55  2026-04-03 00:59:54,891 doozerlib.source_resolver INFO Branch protection confirmed for openshift/cloud-provider-azure branch release-4.21
+20:59:55  2026-04-03 00:59:54,892 doozerlib.source_resolver INFO Attempting to checkout source 'git@github.com:openshift-priv/cloud-provider-azure.git' branch release-4.21 in: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-azure-acr-image-credential-provider_cloud-provider-azure
+20:59:55  2026-04-03 00:59:54,892 artcommonlib.github_auth INFO Using GITHUB_TOKEN (PAT) for git CLI auth
+20:59:55  2026-04-03 00:59:54,892 artcommonlib.git_helper INFO Cloning to: /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-azure-acr-image-credential-provider_cloud-provider-azure
+20:59:55  2026-04-03 00:59:54,896 art_tools.artcommonlib.exectools INFO $69: ['git', 'clone', 'https://github.com/openshift-priv/cloud-provider-azure', '--branch', 'release-4.21', '--recurse-submodules', '/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-azure-acr-image-credential-provider_cloud-provider-azure'] - [cwd=/mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/ocp-build-data] [env={'GIT_SSH_COMMAND': 'ssh -oBatchMode=yes', 'GIT_TERMINAL_PROMPT': '0', 'GIT_ASKPASS': '/tmp/art-git-askpass-s81bw9xr.sh', 'GIT_PASSWORD': '***REDACTED***'}]: Executing:cmd_gather: git clone https://github.com/openshift-priv/cloud-provider-azure --branch release-4.21 --recurse-submodules /mnt/jenkins-workspace/d-builds_build_ocp4-scan-konflux/artcd_working/doozer_working/sources/rpms_ose-azure-acr-image-credential-provider_cloud-provider-azure
+Jenkins 2.541.2
+
+we are being rate limited even with the GITHUB_TOKEN - check this commit https://github.com/openshift-eng/art-tools/pull/2587/changes/3e3153e21322c756dc09c1cda732c5a9b07dc386
+
+---
+
+i had to revert the PR https://github.com/openshift-eng/art-tools/pull/2708/changes 
+
+create a new branch keep the changes that we need
+
+---
+
+i had to revert the PR https://github.com/openshift-eng/art-tools/pull/2708/changes 
+
+create a new branch keep the changes that we need
+
+---
+
+sorry continue
+
+---
+
+sorry continue
+
+---
+
+so we wont be rate limited even on the GITHUB_APP token right?
+
+---
+
+so we wont be rate limited even on the GITHUB_APP token right?

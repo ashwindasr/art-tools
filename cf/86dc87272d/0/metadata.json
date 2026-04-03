@@ -1,0 +1,80 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "cf86dc87272d",
+  "session_id": "f01af919-8ac3-45ea-a752-7277a6fdc719",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-03T01:23:32.139863Z",
+  "branch": "re-land-github-app-auth",
+  "checkpoints_count": 6,
+  "files_touched": [],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "a50b963dec89",
+  "checkpoint_transcript_start": 1,
+  "transcript_lines_at_start": 1,
+  "session_metrics": {
+    "turn_count": 12,
+    "context_tokens": 199057,
+    "context_window_size": 200000
+  },
+  "summary": {
+    "intent": "Fix GitHub rate limiting issues in the ocp4-scan-konflux Jenkins job that was degraded even after removing GitHub App ID and falling back to GITHUB_TOKEN. Understand why rate limiting persisted and fix the root cause to enable proper GitHub App authentication.",
+    "outcome": "Identified that PR #2587 (GitHub App auth support) missed updating source_resolver.py methods that were making unauthenticated git operations, hitting the 60 req/hr anonymous limit instead of 5,000/hr authenticated limit. PR #2708 reverted the changes; created a plan to re-land with fixes but implementation was not completed in this session.",
+    "learnings": {
+      "repo": [
+        "The ocp4-scan-konflux job clones hundreds of repos and performs git ls-remote for each image, easily exceeding low rate limits",
+        "Multiple concurrent OCP version scan jobs share the same GitHub PAT rate limit pool (5,000/hr total)",
+        "GitHub App installations provide separate 5,000/hr buckets per org (openshift-eng, openshift-priv, openshift), effectively ~15,000/hr total",
+        "The codebase converts SSH URLs to HTTPS for authentication via GIT_ASKPASS but PR #2587 didn't update all call sites",
+        "Jenkins configures SSH agent (openshift-bot) for backward compatibility but new code prefers HTTPS with tokens"
+      ],
+      "code": [
+        {
+          "path": "doozerlib/source_resolver.py",
+          "line": 606,
+          "end_line": 610,
+          "finding": "setup_and_fetch_public_upstream_source() only passed GIT_NO_PROMPTS to git fetch, making unauthenticated requests to public upstream repos (60/hr limit)"
+        },
+        {
+          "path": "doozerlib/source_resolver.py",
+          "line": 365,
+          "finding": "_get_remote_branch_ref() runs git ls-remote with no set_env at all, relying only on SSH agent instead of token auth"
+        },
+        {
+          "path": "doozerlib/source_resolver.py",
+          "line": 254,
+          "finding": "_check_branch_protection() uses raw GITHUB_TOKEN instead of get_github_client_for_org() which resolves the correct App installation per org"
+        },
+        {
+          "path": "artcommonlib/github_auth.py",
+          "finding": "get_github_git_auth_env(url=...) extracts org from URL and selects correct installation token, enabling per-org rate limit buckets"
+        },
+        {
+          "path": "pyartcd/git.py",
+          "finding": "Commit 3e3153e separated _local_env() from _git_env_for_remote() to avoid calling get_github_git_auth_env() for local-only git operations that don't contact remotes"
+        }
+      ],
+      "workflow": [
+        "GitHub anonymous git operations hit 60 req/hr limit; authenticated operations get 5,000/hr per token/installation",
+        "GitHub App auth is better than PAT for multi-org workloads since each installation gets separate rate limit buckets",
+        "Jenkins console logs reveal actual git commands and environment variables, useful for diagnosing auth issues",
+        "Git operations over HTTPS and REST API calls share the same rate limit pool when using the same token",
+        "Rate limiting can manifest as slow operations or timeouts rather than explicit 429 errors"
+      ]
+    },
+    "friction": [
+      "PR #2587 was incomplete - added new auth infrastructure but missed updating source_resolver.py git operation call sites",
+      "Rate limiting issues weren't caught in testing, only discovered after merge when production jobs degraded",
+      "The rate limiting manifested as performance degradation rather than clear errors, making root cause analysis difficult",
+      "Had to revert the entire PR #2708 instead of forward-fixing due to severity of production impact",
+      "Understanding the issue required tracing through 5+ layers: Jenkinsfile → artcd → doozer → source_resolver → git_helper → github_auth"
+    ],
+    "open_items": [
+      "Implement the fixes: re-land PR #2587 changes and add auth to source_resolver.py methods (setup_and_fetch_public_upstream_source, _get_remote_branch_ref, _check_branch_protection)",
+      "Push new branch to origin and raise PR to prod with the complete fixes",
+      "Test that fixes resolve rate limiting with both GITHUB_TOKEN and GitHub App auth in production",
+      "Consider adding GITHUB_APP_INSTALLATION_ID env vars per-org to Jenkins jobs to skip installation lookup API overhead",
+      "Monitor for secondary GitHub abuse detection rate limits that can trigger on rapid request bursts regardless of auth method"
+    ]
+  }
+}
