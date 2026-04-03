@@ -71,3 +71,7 @@ It's fine then, just come at all today, just say "be made" and push.
 ---
 
 It's fine then, just come at all today, just say "be made" and push.
+
+---
+
+It's fine, thenCommit all the changes that we made and push.
