@@ -3,7 +3,7 @@
   "checkpoint_id": "9f3e1b73f41a",
   "strategy": "manual-commit",
   "branch": "fix-layered-scan-disabled-deps",
-  "checkpoints_count": 2,
+  "checkpoints_count": 3,
   "files_touched": null,
   "sessions": [
     {
