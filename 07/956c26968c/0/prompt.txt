@@ -100,3 +100,11 @@ create a branch commit push to origin and raise a PR to prod
 ---
 
 create a branch commit push to origin and raise a PR to prod
+
+---
+
+things changed - rebase with prod/main after fetch
+
+---
+
+things changed - rebase with prod/main after fetch
