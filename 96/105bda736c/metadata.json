@@ -1,0 +1,20 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "96105bda736c",
+  "strategy": "manual-commit",
+  "branch": "re-land-github-app-auth",
+  "checkpoints_count": 8,
+  "files_touched": [
+    "doozer/doozerlib/cli/config.py",
+    "doozer/doozerlib/cli/images_okd.py",
+    "doozer/doozerlib/cli/scan_sources_konflux.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/96/105bda736c/0/metadata.json",
+      "transcript": "/96/105bda736c/0/full.jsonl",
+      "content_hash": "/96/105bda736c/0/content_hash.txt",
+      "prompt": "/96/105bda736c/0/prompt.txt"
+    }
+  ]
+}
