@@ -23,3 +23,15 @@ create a new branch commit push to origin and raise a PR to prod
 ---
 
 create a new branch commit push to origin and raise a PR to prod
+
+---
+
+im confused - ocp4-scan-konflux should already have been smart? why are we chaning things there?
+
+---
+
+yes
+
+---
+
+yes
