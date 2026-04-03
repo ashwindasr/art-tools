@@ -1,0 +1,61 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "07956c26968c",
+  "session_id": "f01af919-8ac3-45ea-a752-7277a6fdc719",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-03T00:58:22.553217Z",
+  "branch": "github-app-transient-git-auth-secret",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "doozer/doozerlib/backend/konflux_client.py",
+    "doozer/doozerlib/backend/konflux_fbc.py",
+    "doozer/doozerlib/backend/konflux_image_builder.py",
+    "doozer/doozerlib/backend/konflux_olm_bundler.py",
+    "doozer/doozerlib/cli/fbc.py",
+    "doozer/doozerlib/cli/images_konflux.py",
+    "doozer/tests/backend/test_konflux_client_git_auth.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "9850ca88e506",
+  "summary": {
+    "intent": "Resolve git clone performance degradation in ocp4-scan-konflux caused by rate limiting when using GitHub App ID. Transition from GITHUB_TOKEN to GitHub App authentication without sacrificing performance.",
+    "outcome": "Implemented GitHub App authentication across the Konflux backend components (client, FBC, image builder, OLM bundler) and CLI. Temporarily removed app id from Jenkins job to verify it was the root cause of rate limiting.",
+    "learnings": {
+      "repo": [
+        "GitHub App ID authentication was causing rate limiting issues in Konflux pipeline git operations",
+        "Konflux backend uses multiple components (client, FBC, image builder, OLM bundler) that each need git authentication configuration"
+      ],
+      "code": [
+        {
+          "path": "doozer/doozerlib/backend/konflux_client.py",
+          "finding": "Modified to support GitHub App authentication for git operations"
+        },
+        {
+          "path": "doozer/tests/backend/test_konflux_client_git_auth.py",
+          "finding": "Added tests for git authentication with GitHub App"
+        }
+      ],
+      "workflow": [
+        "Use Jenkins job configuration changes as temporary workaround to isolate root cause before implementing full solution"
+      ]
+    },
+    "friction": [
+      "GitHub App ID causing rate limiting on git clone operations",
+      "Need to balance deprecating GITHUB_TOKEN while avoiding performance regressions"
+    ],
+    "open_items": [
+      "Verify that removing app id from Jenkins job actually fixes the rate limiting issue",
+      "Complete deprecation of GITHUB_TOKEN once GitHub App auth is fully validated"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-03T00:58:07.145411Z",
+    "agent_lines": 395,
+    "human_added": 9,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 404,
+    "agent_percentage": 97.77227722772277
+  }
+}
