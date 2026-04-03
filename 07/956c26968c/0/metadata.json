@@ -3,64 +3,70 @@
   "checkpoint_id": "07956c26968c",
   "session_id": "577429d2-612d-4045-a3b9-3be7c61d6f7e",
   "strategy": "manual-commit",
-  "created_at": "2026-04-03T15:47:09.245967Z",
+  "created_at": "2026-04-03T16:56:04.488749Z",
   "branch": "github-app-transient-git-auth-secret",
-  "checkpoints_count": 1,
+  "checkpoints_count": 6,
   "files_touched": [],
   "agent": "Cursor",
   "model": "claude-4.6-opus-high-thinking",
-  "turn_id": "2786e1774dc2",
+  "turn_id": "10fdc8ad6530",
   "session_metrics": {
-    "turn_count": 2
+    "turn_count": 12
   },
   "summary": {
-    "intent": "Migrate Pipelines-as-Code authentication from GitHub PAT to GitHub App credentials for manually-triggered Tekton PipelineRuns on OpenShift/Konflux cluster.",
-    "outcome": "Implemented solution where doozer mints GitHub App installation tokens at build time, creates uniquely-named transient secrets (art-transient-pipeline-auth-\u003cepoch\u003e), wires them into PipelineRuns, and automatically prunes stale secrets \u003e24h old. PR #2707 created and rebased.",
+    "intent": "Migrate from GitHub PAT to GitHub App credentials for Pipelines-as-Code authentication on OpenShift/Konflux cluster, with a cluster-side solution that automatically handles token generation when PipelineRuns start.",
+    "outcome": "Implemented a solution where doozer generates a fresh GitHub App installation token at the start of each invocation, creates a uniquely-named transient secret (art-transient-pipeline-auth-\u003cnanosecond-timestamp\u003e), uses it for all PipelineRuns in that batch, and cleans up stale secrets \u003e24h old. PR #2711 opened with 194 passing tests.",
     "learnings": {
       "repo": [
-        "PAC's secret-auto-create only works for webhook-triggered PipelineRuns, not manually-created ones",
-        "Tekton git-clone-oci-ta and prefetch-dependencies-oci-ta tasks only need credentials in first few minutes of pipeline, not throughout multi-hour builds",
-        "ART intentionally disables PAC (\"pac\":{\"state\":\"disabled\"}) to maintain control over PipelineRun creation",
-        "Three builder types (image, FBC, OLM) all call start_pipeline_run_for_image_build with same parameter pattern",
-        "github_auth.py already had get_github_app_token_from_env() with caching and multi-org support"
+        "ART intentionally disables PAC because they manually trigger PipelineRuns via konflux_client.py rather than using webhooks",
+        "Git-auth secret is only consumed by clone-repository and prefetch-dependencies tasks (first few minutes), then all work uses OCI trusted artifacts - token expiry is not an issue for multi-hour builds",
+        "Codebase already uses time.time_ns() for generating collision-resistant unique IDs (e.g., doozer-watch-id)",
+        "Build flow has 4 distinct paths that all needed updating: image builds, FBC merge, FBC rebase-and-build, and OLM bundle builds",
+        "github_auth.py already has GitHub App token generation with 50-minute caching and multi-org support"
       ],
       "code": [
         {
           "path": "doozer/doozerlib/backend/konflux_client.py",
-          "line": 148,
-          "end_line": 148,
-          "finding": "git_auth_secret parameter already existed with default 'pipelines-as-code-secret' - just needed to be wired through the call chain"
-        },
-        {
-          "path": ".tekton/art-konflux-template-push.yaml",
-          "finding": "PipelineRun template uses {{ git_auth_secret }} variable and mounts workspace as basic-auth type, consumed by clone-repository and prefetch-dependencies tasks only"
+          "line": 42,
+          "end_line": 48,
+          "finding": "Uses time.time_ns() for _common_runtime_watcher_label_value to generate collision-resistant unique IDs"
         },
         {
           "path": "doozer/doozerlib/backend/konflux_client.py",
-          "finding": "KonfluxClient already imported CoreV1Api and had k8s client access for secret creation/deletion"
+          "line": 960,
+          "end_line": 960,
+          "finding": "start_pipeline_run_for_image_build already accepts git_auth_secret parameter with default pipelines-as-code-secret"
+        },
+        {
+          "path": ".tekton/art-konflux-template-push.yaml",
+          "line": 1,
+          "end_line": 1,
+          "finding": "git-auth workspace only mounted to clone-repository (basic-auth) and prefetch-dependencies (git-basic-auth) tasks, not used by build/scan tasks"
         }
       ],
       "workflow": [
-        "GitHub App private keys cannot be used directly by git - require JWT-to-token exchange via GitHub API first",
-        "GitHub App installation tokens expire after 1 hour, but git-clone only needs them for initial checkout",
-        "Kubernetes basic-auth secrets expect username/password fields (username: x-access-token, password: \u003ctoken\u003e)",
-        "Creating unique per-invocation secrets avoids contention vs patching a shared secret with 200+ concurrent builds",
-        "Idempotent cleanup pattern: catch ApiException 404 when deleting secrets that may already be deleted by concurrent jobs",
-        "Timestamped secret names (art-transient-pipeline-auth-\u003cepoch\u003e) enable stale secret identification and cleanup"
+        "Pipelines-as-Code secret-auto-create feature only works for webhook-triggered PipelineRuns, not manually created ones",
+        "Creating unique per-invocation secrets with label-based cleanup avoids contention vs patching a shared secret with hundreds of concurrent operations",
+        "Best practice for idempotent cleanup: catch and ignore 404 errors when deleting resources that may already be deleted concurrently",
+        "Kubernetes V1Secret.data field expects base64-encoded values; stringData accepts plain text",
+        "Correct secret type for Tekton git-clone is kubernetes.io/basic-auth with username x-access-token for GitHub App tokens",
+        "Using nanosecond timestamps (time.time_ns) instead of second-level (time.time) effectively eliminates collision risks"
       ]
     },
     "friction": [
-      "Initial confusion about whether PAC secret-auto-create could work for manually-triggered PipelineRuns",
-      "Plan mode restriction blocked code execution when user said 'lets execute' - required explicit mode switch",
-      "Pre-commit hook required dangerouslyDisableSandbox on first commit attempt",
-      "asyncio.get_event_loop() deprecation warning required test helper refactor to use asyncio.run()"
+      "Initial confusion about whether to modify art-tools code vs deploy cluster-side infrastructure (CronJob approach)",
+      "PAC controller's secret-auto-create looked promising but doesn't work for manually-triggered PipelineRuns",
+      "Concern about 200+ concurrent builds patching same shared secret required rethinking approach",
+      "Pre-commit hook required sandbox escape for commit to succeed",
+      "Truncated diff output when reviewing all changes at once",
+      "Test failures with asyncio.get_event_loop() deprecation warnings in broader test suite",
+      "PR #2707 was closed externally and needed to be recreated as PR #2711"
     ],
     "open_items": [
-      "No monitoring/alerting on git auth secret creation or cleanup failures",
-      "Cleanup only happens after builds complete - if doozer crashes, stale secrets remain until next job (max 24h)",
-      "24-hour retention window is hardcoded in cleanup_stale_git_auth_secrets - could be made configurable",
-      "No validation that GitHub App has access to required repositories before creating secrets",
-      "No metrics/logging for tracking transient secret lifecycle (created count, cleaned count per job)"
+      "CodeRabbit review comments to address: wrap cleanup in finally blocks, remove self._git_auth_secret instance attribute, add label_selector assertion to tests",
+      "RBAC permissions required for doozer ServiceAccount to create/delete secrets not documented",
+      "No monitoring/alerting configured for secret creation/deletion failures (currently just logged warnings)",
+      "Assumes github-app-credentials secret exists on cluster with proper app-id and private-key.pem keys"
     ]
   }
 }

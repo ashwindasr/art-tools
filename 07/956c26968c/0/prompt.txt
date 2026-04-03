@@ -116,3 +116,35 @@ go through all the changes and see if the changes make sense
 ---
 
 go through all the changes and see if the changes make sense
+
+---
+
+create a PR
+
+---
+
+create a PR
+
+---
+
+that pR was closed we need to recreate it
+
+---
+
+that pR was closed we need to recreate it
+
+---
+
+check the code rabbit comments and evalute if they are necessary on th RP
+
+---
+
+check the code rabbit comments and evalute if they are necessary on th RP
+
+---
+
+reply to the comment - that we areplanning to discpess and impelent the others
+
+---
+
+reply to the comment - that we areplanning to discpess and impelent the others

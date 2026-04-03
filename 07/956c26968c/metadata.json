@@ -3,7 +3,7 @@
   "checkpoint_id": "07956c26968c",
   "strategy": "manual-commit",
   "branch": "github-app-transient-git-auth-secret",
-  "checkpoints_count": 1,
+  "checkpoints_count": 6,
   "files_touched": [
     "doozer/doozerlib/backend/konflux_client.py",
     "doozer/doozerlib/backend/konflux_fbc.py",
