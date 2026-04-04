@@ -1,0 +1,141 @@
+check the mcp server https://art-jenkins.apps.prod-stable-spoke1-dc-iad2.itup.redhat.com/job/aos-cd-builds/job/build%252Flayered-products/1806/console  - what is the job complaining about - im seeing a error here
+
+---
+
+okay seperate issue - lets continue with the other one
+
+---
+
+okay seperate issue - lets continue with the other one
+
+---
+
+the remote is origin
+
+---
+
+the remote is origin
+
+---
+
+https://art-jenkins.apps.prod-stable-spoke1-dc-iad2.itup.redhat.com/job/aos-cd-builds/job/build%252Flayered-products/1820/console The secret was not deleted.
+
+---
+
+Yeah, we need to clean the secret that was created as part of the run. For the other secrets that were not created in this job run, those can be cleaned after 24 hours.
+
+---
+
+Yeah, we need to clean the secret that was created as part of the run. For the other secrets that were not created in this job run, those can be cleaned after 24 hours.
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+Run `make test`, commit, push as a new commit to the same run.
+
+---
+
+Run `make test`, commit, push as a new commit to the same run.
+
+---
+
+Run `make test`, commit, push as a new commit to the same branch.
+
+---
+
+Run `make test`, commit, push as a new commit to the same branch.
+
+---
+
+add inline commits for all of the changes in the PR in key places
+
+---
+
+add inline commits for all of the changes in the PR in key places
+
+---
+
+It's fine then, just come at all today, just say "be made" and push.
+
+---
+
+It's fine then, just come at all today, just say "be made" and push.
+
+---
+
+It's fine, thenCommit all the changes that we made and push.
+
+---
+
+art-mtc-tenant/art-transient-pipeline-auth-1775260709602838835 - what is that 1700 etc how to interpert that
+
+---
+
+is there a human readable alternative
+
+---
+
+is there a human readable alternative
+
+---
+
+if this is the safest one lets keep it - lets add a comment explaining why we chose this
+
+---
+
+if this is the safest one lets keep it - lets add a comment explaining why we chose this
+
+---
+
+https://github.com/openshift-eng/art-tools/pull/2711#discussion_r3033582549 is this relevenat
+
+---
+
+https://github.com/openshift-eng/art-tools/pull/2711#discussion_r3033582549 is this relevenat
+
+---
+
+lets add one more label to the secret that we are creating to flag it that the art automation is craeting it - something like art-auto-generated-token (when deleting it search with this key too) and then add another label that points to the jenkins job run that created the secret
+
+---
+
+lets add one more label to the secret that we are creating to flag it that the art automation is craeting it - something like art-auto-generated-token (when deleting it search with this key too) and then add another label that points to the jenkins job run that created the secret
+
+---
+
+check the code where we apply PLRs to the cluster for builds, we set the jenkins job run there - use the same patter
+
+---
+
+check the code where we apply PLRs to the cluster for builds, we set the jenkins job run there - use the same patter
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.
+
+To-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.
+
+---
+
+@add_provenance_labels_to_secret_9dd5ca88.plan.md (19-20) This applies to both functions where we delete the secret that it's created as part of the job run and also the one that's older than 24 hours, right?
+
+---
+
+@add_provenance_labels_to_secret_9dd5ca88.plan.md (19-20) This applies to both functions where we delete the secret that it's created as part of the job run and also the one that's older than 24 hours, right?

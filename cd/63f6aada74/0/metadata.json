@@ -1,0 +1,80 @@
+{
+  "cli_version": "0.5.2",
+  "checkpoint_id": "cd63f6aada74",
+  "session_id": "577429d2-612d-4045-a3b9-3be7c61d6f7e",
+  "strategy": "manual-commit",
+  "created_at": "2026-04-04T00:19:16.298831Z",
+  "branch": "github-app-transient-git-auth-secret",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "doozer/doozerlib/backend/konflux_client.py",
+    "doozer/tests/backend/test_konflux_client_git_auth.py"
+  ],
+  "agent": "Cursor",
+  "model": "claude-4.6-opus-high-thinking",
+  "turn_id": "b37571a0c8d2",
+  "session_metrics": {
+    "turn_count": 29
+  },
+  "summary": {
+    "intent": "Migrate Konflux PipelineRun git-clone authentication from a static shared PAT secret to short-lived GitHub App installation tokens, eliminating credential rotation burden and avoiding contention when 200+ concurrent builds patch the same secret.",
+    "outcome": "Implemented per-invocation transient secrets (art-transient-pipeline-auth-\u003cnanosecond-epoch\u003e) that are minted fresh from GitHub App credentials, used by all PipelineRuns in a batch, then deleted immediately after the build completes. Stale secrets from other runs are cleaned up after 24 hours. Added provenance labels and Jenkins job URL annotation. Falls back to static secret when GITHUB_APP_ID is unset.",
+    "learnings": {
+      "repo": [
+        "PipelineRun templates use {{ git_auth_secret }} variable, already wired through konflux_client.py",
+        "Only clone-repository and prefetch-dependencies tasks need git-auth (run in first few minutes), not the long-running build/scan tasks that follow",
+        "Existing convention for Jenkins job tracking: art-jenkins-job-url annotation set to os.getenv('BUILD_URL', 'n/a')",
+        "GitHub App token format: kubernetes.io/basic-auth secret with username='x-access-token' and password=\u003cinstallation-token\u003e",
+        "doozer uses time.time_ns() for unique IDs (e.g., doozer-watch-id label) to avoid collision",
+        "Multi-org GitHub Apps require explicit org parameter; get_github_app_token_from_env() auto-detection fails with 4+ installations"
+      ],
+      "code": [
+        {
+          "path": "doozer/doozerlib/backend/konflux_client.py",
+          "line": 816,
+          "finding": "PipelineRuns already annotated with art-jenkins-job-url from BUILD_URL env var - reused this pattern for secret provenance"
+        },
+        {
+          "path": "doozer/doozerlib/backend/konflux_client.py",
+          "line": 255,
+          "finding": "GitHub App installation tokens valid ~1 hour but only consumed in first few minutes by git-clone/prefetch tasks, so 1-hour expiry is never a concern"
+        },
+        {
+          "path": "doozer/doozerlib/backend/konflux_client.py",
+          "line": 960,
+          "finding": "start_pipeline_run_for_image_build already accepted git_auth_secret parameter with default 'pipelines-as-code-secret' - just needed to thread it through callers"
+        }
+      ],
+      "workflow": [
+        "Nanosecond epoch timestamps (time.time_ns()) prevent collision between concurrent invocations better than human-readable timestamps",
+        "Two-stage cleanup: delete_git_auth_secret() removes current run's secret immediately; cleanup_stale_git_auth_secrets() prunes old leftovers after 24h",
+        "Caching secret name in KonfluxClient._git_auth_secret_name avoids recreating it for 200+ PipelineRuns in the same batch",
+        "try/finally blocks ensure cleanup runs even if builds fail, but best-effort (log warnings, don't fail the build)",
+        "Label selectors with multiple labels (art-automation=transient-pipeline-auth + art.openshift.io/git-auth=true) scope cleanup to avoid deleting unrelated secrets"
+      ]
+    },
+    "friction": [
+      "CodeRabbit repeated same nitpicks across multiple review rounds (zip strict=True, dry-run making API calls before guard)",
+      "Test failures after rebase due to mocking wrong function name (get_github_app_token_from_env changed to get_github_app_token_for_org)",
+      "Build 1806 failed with 'GitHub App has 4 installations' error - had to add get_github_app_token_for_org(org) with explicit org='openshift-priv'",
+      "Initial design iteration: debated CronJob approach vs code-based token generation; settled on code-based per-invocation secrets",
+      "Realized after test build 1820 that cleanup_stale_git_auth_secrets(max_age_hours=24) didn't delete current run's secret - had to add separate delete_git_auth_secret() method",
+      "macOS /var vs /private/var symlink mismatch in test_util.py tests (pre-existing, unrelated)"
+    ],
+    "open_items": [
+      "CodeRabbit comment r3033582549: dry-run still makes live GitHub/Kubernetes API calls before the dry_run guard check (low priority, doesn't affect production usage)",
+      "CodeRabbit nitpick: add strict=True to zip() calls in CLI loops (defensive but not critical)",
+      "No monitoring/alerting on secret creation or cleanup failures (mentioned but not implemented)",
+      "builder._konflux_client is accessed directly; CodeRabbit suggested exposing as public property but deferred"
+    ]
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-04-04T00:18:25.604576Z",
+    "agent_lines": 0,
+    "human_added": 22,
+    "human_modified": 5,
+    "human_removed": 0,
+    "total_committed": 22,
+    "agent_percentage": 0
+  }
+}
