@@ -1,6 +1,6 @@
 {
     "name": "art_tools_dev_container",
-    "image": "registry.fedoraproject.org/fedora:43",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
     "workspaceFolder": "/workspaces/art-tools",
     "containerEnv": {
         "PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION": "python",
