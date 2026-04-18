@@ -1,9 +1,9 @@
 {
     "name": "art_tools_dev_container",
-    "dockerComposeFile": [
-        "docker-compose.yaml"
-    ],
-    "service": "art-tools",
+    "build": {
+        "context": "..",
+        "dockerfile": ".devcontainer/Containerfile"
+    },
     "workspaceFolder": "/workspaces/art-tools",
     "containerEnv": {
         "PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION": "python",
