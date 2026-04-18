@@ -1,9 +1,6 @@
 {
     "name": "art_tools_dev_container",
-    "build": {
-        "context": "..",
-        "dockerfile": ".devcontainer/Containerfile"
-    },
+    "image": "registry.fedoraproject.org/fedora:43",
     "workspaceFolder": "/workspaces/art-tools",
     "containerEnv": {
         "PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION": "python",
