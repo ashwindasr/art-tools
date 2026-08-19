@@ -7,6 +7,7 @@ from artcommonlib.konflux.konflux_build_record import (
     KonfluxFbcBuildRecord,
 )
 from artcommonlib.model import Model
+from doozerlib.backend.konflux_fbc import FbcRebaseResult
 from doozerlib.cli.fbc import FbcImportCli, FbcRebaseAndBuildCli
 from doozerlib.exceptions import DoozerFatalError
 from doozerlib.runtime import Runtime
@@ -147,7 +148,7 @@ class TestFbcRebaseAndBuildCli(unittest.IsolatedAsyncioTestCase):
         self._setup_database_mocks(bundle_builds=[bundle_build], fbc_builds=[])
 
         mock_rebaser = mock.AsyncMock()
-        mock_rebaser.rebase.return_value = "test-fbc-1.0.0-1"
+        mock_rebaser.rebase.return_value = FbcRebaseResult(nvr="test-fbc-1.0.0-1", ref_builds=[])
         mock_rebaser_class.return_value = mock_rebaser
 
         mock_builder = mock.AsyncMock()
@@ -192,7 +193,7 @@ class TestFbcRebaseAndBuildCli(unittest.IsolatedAsyncioTestCase):
         self._setup_database_mocks(bundle_builds=[bundle_build], fbc_builds=[])
 
         mock_rebaser = mock.AsyncMock()
-        mock_rebaser.rebase.return_value = "test-fbc-1.0.0-1"
+        mock_rebaser.rebase.return_value = FbcRebaseResult(nvr="test-fbc-1.0.0-1", ref_builds=[])
         mock_rebaser_class.return_value = mock_rebaser
 
         mock_builder = mock.AsyncMock()
@@ -277,7 +278,7 @@ class TestFbcRebaseAndBuildCli(unittest.IsolatedAsyncioTestCase):
         self._setup_database_mocks(bundle_builds=[bundle_build], fbc_builds=[existing_fbc])
 
         mock_rebaser = mock.AsyncMock()
-        mock_rebaser.rebase.return_value = "test-fbc-1.0.0-2"
+        mock_rebaser.rebase.return_value = FbcRebaseResult(nvr="test-fbc-1.0.0-2", ref_builds=[])
         mock_rebaser_class.return_value = mock_rebaser
 
         mock_builder = mock.AsyncMock()
@@ -347,7 +348,7 @@ class TestFbcRebaseAndBuildCli(unittest.IsolatedAsyncioTestCase):
         self.mock_fbc_db.search_builds_by_fields = mock_fbc_search
 
         mock_rebaser = mock.AsyncMock()
-        mock_rebaser.rebase.return_value = "test-operator-1-fbc-1.0.0-1"
+        mock_rebaser.rebase.return_value = FbcRebaseResult(nvr="test-operator-1-fbc-1.0.0-1", ref_builds=[])
         mock_rebaser_class.return_value = mock_rebaser
 
         mock_builder = mock.AsyncMock()

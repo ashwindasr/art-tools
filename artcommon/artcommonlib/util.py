@@ -23,6 +23,7 @@ from artcommonlib.constants import (
     OCP5_BRIDGE_MINOR_BASE,
     PRODUCT_BASE_IMAGE_KONFLUX_EC_RELEASE_MAP,
     PRODUCT_BASE_IMAGE_KONFLUX_RELEASE_MAP,
+    PRODUCT_FBC_STAGE_RELEASE_PLAN_MAP,
     PRODUCT_KUBECONFIG_MAP,
     PRODUCT_NAMESPACE_MAP,
     RELEASE_SCHEDULES,
@@ -1366,6 +1367,33 @@ def resolve_konflux_base_image_release_targets(
         f"Using OCP defaults: releasePlan={default_plan!r}, application={default_app!r}"
     )
     return default_plan, default_app
+
+
+def resolve_konflux_fbc_stage_release_plan(product: str, major: int, minor: int) -> str:
+    """
+    Resolve the Konflux ReleasePlan name for FBC related-image advisory-stage release.
+
+    ReleasePlan names are per-version (e.g. ``ocp-art-advisory-stage-4-18``).
+    Must stay aligned with konflux-release-data ReleasePlan resources (see ART-17452).
+
+    Args:
+        product: Runtime product key (e.g. ocp, rhmtc, mta).
+        major: OCP major version.
+        minor: OCP minor version.
+
+    Returns:
+        ReleasePlan resource metadata.name.
+
+    Raises:
+        ValueError: If the product has no configured FBC stage release plan.
+    """
+    template = PRODUCT_FBC_STAGE_RELEASE_PLAN_MAP.get(product)
+    if not template:
+        raise ValueError(
+            f"No FBC stage release plan configured for product '{product}'. "
+            f"Known products: {list(PRODUCT_FBC_STAGE_RELEASE_PLAN_MAP.keys())}"
+        )
+    return template.format(major=major, minor=minor)
 
 
 async def run_safe(func: Callable[[], Any], failures_list: Optional[List[Tuple[str, Exception]]] = None) -> Any:

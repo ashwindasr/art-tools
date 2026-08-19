@@ -19,6 +19,7 @@ from artcommonlib.konflux.konflux_build_record import (
 from artcommonlib.konflux.konflux_db import KonfluxDb
 from artcommonlib.model import Missing
 from artcommonlib.util import (
+    resolve_konflux_fbc_stage_release_plan,
     resolve_konflux_kubeconfig_by_product,
     resolve_konflux_namespace_by_product,
 )
@@ -26,6 +27,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 
 from doozerlib import constants, opm
 from doozerlib.backend.konflux_fbc import (
+    FbcRebaseResult,
     KonfluxFbcBuilder,
     KonfluxFbcFragmentMerger,
     KonfluxFbcImporter,
@@ -495,6 +497,7 @@ class FbcRebaseAndBuildCli:
         major_minor: Optional[str] = None,
         insert_missing_entry: bool = False,
         skip_tasks: tuple[str, ...] = (),
+        stage_release_plan: Optional[str] = None,
     ):
         self.runtime = runtime
         self.version = version
@@ -516,6 +519,8 @@ class FbcRebaseAndBuildCli:
         self.prod_registry_auth = prod_registry_auth
         self.major_minor = major_minor
         self.insert_missing_entry = insert_missing_entry
+        self.stage_release_plan = stage_release_plan
+        self._ocp_version: Optional[Tuple[int, int]] = None  # set in run() after group config is loaded
         self._logger = LOGGER.getChild("FbcRebaseAndBuildCli")
         self._db_for_bundles = KonfluxDb()
         self._db_for_bundles.bind(KonfluxBundleBuildRecord)
@@ -672,7 +677,27 @@ class FbcRebaseAndBuildCli:
             await importer.import_from_index_image(operator_meta, index_image=None, strict=False)
 
         self._logger.info(f"Rebasing fbc for {operator_meta.name}...")
-        nvr = await rebaser.rebase(operator_meta, bundle_build, self.version, self.release)
+        rebase_result: FbcRebaseResult = await rebaser.rebase(operator_meta, bundle_build, self.version, self.release)
+        nvr = rebase_result.nvr
+
+        if self._should_stage_release():
+            release_plan = self.stage_release_plan
+            if not release_plan:
+                major, minor = self._ocp_version
+                release_plan = resolve_konflux_fbc_stage_release_plan(self.runtime.product, major, minor)
+            self._logger.info(
+                "Stage-releasing %d related image(s) for %s via ReleasePlan '%s'...",
+                len(rebase_result.ref_builds),
+                operator_meta.name,
+                release_plan,
+            )
+            stage_result = await builder.stage_release_related_images(
+                ref_builds=rebase_result.ref_builds,
+                release_plan_name=release_plan,
+                operator_name=operator_meta.distgit_key,
+            )
+            self._logger.info("Stage release succeeded for %s: %s", operator_meta.name, stage_result.release_url)
+
         self._logger.info(f"Building fbc for {operator_meta.name}...")
         _, pipelinerun_dict = await builder.build(
             operator_meta, operator_nvr=bundle_build.operator_nvr, git_auth_secret=git_auth_secret
@@ -684,6 +709,10 @@ class FbcRebaseAndBuildCli:
         if not pullspec:
             LOGGER.warning("Could not extract pullspec from pipelinerun results for %s", nvr)
         return nvr, pullspec
+
+    def _should_stage_release(self) -> bool:
+        """Stage release runs only for stream assembly."""
+        return self.runtime.assembly == "stream"
 
     async def run(self):
         """Rebase and build fbc fragments for given operator NVRs or all latest operator NVRs for the group and assembly"""
@@ -727,6 +756,7 @@ class FbcRebaseAndBuildCli:
                 )
         else:
             ocp_version = (runtime.group_config.vars.MAJOR, runtime.group_config.vars.MINOR)
+        self._ocp_version = (int(ocp_version[0]), int(ocp_version[1]))
 
         importer = KonfluxFbcImporter(
             base_dir=Path(runtime.working_dir, constants.WORKING_SUBDIR_KONFLUX_FBC_SOURCES),
@@ -930,6 +960,12 @@ class FbcRebaseAndBuildCli:
     default=False,
     help="Insert the new bundle entry in version order instead of appending. Use this to fix missing entries that were removed from the catalog.",
 )
+@click.option(
+    "--stage-release-plan",
+    metavar="NAME",
+    default=None,
+    help="Override the auto-resolved Konflux ReleasePlan name for stage-releasing related images before FBC build.",
+)
 @click.argument('operator_nvrs', nargs=-1, required=False)
 @pass_runtime
 @click_coroutine
@@ -953,6 +989,7 @@ async def fbc_rebase_and_build(
     prod_registry_auth: Optional[str],
     major_minor: Optional[str],
     insert_missing_entry: bool,
+    stage_release_plan: Optional[str],
     operator_nvrs: Tuple[str, ...],
 ):
     """
@@ -994,5 +1031,6 @@ async def fbc_rebase_and_build(
         prod_registry_auth=prod_registry_auth,
         major_minor=major_minor,
         insert_missing_entry=insert_missing_entry,
+        stage_release_plan=stage_release_plan,
     )
     await cli.run()

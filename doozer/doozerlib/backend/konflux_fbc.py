@@ -31,12 +31,20 @@ from async_lru import alru_cache
 from dockerfile_parse import DockerfileParser
 from doozerlib import constants, opm, util
 from doozerlib.backend.build_repo import BuildRepo
-from doozerlib.backend.konflux_client import ImageBuildParams, KonfluxClient
+from doozerlib.backend.konflux_client import (
+    API_VERSION,
+    KIND_RELEASE,
+    KIND_RELEASE_PLAN,
+    KIND_SNAPSHOT,
+    ImageBuildParams,
+    KonfluxClient,
+)
 from doozerlib.backend.pipelinerun_utils import PipelineRunInfo
 from doozerlib.constants import KONFLUX_DEFAULT_IMAGE_REPO
 from doozerlib.image import ImageMetadata
 from doozerlib.record_logger import RecordLogger
 from elliottlib.shipment_utils import get_shipment_config_from_mr
+from kubernetes.dynamic import exceptions as k8s_exceptions
 from semver import VersionInfo
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
@@ -47,6 +55,21 @@ class AssemblyBundleCsvInfo(NamedTuple):
     csv_name: str
     skip_range: Optional[str]
     bundle_blob: Optional[Dict]  # The olm.bundle blob to add to the catalog
+
+
+class FbcRebaseResult(NamedTuple):
+    """Result of an FBC rebase — NVR and related image builds for stage release."""
+
+    nvr: str
+    ref_builds: List  # list[KonfluxBuildRecord] — operator + operands, excluding bundle
+
+
+class FbcRelatedImagesStageReleaseResult(NamedTuple):
+    """Result of stage-releasing FBC related images to a Konflux advisory-stage ReleasePlan."""
+
+    snapshot_name: str
+    release_name: str
+    release_url: str
 
 
 LOGGER = logging.getLogger(__name__)
@@ -1054,7 +1077,7 @@ class KonfluxFbcRebaser:
 
     async def rebase(
         self, metadata: ImageMetadata, bundle_build: KonfluxBundleBuildRecord, version: str, release: str
-    ) -> str:
+    ) -> FbcRebaseResult:
         bundle_short_name = metadata.get_olm_bundle_short_name()
         logger = self._logger.getChild(f"[{bundle_short_name}]")
         repo_dir = self.base_dir.joinpath(metadata.distgit_key)
@@ -1097,8 +1120,8 @@ class KonfluxFbcRebaser:
             )
 
             # Update the FBC repo
-            rebase_nvr = await self._rebase_dir(metadata, build_repo, bundle_build, version, release, logger)
-            assert rebase_nvr == nvr, f"rebase_nvr != nvr; doozer bug? {rebase_nvr} != {nvr}"
+            rebase_result = await self._rebase_dir(metadata, build_repo, bundle_build, version, release, logger)
+            assert rebase_result.nvr == nvr, f"rebase_nvr != nvr; doozer bug? {rebase_result.nvr} != {nvr}"
 
             # Validate the updated catalog
             logger.info("Validating the updated catalog")
@@ -1123,7 +1146,7 @@ class KonfluxFbcRebaser:
         finally:
             if self._record_logger:
                 self._record_logger.add_record("rebase_fbc_konflux", **record)
-        return nvr
+        return rebase_result
 
     async def _get_referenced_images(self, konflux_db: KonfluxDb, bundle_build: KonfluxBundleBuildRecord):
         assert bundle_build.operator_nvr, "operator_nvr is empty; doozer bug?"
@@ -1144,7 +1167,7 @@ class KonfluxFbcRebaser:
         version: str,
         release: str,
         logger: logging.Logger,
-    ) -> str:
+    ) -> FbcRebaseResult:
         logger.info("Rebasing dir %s", build_repo.local_dir)
 
         group_config = metadata.runtime.group_config
@@ -1191,7 +1214,9 @@ class KonfluxFbcRebaser:
         konflux_db: KonfluxDb = metadata.runtime.konflux_db
         konflux_db.bind(KonfluxBuildRecord)
         ref_builds = await self._get_referenced_images(konflux_db, bundle_build)
-        ref_builds.append(bundle_build)  # Include the bundle build itself
+        # Capture operator+operand builds BEFORE appending the bundle, for use in stage release.
+        stage_ref_builds = list(ref_builds)
+        ref_builds.append(bundle_build)  # Include the bundle build itself (for IDMS only)
         ref_pullspecs = {
             b.image_pullspec.replace(constants.REGISTRY_PROXY_BASE_URL, constants.BREW_REGISTRY_BASE_URL)
             for b in ref_builds
@@ -1452,7 +1477,7 @@ class KonfluxFbcRebaser:
         dfp.labels['com.redhat.art.name'] = name
         nvr = f'{name}-{version}-{release}'
         dfp.labels['com.redhat.art.nvr'] = nvr
-        return nvr
+        return FbcRebaseResult(nvr=nvr, ref_builds=stage_ref_builds)
 
     @staticmethod
     def _bootstrap_catalog(
@@ -1777,6 +1802,169 @@ class KonfluxFbcBuilder:
 
         except Exception:
             logger.exception("Error while syncing FBC related images to art-images-share")
+
+    async def stage_release_related_images(
+        self,
+        ref_builds: List[KonfluxBuildRecord],
+        release_plan_name: str,
+        operator_name: str,
+    ) -> FbcRelatedImagesStageReleaseResult:
+        """Stage-release operator + operand images via Konflux Snapshot → Release → wait.
+
+        Creates one multi-component Snapshot containing all related images, then creates a Release
+        referencing the advisory-stage ReleasePlan. If stage release fails, raises so the FBC build
+        is skipped.
+
+        Args:
+            ref_builds: Operator + operand build records from rebase (excluding bundle).
+            release_plan_name: Konflux ReleasePlan resource name for advisory-stage release.
+            operator_name: Operator distgit key, used for resource naming and logging.
+
+        Returns:
+            FbcRelatedImagesStageReleaseResult with snapshot name, release name, and release URL.
+
+        Raises:
+            ValueError: If ref_builds is empty.
+            RuntimeError: If ReleasePlan not found or release does not complete successfully.
+        """
+        if not ref_builds:
+            raise ValueError(f"No related image builds provided for operator '{operator_name}'. Cannot stage release.")
+
+        logger = self._logger.getChild(f"[stage-release:{operator_name}]")
+        application_name = util.konflux_application_name(self.group)
+
+        group_safe = artlib_util.normalize_group_name_for_k8s(self.group)
+        timestamp = artlib_util.get_utc_now_formatted_str()
+        # Max length budget: 63 - len("fbc-ri-stage-") - len(group_safe) - 2 dashes - len(timestamp)
+        max_operator_len = max(1, 63 - 13 - len(group_safe) - 2 - len(timestamp))
+        operator_safe = artlib_util.normalize_k8s_dns_label(operator_name, max_length=max_operator_len)
+        snapshot_name = f"fbc-ri-stage-{group_safe}-{operator_safe}-{timestamp}"
+        artlib_util.validate_k8s_dns_label(snapshot_name, "Generated FBC stage release snapshot name")
+
+        components = [
+            {
+                "name": artlib_util.normalize_k8s_dns_label(b.name, max_length=63),
+                "containerImage": b.image_pullspec,
+            }
+            for b in ref_builds
+        ]
+
+        logger.info(
+            "Stage-releasing %d related image(s) via ReleasePlan '%s' (application '%s')",
+            len(components),
+            release_plan_name,
+            application_name,
+        )
+
+        if self.dry_run:
+            logger.info(
+                "[DRY-RUN] Would create Snapshot '%s' with %d component(s) and Release via '%s'",
+                snapshot_name,
+                len(components),
+                release_plan_name,
+            )
+            return FbcRelatedImagesStageReleaseResult(
+                snapshot_name=snapshot_name,
+                release_name=f"dry-run-release-{snapshot_name}",
+                release_url="https://dry-run.invalid",
+            )
+
+        # Create Snapshot
+        snapshot_obj = {
+            "apiVersion": API_VERSION,
+            "kind": KIND_SNAPSHOT,
+            "metadata": {
+                "name": snapshot_name,
+                "namespace": self.konflux_namespace,
+                "labels": {
+                    "test.appstudio.openshift.io/type": "override",
+                    "appstudio.openshift.io/application": application_name,
+                },
+            },
+            "spec": {
+                "application": application_name,
+                "components": components,
+            },
+        }
+        result_snapshot = await self._konflux_client._create(snapshot_obj)
+        snapshot_url = self._konflux_client.resource_url(result_snapshot)
+        logger.info("Created Snapshot %s (%s)", snapshot_name, snapshot_url)
+
+        # Wait for Snapshot to be readable
+        timeout_s, poll_s, elapsed = 60, 10, 0
+        while elapsed < timeout_s:
+            try:
+                await self._konflux_client._get(API_VERSION, KIND_SNAPSHOT, snapshot_name)
+                break
+            except k8s_exceptions.NotFoundError:
+                await asyncio.sleep(poll_s)
+                elapsed += poll_s
+        else:
+            raise RuntimeError(f"Snapshot {snapshot_name} not available after 1 minute")
+
+        # Verify ReleasePlan exists before creating Release
+        try:
+            await self._konflux_client._get(API_VERSION, KIND_RELEASE_PLAN, release_plan_name)
+        except k8s_exceptions.NotFoundError:
+            raise RuntimeError(
+                f"ReleasePlan '{release_plan_name}' not found in namespace '{self.konflux_namespace}'. "
+                "Ensure ART-17452 has landed and the ReleasePlan name is correct."
+            ) from None
+
+        # Create Release
+        release_annotations = {
+            "art.redhat.com/kind": "fbc-ri-stage-release",
+            "art.redhat.com/group": self.group,
+            "art.redhat.com/assembly": self.assembly,
+            "art.redhat.com/operator": operator_name,
+        }
+        if job_url := os.getenv("BUILD_URL"):
+            release_annotations["art.redhat.com/job-url"] = job_url
+
+        release_obj = {
+            "apiVersion": API_VERSION,
+            "kind": KIND_RELEASE,
+            "metadata": {
+                "generateName": f"fbc-ri-stage-{group_safe}-",
+                "namespace": self.konflux_namespace,
+                "labels": {"appstudio.openshift.io/application": application_name},
+                "annotations": release_annotations,
+            },
+            "spec": {
+                "releasePlan": release_plan_name,
+                "snapshot": snapshot_name,
+            },
+        }
+        created_release = await self._konflux_client._create(release_obj)
+        release_name = created_release.metadata.name
+        release_url = self._konflux_client.resource_url(created_release)
+        logger.info("Created Release %s for Snapshot %s (%s)", release_name, snapshot_name, release_url)
+
+        # Poll for Release completion (30 min timeout, 30s interval)
+        timeout_s, poll_s, elapsed = 30 * 60, 30, 0
+        while elapsed < timeout_s:
+            release_obj = await self._konflux_client._get(API_VERSION, KIND_RELEASE, release_name)
+            for condition in release_obj.get("status", {}).get("conditions", []):
+                if condition.get("type") != "Released":
+                    continue
+                cond_status = condition.get("status")
+                reason = condition.get("reason", "")
+                if cond_status == "True" and reason == "Succeeded":
+                    logger.info("Stage release %s succeeded", release_name)
+                    return FbcRelatedImagesStageReleaseResult(
+                        snapshot_name=snapshot_name,
+                        release_name=release_name,
+                        release_url=release_url,
+                    )
+                if cond_status == "False" and reason == "Failed":
+                    message = condition.get("message", "No details")
+                    raise RuntimeError(f"Stage release {release_name} failed: {message}. See {release_url}")
+            if elapsed % 60 == 0:
+                logger.info("Stage release %s still progressing (%d min elapsed)", release_name, elapsed // 60)
+            await asyncio.sleep(poll_s)
+            elapsed += poll_s
+
+        raise RuntimeError(f"Stage release {release_name} timed out after 30 minutes. See {release_url}")
 
     async def build(
         self, metadata: ImageMetadata, operator_nvr: Optional[str] = None, git_auth_secret: Optional[str] = None

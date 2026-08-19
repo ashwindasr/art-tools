@@ -129,6 +129,18 @@ PRODUCT_BASE_IMAGE_KONFLUX_EC_RELEASE_MAP = {
     "ocp": ("ocp-art-images-base-silent-ec", "art-images-base"),
 }
 
+# Per-version ReleasePlan name templates for FBC related-image advisory-stage release workflow.
+# Template uses {major} and {minor} placeholders; resolve via resolve_konflux_fbc_stage_release_plan().
+# Must stay aligned with konflux-release-data ReleasePlan resources per product tenant. See ART-17452.
+PRODUCT_FBC_STAGE_RELEASE_PLAN_MAP = {
+    "ocp": "ocp-art-advisory-stage-{major}-{minor}",
+    "logging": "logging-advisory-stage-{major}-{minor}",
+    "openshift-logging": "logging-advisory-stage-{major}-{minor}",
+    "oadp": "oadp-advisory-stage-{major}-{minor}",
+    "rhmtc": "mtc-advisory-stage-{major}-{minor}",
+    "mta": "mta-advisory-stage-{major}-{minor}",
+}
+
 PRODUCT_KUBECONFIG_MAP = {
     "multicluster-engine": "ACM_KONFLUX_SA_KUBECONFIG",
     "rhacm2": "ACM_KONFLUX_SA_KUBECONFIG",

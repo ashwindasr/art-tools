@@ -12,6 +12,7 @@ from doozerlib.backend.konflux_fbc import (
     BASE_IMAGE_RHEL8_PULLSPEC_FORMAT,
     BASE_IMAGE_RHEL9_PULLSPEC_FORMAT,
     AssemblyBundleCsvInfo,
+    FbcRebaseResult,
     KonfluxFbcBuilder,
     KonfluxFbcFragmentMerger,
     KonfluxFbcImporter,
@@ -360,10 +361,12 @@ class TestKonfluxFbcRebaser(unittest.IsolatedAsyncioTestCase):
         mock_opm.validate = AsyncMock()
         # Non-OpenShift group: release gets OCP version suffix
         expected_release = "1.ocp4.9"
-        mock_rebase_dir.return_value = f"test-distgit-key-fbc-1.0.0-{expected_release}"
+        expected_nvr = f"test-distgit-key-fbc-1.0.0-{expected_release}"
+        mock_rebase_dir.return_value = FbcRebaseResult(nvr=expected_nvr, ref_builds=[])
 
         actual = await self.rebaser.rebase(metadata, bundle_build, version, release)
-        self.assertEqual(actual, f"test-distgit-key-fbc-1.0.0-{expected_release}")
+        self.assertEqual(actual.nvr, expected_nvr)
+        self.assertEqual(actual.ref_builds, [])
 
         mock_build_repo.assert_called_once_with(
             url=self.fbc_repo,
@@ -409,11 +412,12 @@ class TestKonfluxFbcRebaser(unittest.IsolatedAsyncioTestCase):
         mock_opm.validate = AsyncMock()
         # Non-OpenShift group: release gets OCP version suffix
         expected_release = "1.ocp4.9"
-        mock_rebase_dir.return_value = f"test-distgit-key-fbc-1.0.0-{expected_release}"
+        expected_nvr = f"test-distgit-key-fbc-1.0.0-{expected_release}"
+        mock_rebase_dir.return_value = FbcRebaseResult(nvr=expected_nvr, ref_builds=[])
         self.rebaser.push = True
 
         actual = await self.rebaser.rebase(metadata, bundle_build, version, release)
-        self.assertEqual(actual, f"test-distgit-key-fbc-1.0.0-{expected_release}")
+        self.assertEqual(actual.nvr, expected_nvr)
 
         mock_build_repo.assert_called_once_with(
             url=self.fbc_repo,
@@ -564,7 +568,8 @@ class TestKonfluxFbcRebaser(unittest.IsolatedAsyncioTestCase):
         }
 
         actual = await self.rebaser._rebase_dir(metadata, build_repo, bundle_build, version, release, logger)
-        self.assertEqual(actual, "test-distgit-key-fbc-1.0.0-1")
+        self.assertIsInstance(actual, FbcRebaseResult)
+        self.assertEqual(actual.nvr, "test-distgit-key-fbc-1.0.0-1")
 
         mock_fetch_olm_bundle_image_info.assert_called_once_with(bundle_build)
         mock_fetch_olm_bundle_blob.assert_called_once_with(bundle_build, migrate_level="none")
@@ -3653,3 +3658,142 @@ class TestGenerateFbcBranchName(unittest.TestCase):
                 group="oadp-1.5", assembly="stream", distgit_key="oadp-operator", ocp_version=None
             )
         self.assertIn("ocp_version is required for non-OpenShift group 'oadp-1.5'", str(cm.exception))
+
+
+class TestKonfluxFbcBuilderStageRelease(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.group = "openshift-4.18"
+        self.assembly = "stream"
+        self.konflux_namespace = "ocp-art-tenant"
+
+        with patch("doozerlib.backend.konflux_fbc.KonfluxClient", spec=KonfluxClient) as MockKonfluxClient:
+            self.kube_client = MockKonfluxClient.from_kubeconfig.return_value = AsyncMock(spec=KonfluxClient)
+            self.builder = KonfluxFbcBuilder(
+                base_dir=Path("/tmp/fbc-stage-release-test"),
+                group=self.group,
+                assembly=self.assembly,
+                product="ocp",
+                db=MagicMock(),
+                fbc_repo="https://example.com/fbc.git",
+                konflux_namespace=self.konflux_namespace,
+                dry_run=False,
+            )
+
+    def _make_ref_build(self, name: str, pullspec: str):
+        build = MagicMock()
+        build.name = name
+        build.image_pullspec = pullspec
+        return build
+
+    async def test_stage_release_creates_snapshot_and_release(self):
+        ref_builds = [
+            self._make_ref_build("cluster-nfd-operator", "quay.io/openshift/cluster-nfd-operator@sha256:aaa"),
+            self._make_ref_build("nfd-operand", "quay.io/openshift/nfd@sha256:bbb"),
+        ]
+        release_plan_name = "ocp-art-advisory-stage-4-18"
+
+        snapshot_resource = MagicMock()
+        snapshot_resource.metadata.name = "fbc-ri-stage-openshift-4-18-cluster-nfd-operator-20260819120000"
+        release_resource = MagicMock()
+        release_resource.metadata.name = "fbc-ri-stage-openshift-4-18-abc123"
+        self.kube_client._create = AsyncMock(side_effect=[snapshot_resource, release_resource])
+        self.kube_client._get = AsyncMock(
+            side_effect=[
+                # Snapshot availability poll
+                snapshot_resource,
+                # ReleasePlan existence check
+                MagicMock(),
+                # Release poll — succeeded
+                {"status": {"conditions": [{"type": "Released", "status": "True", "reason": "Succeeded"}]}},
+            ]
+        )
+        self.kube_client.resource_url = MagicMock(return_value="https://konflux.example.com/release/abc")
+
+        from doozerlib.backend.konflux_fbc import FbcRelatedImagesStageReleaseResult
+
+        result = await self.builder.stage_release_related_images(ref_builds, release_plan_name, "cluster-nfd-operator")
+
+        self.assertIsInstance(result, FbcRelatedImagesStageReleaseResult)
+        self.assertEqual(result.release_url, "https://konflux.example.com/release/abc")
+
+        # Verify Snapshot structure
+        snapshot_call_args = self.kube_client._create.call_args_list[0][0][0]
+        self.assertEqual(snapshot_call_args["kind"], "Snapshot")
+        self.assertEqual(snapshot_call_args["spec"]["application"], "openshift-4-18")
+        self.assertEqual(len(snapshot_call_args["spec"]["components"]), 2)
+        self.assertEqual(snapshot_call_args["spec"]["components"][0]["containerImage"], ref_builds[0].image_pullspec)
+
+        # Verify Release structure
+        release_call_args = self.kube_client._create.call_args_list[1][0][0]
+        self.assertEqual(release_call_args["kind"], "Release")
+        self.assertEqual(release_call_args["spec"]["releasePlan"], release_plan_name)
+
+    async def test_stage_release_failure_raises(self):
+        ref_builds = [self._make_ref_build("my-operator", "quay.io/openshift/my-operator@sha256:abc")]
+        release_plan_name = "ocp-art-advisory-stage-4-18"
+
+        snapshot_resource = MagicMock()
+        snapshot_resource.metadata.name = "test-snapshot"
+        release_resource = MagicMock()
+        release_resource.metadata.name = "test-release"
+        self.kube_client._create = AsyncMock(side_effect=[snapshot_resource, release_resource])
+        self.kube_client._get = AsyncMock(
+            side_effect=[
+                snapshot_resource,
+                MagicMock(),
+                {
+                    "status": {
+                        "conditions": [
+                            {"type": "Released", "status": "False", "reason": "Failed", "message": "pipeline error"}
+                        ]
+                    }
+                },
+            ]
+        )
+        self.kube_client.resource_url = MagicMock(return_value="https://konflux.example.com/release/fail")
+
+        with self.assertRaises(RuntimeError) as cm:
+            await self.builder.stage_release_related_images(ref_builds, release_plan_name, "my-operator")
+        self.assertIn("failed", str(cm.exception).lower())
+        self.assertIn("https://konflux.example.com/release/fail", str(cm.exception))
+
+    async def test_stage_release_dry_run(self):
+        self.builder.dry_run = True
+        ref_builds = [self._make_ref_build("my-operator", "quay.io/openshift/my-operator@sha256:abc")]
+
+        from doozerlib.backend.konflux_fbc import FbcRelatedImagesStageReleaseResult
+
+        result = await self.builder.stage_release_related_images(
+            ref_builds, "ocp-art-advisory-stage-4-18", "my-operator"
+        )
+
+        self.assertIsInstance(result, FbcRelatedImagesStageReleaseResult)
+        self.assertIn("dry-run", result.release_name)
+        # No K8s calls should have been made
+        self.kube_client._create.assert_not_called()
+
+    async def test_stage_release_empty_ref_builds_raises(self):
+        with self.assertRaises(ValueError) as cm:
+            await self.builder.stage_release_related_images([], "ocp-art-advisory-stage-4-18", "my-operator")
+        self.assertIn("No related image builds", str(cm.exception))
+
+    async def test_stage_release_release_plan_not_found_raises(self):
+        from kubernetes.dynamic import exceptions as k8s_exceptions
+
+        ref_builds = [self._make_ref_build("my-operator", "quay.io/openshift/my-operator@sha256:abc")]
+
+        snapshot_resource = MagicMock()
+        snapshot_resource.metadata.name = "test-snapshot"
+        self.kube_client._create = AsyncMock(return_value=snapshot_resource)
+        self.kube_client._get = AsyncMock(
+            side_effect=[
+                snapshot_resource,  # snapshot availability
+                k8s_exceptions.NotFoundError(MagicMock()),  # ReleasePlan not found
+            ]
+        )
+        self.kube_client.resource_url = MagicMock(return_value="https://konflux.example.com/snapshot/x")
+
+        with self.assertRaises(RuntimeError) as cm:
+            await self.builder.stage_release_related_images(ref_builds, "nonexistent-plan", "my-operator")
+        self.assertIn("nonexistent-plan", str(cm.exception))
+        self.assertIn("not found", str(cm.exception).lower())
