@@ -1,9 +1,6 @@
 {
     "name": "art_tools_dev_container",
-    "dockerComposeFile": [
-        "docker-compose.yaml"
-    ],
-    "service": "art-tools",
+    "image": "ghcr.io/bootc-dev/devenv-debian:latest",
     "workspaceFolder": "/workspaces/art-tools",
     "containerEnv": {
         "PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION": "python",
